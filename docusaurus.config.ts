@@ -61,7 +61,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/doxxx93.doxxx.dev/blob/master/',
+            'https://github.com/doxxx93.github.io/blob/master/',
         },
         blog: {
           remarkPlugins: [remarkMath],
@@ -74,7 +74,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/doxxx93.doxxx.dev/blob/master/',
+            'https://github.com/doxxx93.github.io/blob/master/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -105,7 +105,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/doxxx93/doxxx93.github.io',
           label: 'GitHub',
           position: 'right',
         },
