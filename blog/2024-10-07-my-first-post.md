@@ -2,6 +2,7 @@
 slug: my-first-post
 title: My First Blog Post
 authors: doxxx
+comments: true # for Giscus
 ---
 
 # Welcome to My Blog
