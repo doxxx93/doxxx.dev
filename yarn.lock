@@ -3074,7 +3074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prismjs@npm:^1.26.0":
+"@types/prismjs@npm:^1.26.0, @types/prismjs@npm:^1.26.4":
   version: 1.26.4
   resolution: "@types/prismjs@npm:1.26.4"
   checksum: 10c0/996be7d119779c4cbe66e58342115a12d35a02226dae3aaa4a744c9652d5a3939c93c26182e18156965ac4f93575ebb309c3469c36f52e60ee5c0f8f27e874df
@@ -5553,9 +5553,10 @@ __metadata:
     "@docusaurus/types": "npm:3.5.2"
     "@giscus/react": "npm:^3.0.0"
     "@mdx-js/react": "npm:^3.0.0"
+    "@types/prismjs": "npm:^1.26.4"
     clsx: "npm:^2.0.0"
     docusaurus-plugin-sass: "npm:^0.2.5"
-    prism-react-renderer: "npm:^2.3.0"
+    prism-react-renderer: "npm:^2.4.0"
     react: "npm:^18.0.0"
     react-dom: "npm:^18.0.0"
     rehype-katex: "npm:7"
@@ -10416,7 +10417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prism-react-renderer@npm:^2.3.0":
+"prism-react-renderer@npm:^2.3.0, prism-react-renderer@npm:^2.4.0":
   version: 2.4.0
   resolution: "prism-react-renderer@npm:2.4.0"
   dependencies:
