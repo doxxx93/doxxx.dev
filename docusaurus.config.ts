@@ -64,21 +64,28 @@ const config: Config = {
             'https://github.com/doxxx93.github.io/blob/master/',
         },
         blog: {
+          blogTitle: 'Doxxx Dev',
+          blogDescription: 'I am a software engineer who loves to code and write about software engineering.',
+          blogSidebarTitle: 'All Posts',
+          blogSidebarCount: 'ALL',
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
           showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
+          editLocalizedFiles: true,
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: false,
+          // feedOptions: {
+          //   type: ['rss', 'atom'],
+          //   xslt: true,
+          // },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/doxxx93.github.io/blob/master/',
           // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+          // onInlineTags: 'warn',
+          // onInlineAuthors: 'warn',
+          // onUntruncatedBlogPosts: 'warn',
         },
         theme: {
           customCss: ('./src/css/custom.scss'),
@@ -105,8 +112,19 @@ const config: Config = {
         // },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/doxxx93/doxxx93.github.io',
-          label: 'GitHub',
+          to: '/blog/archive',
+          label: 'Archive',
+          position: 'left',
+        },
+        // {
+        //   href: 'https://github.com/doxxx93/doxxx93',
+        //   label: 'GitHub',
+        //   position: 'right',
+        // },
+        {
+          'aria-label': 'GitHub Repository',
+          className: 'navbar--github-link',
+          href: 'https://github.com/doxxx93',
           position: 'right',
         },
       ],
