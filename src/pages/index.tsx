@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
-import DynamicIntro from '@site/src/components/DynamicIntro';
+import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import styles from './index.module.scss';
 
 function HomepageHeader() {
@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
       <main className={styles.main}>
-        <DynamicIntro />
+        <HomepageFeatures />
       </main>
     </Layout>
   );

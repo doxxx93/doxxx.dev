@@ -14,7 +14,7 @@ const actions = [
   "design()"
 ];
 
-const DynamicIntro: React.FC = () => {
+const HomepageFeatures: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
@@ -119,4 +119,4 @@ public class DoXXX {
   );
 };
 
-export default DynamicIntro;
+export default HomepageFeatures;
