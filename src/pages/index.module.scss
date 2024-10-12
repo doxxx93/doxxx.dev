@@ -1,0 +1,54 @@
+.heroBanner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.main {
+  padding: 2rem 0;
+  flex: 1 0 auto;
+  background-color: var(--ifm-background-color);
+}
+
+.codeBlockWrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.codeBlock {
+  background-color: #2b2b2b;
+  color: #a9b7c6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.fadeIn {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+  .codeBlock {
+    font-size: 12px;
+    padding: 1rem;
+  }
+}
