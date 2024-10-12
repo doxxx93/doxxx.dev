@@ -106,7 +106,7 @@ public class DoXXX {
           }}
           showLineNumbers={true}
           lineNumberStyle={{
-            minWidth: '3em',
+            minWidth: '1em',
             paddingRight: '1em',
             textAlign: 'right',
             color: '#606366',
