@@ -89,7 +89,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/logo.PNG',
     navbar: {
       title: 'Doxxx Dev',
       logo: {
@@ -97,12 +97,12 @@ const config: Config = {
         src: 'img/logo.PNG',
       },
       items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial',
-        },
+        // {
+        //   type: 'docSidebar',
+        //   sidebarId: 'tutorialSidebar',
+        //   position: 'left',
+        //   label: 'Tutorial',
+        // },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/doxxx93/doxxx93.github.io',
@@ -112,12 +112,11 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
       copyright: `Copyright © ${new Date().getFullYear()}  Doyul Kim, All Rights Reserved.`,
     },
     prism: {
       theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      darkTheme: prismThemes.vsDark,
       additionalLanguages: ['java', 'bash', 'json', 'sql', 'toml', 'docker', 'yaml'],
     },
   } satisfies Preset.ThemeConfig,
