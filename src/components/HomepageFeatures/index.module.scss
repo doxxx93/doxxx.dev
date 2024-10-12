@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100%;
+  font-family: var(--ifm-font-family-monospace);
 }
 
 .editor {
@@ -11,7 +12,6 @@
   border-radius: 3px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  font-family: var(--ifm-font-family-monospace);
 }
 
 .editorHeader {
