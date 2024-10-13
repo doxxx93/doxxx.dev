@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import React, {useState, useEffect, useCallback} from 'react';
+import {PrismAsyncLight as SyntaxHighlighter} from 'react-syntax-highlighter';
 import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
-import { useColorMode } from '@docusaurus/theme-common';
+import {useColorMode} from '@docusaurus/theme-common';
 import styles from './index.module.scss';
 
 SyntaxHighlighter.registerLanguage('java', java);
@@ -18,7 +18,7 @@ const HomepageFeatures: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
-  const { colorMode } = useColorMode();
+  const {colorMode} = useColorMode();
 
   const typeAction = useCallback(() => {
     const currentAction = actions[currentActionIndex];
@@ -45,13 +45,9 @@ const HomepageFeatures: React.FC = () => {
   }, [typeAction, isTyping]);
 
   const codeString = `
-public class DoXXX {
-    public void execute() {
-        boolean keepGoing = true;
-        do {
-            ${displayedText}
-            keepGoing = Math.random() < 0.5;
-        } while (keepGoing);
+public class Doxxx implements SoftwareEngineer {
+    public CompletableFuture<Awesome> do() {
+        return ${displayedText}
     }
 }
   `.trim();
@@ -59,7 +55,7 @@ public class DoXXX {
   const darculaTheme = {
     'code[class*="language-"]': {
       color: '#a9b7c6',
-      fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
+      fontFamily: 'Caskaydia Cove Nerd Font, JetBrains Mono, Ubuntu Mono, monospace',
       direction: 'ltr',
       textAlign: 'left',
       whiteSpace: 'pre',
@@ -74,13 +70,13 @@ public class DoXXX {
       msHyphens: 'none',
       hyphens: 'none',
     },
-    'keyword': { color: '#cc7832' },
-    'boolean': { color: '#cc7832' },
-    'function': { color: '#ffc66d' },
-    'number': { color: '#6897bb' },
-    'string': { color: '#6a8759' },
-    'comment': { color: '#808080' },
-    'class-name': { color: '#a9b7c6' },
+    'keyword': {color: '#cc7832'},
+    'boolean': {color: '#cc7832'},
+    'function': {color: '#ffc66d'},
+    'number': {color: '#6897bb'},
+    'string': {color: '#6a8759'},
+    'comment': {color: '#808080'},
+    'class-name': {color: '#a9b7c6'},
   };
 
   return (
@@ -92,7 +88,7 @@ public class DoXXX {
             <span className={styles.minimizeButton}></span>
             <span className={styles.maximizeButton}></span>
           </div>
-          <span className={styles.fileTab}>DoXXX.java</span>
+          <span className={styles.fileTab}>doxxx.dev</span>
         </div>
         <SyntaxHighlighter
           language="java"
