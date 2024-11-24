@@ -3,7 +3,7 @@ title: Open Contribution Jam 2024 참여기
 authors: doxxx
 tags: [ open-contribution-jam, open-source, open-contribution, Glues ]
 date: 2024-11-23 19:47:57 +0900
-image: https://doxxx.dev/assets/images/img-6db9ca7f7798104b504a5efc69cc4242.png
+image: https://cf.festa.io/img/2024-11-23/578a092e-8a55-43f7-8f6e-0da67d52ebb4.png
 ---
 
 ![img.png](img.png)
