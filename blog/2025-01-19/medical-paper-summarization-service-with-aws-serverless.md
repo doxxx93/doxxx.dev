@@ -297,6 +297,8 @@ def lambda_handler(event, context):
 
 이벤트 흐름은 다음과 같습니다:
 
+`DynamoDB Stream → Lambda → SQS → Lambda → SES`
+
 1. 새 논문 등록 → DynamoDB Stream 발생
 2. Lambda 트리거 → 구독자 키워드 매칭
 3. SQS 메시지 큐잉 → 알림 발송 Lambda
