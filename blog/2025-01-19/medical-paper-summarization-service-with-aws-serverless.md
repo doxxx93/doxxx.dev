@@ -358,6 +358,13 @@ def lambda_handler(event, context):
 
 `DynamoDB Stream → EventBridge → SNS → Multiple SQS → Lambda → SES`
 
+1. 새 논문 등록 → DynamoDB Stream 발생
+2. EventBridge로 이벤트 전달 → 이벤트 규칙에 따른 라우팅
+3. SNS 토픽으로 전달 → 알림 유형별 구분
+4. Multiple SQS로 분배 → 즉시 알림 큐, 주간 다이제스트 큐 등으로 분리
+5. Lambda에서 각 큐별 맞춤 처리 → 알림 유형에 따른 처리 로직 실행
+6. Amazon SES를 통한 이메일 발송
+
 이 아키텍처의 주요 장점은 세 가지 측면으로,
 
 첫째, 알림을 유형별로 분리해 처리할 수 있습니다. 예를 들어 즉시 발송이 필요한 알림은 즉시 알림 큐로, 여러 소식을 모아서 보내는 주간 다이제스트는 별도의 큐로 라우팅할 수 있습니다. 각 유형별로 최적화된 처리가
