@@ -157,7 +157,7 @@ DynamoDB와의 [Zero-ETL 통합기능](https://docs.aws.amazon.com/opensearch-se
 
 ![5.png](5.png)
 
-> 관련 영상: 
+> 관련 영상:
 > [AWS re:Invent 2023 - Amazon DynamoDB zero-ETL integration with Amazon OpenSearch Service (DAT339) - YouTube |](https://lilys.ai/digest/2350334)
 
 OpenSearch 쿼리 검색 로직:
@@ -187,14 +187,61 @@ search_query = {
 
 #### 구독 시스템 구현
 
-구독 시스템은 DynamoDB Streams와 EventBridge를 활용하여 구현했습니다. 사용자가 키워드를 등록하면, 새로운 논문이 등록될 때마다 키워드 매칭 여부를 확인하고 알림을 발송합니다.
+구독 시스템은 사용자가 관심 있는 키워드를 등록하고 관리할 수 있는 API를 제공합니다. DynamoDB를 사용하여 사용자의 구독 정보를 저장하고, API Gateway를 통해 RESTful 엔드포인트를 제공합니다.
 
 ```python
 def lambda_handler(event, context):
-    for record in event['Records']:
-        if record['eventName'] == 'INSERT':
-            new_item = record['dynamodb']['NewImage']
-            process_notification(new_item)
+    method = event['httpMethod']
+    path = event['path']
+
+    # 사용자의 모든 구독 조회
+    if method == 'GET' and path.startswith('/subscriptions/'):
+        email = event['pathParameters']['email']
+        return get_subscriptions(email)
+
+    # 새로운 구독 추가
+    elif method == 'POST' and path == '/subscriptions':
+        body = json.loads(event['body'])
+        email = body['email']
+        keyword = body['keyword']
+        return add_subscription(email, keyword)
+
+    # 특정 구독 삭제
+    elif method == 'DELETE' and path.startswith('/subscriptions/'):
+        parts = path.split('/')
+        email = parts[2]
+        keyword = parts[3]
+        return delete_subscription(email, keyword)
+```
+
+구독 정보는 DynamoDB에 저장되며, Cognito와 연동하여 사용자 인증을 처리합니다
+
+```python
+def add_subscription(email, keyword):
+    try:
+        user_sub = get_user_sub(email)
+        if user_sub:
+            table = dynamodb.Table(table_name)
+            item = {
+                'email': email,
+                'keyword': keyword
+            }
+            table.put_item(Item=item)
+
+            return {
+                'statusCode': 201,
+                'body': json.dumps('Subscription added successfully')
+            }
+        else:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'User not found'})
+            }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error_message': str(e)})
+        }
 ```
 
 현재는 간단한 키워드 매칭만 수행하지만, 다음과 같은 마일스톤을 가지고 있었습니다:
@@ -238,7 +285,6 @@ def get_newsletters(query_params):
 
 ![6.png](6.png)
 
-
 ```python
 def lambda_handler(event, context):
     for record in event['Records']:
@@ -255,6 +301,37 @@ def lambda_handler(event, context):
 2. Lambda 트리거 → 구독자 키워드 매칭
 3. SQS 메시지 큐잉 → 알림 발송 Lambda
 4. Amazon SES를 통한 이메일 발송
+
+```python
+def lambda_handler(event, context):
+    ses = boto3.client('ses')
+
+    for record in event['Records']:
+        body = json.loads(record['body'])
+        email = body['email']
+        keyword = body['keyword']
+        newsletter_info = body['newsletter_info']
+
+        # 이메일 발송
+        ses.send_email(
+            Source='your-email@example.com',
+            Destination={'ToAddresses': [email]},
+            Message={
+                'Subject': {'Data': '새로운 뉴스레터 알림'},
+                'Body': {
+                    'Html': {
+                        'Data': f"""
+                            <h1>키워드 '{keyword}'가 포함된 새 뉴스레터가 있습니다.</h1>
+                            <p>제목: {newsletter_info['title']}</p>
+                            <p>발행일: {newsletter_info['publication_date']}</p>
+                            <img src="{newsletter_info['thumbnail_url']}" alt="썸네일">
+                            <a href="https://your-website.com/newsletter/{newsletter_info['uuid']}">뉴스레터 보기</a>
+                        """
+                    }
+                }
+            }
+        )
+```
 
 이 구조로도 기본적인 알림 발송은 잘 동작하지만, 예상 가능한 몇 가지 한계점이 드러났습니다.
 
