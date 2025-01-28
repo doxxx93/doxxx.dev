@@ -1,73 +1,73 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from "prism-react-renderer";
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
 const config: Config = {
-  title: 'Doxxx Dev',
-  tagline: 'Take no prisoner',
-  favicon: 'img/favicon.ico',
+  title: "Doxxx Dev",
+  tagline: "Take no prisoner",
+  favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: 'https://doxxx.dev',
+  url: "https://doxxx.dev",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'doxxx93', // Usually your GitHub org/user name.
-  projectName: 'doxxx.dev', // Usually your repo name.
+  organizationName: "doxxx93", // Usually your GitHub org/user name.
+  projectName: "doxxx.dev", // Usually your repo name.
   trailingSlash: false,
 
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'kr',
-    locales: ['kr'],
+    defaultLocale: "kr",
+    locales: ["kr"],
   },
 
   // Plugins
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: ["docusaurus-plugin-sass"],
 
   // mermaid configuration
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ["@docusaurus/theme-mermaid"],
 
   // katex stylesheets
   stylesheets: [
     {
-      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
-      type: 'text/css',
+      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
+      type: "text/css",
       integrity:
-        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
-      crossorigin: 'anonymous',
+        "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
+      crossorigin: "anonymous",
     },
   ],
 
   presets: [
     [
-      'classic',
+      "classic",
       {
         docs: {
-          sidebarPath: './sidebars.ts',
+          sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/doxxx93.github.io/blob/master/',
+          editUrl: "https://github.com/doxxx93.github.io/blob/master/",
         },
         blog: {
-          blogTitle: 'Doxxx Dev',
-          blogDescription: 'I am a software engineer who loves to code and write about software engineering.',
-          blogSidebarTitle: 'All Posts',
-          blogSidebarCount: 'ALL',
+          blogTitle: "Doxxx Dev",
+          blogDescription:
+            "I am a software engineer who loves to code and write about software engineering.",
+          blogSidebarTitle: "All Posts",
+          blogSidebarCount: "ALL",
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
           showReadingTime: true,
@@ -80,15 +80,14 @@ const config: Config = {
           // },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/doxxx93.github.io/blob/master/',
+          editUrl: "https://github.com/doxxx93.github.io/blob/master/",
           // Useful options to enforce blogging best practices
           // onInlineTags: 'warn',
           // onInlineAuthors: 'warn',
           // onUntruncatedBlogPosts: 'warn',
         },
         theme: {
-          customCss: ('./src/css/custom.scss'),
+          customCss: "./src/css/custom.scss",
         },
       } satisfies Preset.Options,
     ],
@@ -96,12 +95,13 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/logo.PNG',
+    image:
+      "https://avatars.githubusercontent.com/u/51396905?s=400&u=65840fab9273e12e5b3521af740027adfa28ef62&v=4",
     navbar: {
-      title: 'Doxxx Dev',
+      title: "Doxxx Dev",
       logo: {
-        alt: 'Doxxx profile logo',
-        src: 'img/logo.PNG',
+        alt: "Doxxx profile logo",
+        src: "img/logo.svg",
       },
       items: [
         // {
@@ -110,11 +110,11 @@ const config: Config = {
         //   position: 'left',
         //   label: 'Tutorial',
         // },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        { to: "/blog", label: "Blog", position: "left" },
         {
-          to: '/blog/archive',
-          label: 'Archive',
-          position: 'left',
+          to: "/blog/archive",
+          label: "Archive",
+          position: "left",
         },
         // {
         //   href: 'https://github.com/doxxx93/doxxx93',
@@ -122,10 +122,10 @@ const config: Config = {
         //   position: 'right',
         // },
         {
-          'aria-label': 'GitHub Repository',
-          className: 'navbar--github-link',
-          href: 'https://github.com/doxxx93',
-          position: 'right',
+          "aria-label": "GitHub Repository",
+          className: "navbar--github-link",
+          href: "https://github.com/doxxx93",
+          position: "right",
         },
       ],
     },
@@ -135,7 +135,16 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.vsDark,
-      additionalLanguages: ['java', 'bash', 'json', 'sql', 'toml', 'docker', 'yaml', 'swift'],
+      additionalLanguages: [
+        "java",
+        "bash",
+        "json",
+        "sql",
+        "toml",
+        "docker",
+        "yaml",
+        "swift",
+      ],
     },
   } satisfies Preset.ThemeConfig,
 };
