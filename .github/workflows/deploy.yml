@@ -22,8 +22,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Build website
-        env:
-          DOCUSAURUS_IGNORE_SSG_WARNINGS: true # 경고 무시
         run: yarn build
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
