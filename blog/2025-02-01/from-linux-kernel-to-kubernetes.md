@@ -1,5 +1,5 @@
 ---
-title: 컨테이너 기술의 이해
+title: 컨테이너 기술의 이해, 커널부터 쿠버네티스까지
 authors: doxxx
 tags: [ container, kubernetes, docker, containerd, runc, linux-kernel, namespace, cgroups, chroot ]
 date: 2025-02-01 23:26:30 +0900
@@ -100,7 +100,9 @@ Docker는 여전히 로컬 개발 환경에서 중요한 도구로 사용됩니�
 
 ### 3.1. 쿠버네티스에서의 Pod 생성 과정
 
-Kubernetes에서 Pod는 가장 기본적인 배포 단위입니다. Pod 생성 요청은 kubelet → CRI → containerd → runC라는 경로를 거쳐 실행됩니다. 이 과정에서 Kubernetes는 gRPC 기반의 CRI(Container Runtime Interface)를 통해 컨테이너 런타임과 효율적으로 통신합니다. gRPC는 표준화된 프로토콜로 다양한 런타임(containerd, cri-o 등)을 지원하며, 일관된 인터페이스를 제공합니다.
+Kubernetes에서 Pod는 가장 기본적인 배포 단위입니다. Pod 생성 요청은 kubelet → CRI → containerd → runC라는 경로를 거쳐 실행됩니다. 이 과정에서 Kubernetes는 gRPC
+기반의 CRI(Container Runtime Interface)를 통해 컨테이너 런타임과 효율적으로 통신합니다. gRPC는 표준화된 프로토콜로 다양한 런타임(containerd, cri-o 등)을 지원하며, 일관된
+인터페이스를 제공합니다.
 
 ```mermaid
 sequenceDiagram
@@ -255,3 +257,37 @@ flowchart LR
 이러한 단순화된 구조는 성능 향상과 안정성 개선에 큰 도움이 되었습니다.
 
 컨테이너 기술은 리소스 격리와 효율성을 제공하며, 현대 IT 환경에서 필수적인 요소로 자리 잡았습니다. 특히 OCI 표준화와 쿠버네티스와 같은 도구들의 발전은 이 기술을 더욱 강력하고 유연하게 만들었습니다.
+
+## 6. 결론
+
+지금까지 살펴본 컨테이너 기술은 리눅스 커널의 기본 기능에서 시작하여 현대적인 클라우드 네이티브 환경의 핵심 요소로 발전해왔습니다. 주요 발전 과정을 정리해보면 다음과 같습니다
+
+1. 기술적 진화
+    - 리눅스 커널의 namespace, cgroups, chroot에서 시작
+    - Docker를 통한 컨테이너 기술의 대중화
+    - OCI 표준화를 통한 생태계 확장
+    - 쿠버네티스를 통한 오케스트레이션 표준화
+2. 아키텍처 최적화
+    - 복잡한 Docker 기반 구조에서 경량화된 containerd 중심으로 전환
+    - CRI를 통한 표준 인터페이스 확립
+    - 효율적인 리소스 관리와 격리 구현
+
+## Appendix
+
+### 주요 용어 설명:
+
+- CRI (Container Runtime Interface): 쿠버네티스와 컨테이너 런타임 간의 표준 통신 인터페이스
+- OCI (Open Container Initiative): 컨테이너 포맷과 런타임에 대한 산업 표준을 정의하는 단체
+- namespace: 프로세스 격리를 위한 리눅스 커널 기능
+- cgroups: 리소스 사용을 제어하는 리눅스 커널 기능
+- containerd: OCI 표준을 구현한 산업 표준 컨테이너 런타임
+- runC: 저수준 컨테이너 런타임의 참조 구현체
+
+### 참고 자료
+- [인프런 쿠버네티스 어나더 클래스 (지상편) - Sprint 1, 2 강의 섹션3 컨테이너 한방 정리](https://inf.run/NzKy)
+
+**Sprint1**
+
+#1.컨테이너 한방정리 [컨테이너 기술의 이해, 커널부터 쿠버네티스까지(현재 글)](https://doxxx.dev/blog/2025/02/01/from-linux-kernel-to-kubernetes)
+
+시리즈 글로 이어집니다. 다음 글에서는 쿠버네티스 설치와 환경 구성에 대해 다루게 됩니다.
