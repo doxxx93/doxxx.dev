@@ -1,5 +1,5 @@
-import { themes as prismThemes } from "prism-react-renderer";
-import type { Config } from "@docusaurus/types";
+import {themes as prismThemes} from "prism-react-renderer";
+import type {Config} from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -33,8 +33,10 @@ const config: Config = {
   },
 
   // Plugins
-  plugins: ["docusaurus-plugin-sass"],
-
+  plugins: ["docusaurus-plugin-sass",],
+  future: {
+    experimental_faster: true,
+  },
   // mermaid configuration
   markdown: {
     mermaid: true,
@@ -110,7 +112,7 @@ const config: Config = {
         //   position: 'left',
         //   label: 'Tutorial',
         // },
-        { to: "/blog", label: "Blog", position: "left" },
+        {to: "/blog", label: "Blog", position: "left"},
         {
           to: "/blog/archive",
           label: "Archive",
