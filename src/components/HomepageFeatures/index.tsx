@@ -1,21 +1,15 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {PrismAsyncLight as SyntaxHighlighter} from 'react-syntax-highlighter';
-import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
-import {useColorMode} from '@docusaurus/theme-common';
-import styles from './index.module.scss';
+import React, {useState, useEffect, useCallback} from "react";
+import {PrismAsyncLight as SyntaxHighlighter} from "react-syntax-highlighter";
+import java from "react-syntax-highlighter/dist/esm/languages/prism/java";
+import {useColorMode} from "@docusaurus/theme-common";
+import styles from "./index.module.scss";
 
-SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage("java", java);
 
-const actions = [
-  "code()",
-  "create()",
-  "innovate()",
-  "develop()",
-  "design()"
-];
+const actions = ["code()", "create()", "innovate()", "develop()", "design()"];
 
 const HomepageFeatures: React.FC = () => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [currentActionIndex, setCurrentActionIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
   const {colorMode} = useColorMode();
@@ -50,33 +44,17 @@ public class Doxxx implements SoftwareEngineer {
         return ${displayedText}
     }
 }
-  `.trim();
+`.trim();
 
   const darculaTheme = {
-    'code[class*="language-"]': {
-      color: '#a9b7c6',
-      fontFamily: 'Caskaydia Cove Nerd Font, JetBrains Mono, Ubuntu Mono, monospace',
-      direction: 'ltr',
-      textAlign: 'left',
-      whiteSpace: 'pre',
-      wordSpacing: 'normal',
-      wordBreak: 'normal',
-      lineHeight: '1.5',
-      MozTabSize: '4',
-      OTabSize: '4',
-      tabSize: '4',
-      WebkitHyphens: 'none',
-      MozHyphens: 'none',
-      msHyphens: 'none',
-      hyphens: 'none',
-    },
-    'keyword': {color: '#cc7832'},
-    'boolean': {color: '#cc7832'},
-    'function': {color: '#ffc66d'},
-    'number': {color: '#6897bb'},
-    'string': {color: '#6a8759'},
-    'comment': {color: '#808080'},
-    'class-name': {color: '#a9b7c6'},
+    'code[class*="language-"]': {color: "#a9b7c6"},
+    keyword: {color: "#cc7832"},
+    boolean: {color: "#cc7832"},
+    function: {color: "#ffc66d"},
+    number: {color: "#6897bb"},
+    string: {color: "#6a8759"},
+    comment: {color: "#808080"},
+    "class-name": {color: "#a9b7c6"},
   };
 
   return (
@@ -95,17 +73,18 @@ public class Doxxx implements SoftwareEngineer {
           style={darculaTheme}
           customStyle={{
             margin: 0,
-            padding: '20px',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            backgroundColor: colorMode === 'dark' ? '#2b2b2b' : '#fafafa',
+            padding: "20px",
+            fontSize: "14px",
+            lineHeight: "1.5",
+            backgroundColor:
+              colorMode === "dark" ? "#2b2b2b" : "#fafafa",
           }}
-          showLineNumbers={true}
+          showLineNumbers
           lineNumberStyle={{
-            minWidth: '1em',
-            paddingRight: '1em',
-            textAlign: 'right',
-            color: '#606366',
+            minWidth: "1em",
+            paddingRight: "1em",
+            textAlign: "right",
+            color: "#606366",
           }}
         >
           {codeString}
