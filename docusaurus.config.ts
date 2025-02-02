@@ -6,7 +6,7 @@ import rehypeKatex from "rehype-katex";
 
 const config: Config = {
   title: "Doxxx Dev",
-  tagline: "Take no prisoner",
+  tagline: "Hi I'm Doxxx, a Cloud Engineer",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -33,7 +33,7 @@ const config: Config = {
   },
 
   // Plugins
-  plugins: ["docusaurus-plugin-sass",],
+  plugins: ["docusaurus-plugin-sass"],
   future: {
     experimental_faster: true,
   },
@@ -67,7 +67,7 @@ const config: Config = {
         blog: {
           blogTitle: "Doxxx Dev",
           blogDescription:
-            "I am a software engineer who loves to code and write about software engineering.",
+            "I am a cloud engineer.",
           blogSidebarTitle: "All Posts",
           blogSidebarCount: "ALL",
           remarkPlugins: [remarkMath],
@@ -113,11 +113,7 @@ const config: Config = {
         //   label: 'Tutorial',
         // },
         {to: "/blog", label: "Blog", position: "left"},
-        {
-          to: "/blog/archive",
-          label: "Archive",
-          position: "left",
-        },
+        {to: "/blog/archive", label: "Archive", position: "left",},
         // {
         //   href: 'https://github.com/doxxx93/doxxx93',
         //   label: 'GitHub',
@@ -132,7 +128,7 @@ const config: Config = {
       ],
     },
     footer: {
-      copyright: `Copyright © ${new Date().getFullYear()}  Doyul Kim, All Rights Reserved.`,
+      copyright: `Copyright © ${new Date().getFullYear()}  Doxxx, All Rights Reserved.`,
     },
     prism: {
       theme: prismThemes.github,
