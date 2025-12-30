@@ -65,6 +65,7 @@ const config: Config = {
           editUrl: "https://github.com/doxxx93.github.io/blob/master/",
         },
         blog: {
+          routeBasePath: "/", // 블로그를 메인 페이지로
           blogTitle: "Doxxx Dev",
           blogDescription:
             "I am a cloud engineer.",
@@ -106,14 +107,8 @@ const config: Config = {
         src: "img/logo.svg",
       },
       items: [
-        // {
-        //   type: 'docSidebar',
-        //   sidebarId: 'tutorialSidebar',
-        //   position: 'left',
-        //   label: 'Tutorial',
-        // },
-        {to: "/blog", label: "Blog", position: "left"},
-        {to: "/blog/archive", label: "Archive", position: "left",},
+        {to: "/archive", label: "Archive", position: "left"},
+        {to: "/about", label: "About", position: "left"},
         // {
         //   href: 'https://github.com/doxxx93/doxxx93',
         //   label: 'GitHub',
