@@ -7,7 +7,7 @@ import rehypeKatex from "rehype-katex";
 const config: Config = {
   title: "Doxxx Dev",
   tagline: "Hi I'm Doxxx, a Cloud Engineer",
-  favicon: "img/favicon.ico",
+  favicon: "img/favicon.png",
 
   // Set the production url of your site here
   url: "https://doxxx.dev",
