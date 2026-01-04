@@ -104,7 +104,7 @@ const config: Config = {
       title: "Doxxx Dev",
       logo: {
         alt: "Doxxx profile logo",
-        src: "img/logo.svg",
+        src: "img/logo.png",
       },
       items: [
         {to: "/archive", label: "Archive", position: "left"},
