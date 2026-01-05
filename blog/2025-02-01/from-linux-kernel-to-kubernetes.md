@@ -288,6 +288,8 @@ flowchart LR
 
 **Sprint1**
 
-#1.컨테이너 한방정리 [컨테이너 기술의 이해, 커널부터 쿠버네티스까지(현재 글)](https://doxxx.dev/2025/02/01/from-linux-kernel-to-kubernetes)
+#1.컨테이너 한방정리 [컨테이너 기술의 이해, 커널부터 쿠버네티스까지(현재 글)](/2025/02/01/from-linux-kernel-to-kubernetes)
 
-시리즈 글로 이어집니다. 다음 글에서는 쿠버네티스 설치와 환경 구성에 대해 다루게 됩니다.
+#2.쿠버네티스 설치 [쿠버네티스 클러스터 구축, 아키텍처부터 네트워크까지](/2026/01/05/the-weight-of-kubernetes-installation)
+
+시리즈 글로 이어집니다. 다음 글에서는 쿠버네티스 Pod와 Service 네트워킹에 대해 다룰 예정입니다.
