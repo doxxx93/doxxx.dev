@@ -144,7 +144,10 @@ const config: Config = {
       apiKey: "08f8e70633947cfb337e5a3a481ccfff",
       indexName: "doxxxdev",
       contextualSearch: false,
-      searchPagePath: "search",
+      searchParameters: {
+        attributesToHighlight: ["hierarchy.lvl0", "hierarchy.lvl1", "hierarchy.lvl2", "content"],
+        attributesToSnippet: ["content:30"],
+      },
     },
   } satisfies Preset.ThemeConfig,
 };
