@@ -55,3 +55,14 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  reindex:
+    name: Trigger Algolia Crawler
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Algolia Reindex
+        run: |
+          curl -X POST "https://crawler.algolia.com/api/1/crawlers/${{ secrets.ALGOLIA_CRAWLER_ID }}/reindex" \
+            -H "Content-Type: application/json" \
+            -u "${{ secrets.ALGOLIA_CRAWLER_USER_ID }}:${{ secrets.ALGOLIA_CRAWLER_API_KEY }}"
