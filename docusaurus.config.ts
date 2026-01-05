@@ -97,6 +97,13 @@ const config: Config = {
   ],
 
   themeConfig: {
+    // SEO 글로벌 메타데이터
+    metadata: [
+      {name: "keywords", content: "cloud, engineer, devops, kubernetes, aws, docker, 클라우드, 데브옵스"},
+      {name: "author", content: "Doxxx"},
+      {property: "og:type", content: "website"},
+      {property: "og:locale", content: "ko_KR"},
+    ],
     // Replace with your project's social card
     image:
       "https://avatars.githubusercontent.com/u/51396905?s=400&u=65840fab9273e12e5b3521af740027adfa28ef62&v=4",
