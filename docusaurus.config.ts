@@ -145,8 +145,8 @@ const config: Config = {
       indexName: "doxxxdev",
       contextualSearch: false,
       searchParameters: {
-        attributesToHighlight: [],
-        attributesToSnippet: [],
+        attributesToHighlight: ["hierarchy.lvl0", "hierarchy.lvl1", "hierarchy.lvl2", "content"],
+        attributesToSnippet: ["content:30"],
       },
     },
   } satisfies Preset.ThemeConfig,
