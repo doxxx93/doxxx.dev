@@ -139,6 +139,13 @@ const config: Config = {
         "swift",
       ],
     },
+    algolia: {
+      appId: "YFSTKU4HVZ",
+      apiKey: "08f8e70633947cfb337e5a3a481ccfff",
+      indexName: "doxxxdev",
+      contextualSearch: true,
+      searchPagePath: "search",
+    },
   } satisfies Preset.ThemeConfig,
 };
 
