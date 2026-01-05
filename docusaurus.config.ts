@@ -143,7 +143,7 @@ const config: Config = {
       appId: "YFSTKU4HVZ",
       apiKey: "08f8e70633947cfb337e5a3a481ccfff",
       indexName: "doxxxdev",
-      contextualSearch: true,
+      contextualSearch: false,
       searchPagePath: "search",
     },
   } satisfies Preset.ThemeConfig,
