@@ -1,441 +1,441 @@
 ---
-title: 혼자 공부하는 컴퓨터 구조 + 운영체제
+title: Computer Architecture + Operating System for Self-Study
 authors: doxxx
-tags: [ 서적, 컴퓨터 구조, 운영체제 ]
+tags: [ books, computer architecture, operating system ]
 date: 2023-02-01 14:26:57 +0900
-description: 혼자 공부하는 컴퓨터 구조 + 운영체제 정리
+description: Computer Architecture + Operating System Summary for Self-Study
 image: https://image.yes24.com/goods/111378840/XL
 ---
 
-# 혼자 공부하는 컴퓨터 구조 + 운영체제
+# Computer Architecture + Operating System for Self-Study
 
-혼자 공부하는 컴퓨터 구조 + 운영체제 서적을 읽고 정리한 글입니다.
+This is an article I wrote after reading a book on computer architecture and operating systems that I studied on my own.
 
 <!-- truncate -->
 
-# Ch.01 컴퓨터 구조 시작하기
+# Ch.01 Getting Started with Computer Architecture
 
-## 1.1 컴퓨터 구조를 알아야 하는 이유
+## 1.1 Why You Should Know Computer Architecture
 
-### 문제 해결
+### Problem solving
 
-코드상의 문제가 아닌 컴퓨터 구조의 문제일 때 해결 할 수 있다.
+It can be solved when the problem is in the computer architecture, not in the code.
 
-### 성능, 용량, 비용
+### Performance, capacity, cost
 
-문법만으로는 알기 어려운 성능, 용량, 비용을 고려하며 개발할 수 있다.
+It is possible to develop while considering performance, capacity, and cost, which are difficult to understand with grammar alone.
 
-## 1.2 컴퓨터 구조의 큰 그림
+## 1.2 The Big Picture of Computer Architecture
 
-컴퓨터의 구조 지식은 `컴퓨터가 이해하는 정보`와 `컴퓨터의 네 가지 핵심 부품`으로 구성되어 있다.
+The structural knowledge of a computer consists of ‘information that a computer understands’ and ‘the four core components of a computer.’
 
-### 컴퓨터가 이해하는 정보
+### Information that computers understand
 
-데이터는 숫자, 문자, 이미지, 동영상과 같은 정적인 정보를 의미한다.
+Data refers to static information such as numbers, letters, images, and videos.
 
-명령어는 컴퓨터를 실질적으로 움직이는 정보이고 이 때 데이터는 명령어를 위한 일종의 재료이다.
+Instructions are the information that actually moves the computer, and data is a kind of material for instructions.
 
-### 컴퓨터의 4가지 핵심 부품
+### The four core components of a computer
 
 중앙처리장치(CPU, Central Processing Unit), 주기억장치(메모리, main memory), 보조기억장치(secondary storage), 입출력장치(input/output(I/O)
 device)이다.
 
-메모리는 현재 실행되는 프로그램의 명령어와 데이터를 저장한다.
+Memory stores the instructions and data of the currently running program.
 
-CPU는 메모리에 저장된 명령어를 읽어 들이고, 읽어 들인 명령어를 해석하고 실행하는 부품이다. 산술논리연산장치(ALU, Arithmetic Logic Unit), 레지스터(register), 제어장치(CU,
-Control Unit)로 이루어져있다.
+The CPU is a component that reads instructions stored in memory, interprets them, and executes them. It consists of an arithmetic logic unit (ALU), registers, and a control unit (CU,
+Control Unit).
 
-> ALU는 계산을, 레지스터는 CPU 내부의 작은 저장 장치 역할을, 제어장치는 제어 신호(메모리 읽기, 쓰기 등)를 내보내고 명령어를 해석하는 역할을 한다.
+> The ALU performs calculations, the registers act as small storage devices inside the CPU, and the control unit sends out control signals (reading and writing memory, etc.) and interprets commands.
 
-보조기억장치는 전원이 꺼져도 저장된 내용을 잃지 않는 메모리를 의미한다.
+Auxiliary storage refers to memory that does not lose stored contents even when the power is turned off.
 
-입출력장치는 컴퓨터 외부에 연결되어 컴퓨터 내부와 정보를 교환할 수 있는 부품이다.
+Input/output devices are components that are connected to the outside of the computer and can exchange information with the inside of the computer.
 
-### 메인보드와 시스템 버스
+### Mainboard and system bus
 
-위의 핵심 부품들이 메인보드에 연결된다. 메인보드의 여러 버스를 통해 부품끼리 정보를 주고 받는다. 시스템 버스는 핵심 부품을 연결한 버스이고, 주소 버스, 데이터 버스, 제어 버스로 이루어져있다.
+The above core components are connected to the motherboard. Information is exchanged between components through various buses on the motherboard. The system bus is a bus that connects core components and consists of an address bus, data bus, and control bus.
 
-## 마무리
+## finish
 
-1. 프로그램이 실행되려면 반드시 메모리에 저장되어 있어야 합니다.
+1. A program must be stored in memory in order to run.
 
-# Ch.02 데이터
+# Ch.02 Data
 
-## 2.1 0과 1로 숫자를 표현하는 방법
+## 2.1 How to represent numbers with 0 and 1
 
-### 정보 단위
+### Information unit
 
-비트(bit): 0과 1을 표현하는 가장 작은 정보 단위
-워드(word): CPU가 한 번에 처리할 수 있느 정보의 크기 단위
+Bit: The smallest unit of information that represents 0 and 1
+Word: The unit of information size that the CPU can process at once
 
-### 이진법
+### binary scale
 
-이진법(binary): 0과 1로 수를 표현하는 방법
+Binary: A method of representing numbers using 0 and 1
 
-2의 보수를 이용하여 음수 만들기: 모든 0과 1을 뒤집고 1을 더한다. 플래그(flag)를 통하여 양수와 음수를 구분한다.
+Creating negative numbers using 2's complement: Flip all 0s and 1s and add 1. Positive and negative numbers are distinguished through flags.
 
-### 십육진법
+### hexadecimal system
 
-이진수는 수의 길이가 너무 길어지기 때문에, 10부터 15까지 A~F를 할당한 16진법을 사용한다.
+Because binary numbers are too long, hexadecimal is used, assigning A to F for 10 to 15.
 
-## 2.2 0과 1로 문자를 표현하는 방법
+## 2.2 How to represent characters with 0 and 1
 
-### 문자 집합과 인코딩
+### Character sets and encodings
 
-문자집합(character set): 컴퓨터가 이해할 수 있는 문자의 모음
-인코딩(encoding): 코드화하는 과정, 문자를 0과 1로 이루어진 문자 코드로 변환하는 과정
-디코딩(decoding): 코드를 해석하는 과정, 0과 1로 표현된 문자 코드를 문자로 변환하는 과정
+Character set: A collection of characters that a computer can understand
+Encoding: A process of encoding, a process of converting characters into character codes made up of 0 and 1
+Decoding: A process of interpreting codes, a process of converting character codes expressed as 0 and 1 into characters
 
-### 아스키 코드
+### ASCII code
 
-아스키 코드(ASCII code): 0과 1로 이루어진 문자 코드를 7비트로 표현한 것, 1비트는 오류 검출을 위해 사용되는 패리티 비트(parity bit)로 사용한다.
+ASCII code: A 7-bit representation of a character code consisting of 0 and 1, with 1 bit used as a parity bit for error detection.
 
-한글을 포함한 다른 언어 문자, 다양한 특수 문자를 표현할 수 없다. 따라서 언어별 인코딩 방식이 등장하였다.
+It cannot express other language characters, including Korean, and various special characters. Therefore, language-specific encoding methods emerged.
 
-### 유니코드와 UTF-8
+### Unicode and UTF-8
 
-유니코드(Unicode): 통일된 문자 집합, 여러 인코딩 방식이 존재한다.
+Unicode: A unified character set with multiple encoding methods.
 
-UTF-8인코딩: 유니코드를 8비트로 표현하는 인코딩 방식, 1바이트에서 4바이트까지 사용할 수 있다.
+UTF-8 encoding: An encoding method that expresses Unicode in 8 bits, and can use from 1 to 4 bytes.
 
-## 확인 문제
+## Verification problem
 
-3. 1101(2)의 음수를 2의 보수 표현법으로 구해 보세요.
+3. Find the negative of 1101(2) using 2's complement representation.
 
 ```text
 1101
-// 1. 모든 비트를 뒤집는다.
+// 1. Flip all bits.
 0010
-// 2. 1을 더한다.
+// 2. Add 1.
 0011
 ```
 
-# Ch.03 명령어
+# Ch.03 Command
 
-## 3.1 소스 코드와 명령어
+## 3.1 Source Code and Commands
 
-### 고급언어와 저급언어
+### High-level and low-level languages
 
-고급 언어(high-level programming language): 사람이 이해하기 쉬운 언어이다.
+High-level programming language: A language that is easy for humans to understand.
 
-저급 언어(low-level programming language): 컴퓨터가 이해하고 실행하는 언어이다.
+Low-level programming language: A language that a computer understands and executes.
 
-저급 언어에는 기계어와 어셈블리어가 있다.
+Low-level languages include machine language and assembly language.
 
-기계어(machine code): 0과 1로 이루어진 이진수로 이루어진 언어이다.
+Machine code: A language made up of binary numbers consisting of 0s and 1s.
 
-어셈블리어(assembly language): 기계어와 1:1 대응되는 기호로 이루어진 언어이다.
+Assembly language: A language composed of symbols that correspond 1:1 to machine language.
 
-### 컴파일 언어와 인터프리터 언어
+### Compiled and interpreted languages
 
-컴파일 언어(compile language): 컴파일러에 의해 저급 언어로 변환되는 언어이다. 소스코드가 컴파일러에 의해 목적 코드가 생성된다.
+Compile language: A language that is converted into a low-level language by a compiler. The source code is converted into object code by the compiler.
 
-인터프리터 언어(interpreter language): 소스코드가 인터프리터에 의해 한 줄씩 실행된다.
+Interpreter language: The source code is executed line by line by the interpreter.
 
-## 3.2 명령어의 구조
+## 3.2 Command Structure
 
-### 연산 코드와 오퍼랜드
+### Operation codes and operands
 
-명령어는 연산 코드와 오퍼랜드로 구성된다.
+An instruction consists of an operation code and an operand.
 
-연산 코드(operation code): 명령어의 기능을 나타내는 코드이다. 명령어가 수행할 연산을 나타낸다.
+Operation code: A code that indicates the function of a command. Indicates the operation to be performed by the command.
 
-오퍼랜드(operand): 연산에 사용할 데이터 또는 연산에 사용할 데이터가 저장된 메모리 주소이다.
+Operand: Data to be used in an operation or the memory address where the data to be used in an operation is stored.
 
-오퍼랜드 필드를 주소 필드라고도 한다. 오퍼랜드는 0개 또는 1개 이상일 수 있다.
+The operand field is also called the address field. Operands can be 0 or 1 or more.
 
-연산 코드는 CPU의 종류에 따라 다르다. 대표적으로는 데이터 전송, 산술/논리 연산, 제어 연산, 입출력 연산이 있다.
+The operation codes vary depending on the type of CPU. Representative examples include data transmission, arithmetic/logical operations, control operations, and input/output operations.
 
-### 주소 지정 방식
+### Addressing method
 
-유효 주소(effective address): 명령어가 오퍼랜드를 참조하는 주소이다.
+Effective address: The address to which the instruction refers to the operand.
 
-주소 지정 방식(addressing mode): 명령어가 오퍼랜드를 참조하는 방법이다.
+Addressing mode: How an instruction references its operands.
 
-- 즉시 주소 지정 방식(immediate addressing mode): 명령어에 직접 오퍼랜드를 기술하는 방법이다.
-- 직접 주소 지정 방식(direct addressing mode): 오퍼랜드가 메모리 주소인 경우, 메모리 주소를 직접 기술하는 방법이다.
-- 간접 주소 지정 방식(indirect addressing mode): 오퍼랜드가 메모리 주소인 경우, 메모리 주소가 저장된 메모리 주소를 기술하는 방법이다.
-- 레지스터 주소 지정 방식(register addressing mode): 오퍼랜드가 레지스터인 경우, 레지스터 번호를 기술하는 방법이다.
-- 레지스터 간접 주소 지정 방식(register indirect addressing mode): 오퍼랜드가 레지스터인 경우, 레지스터 번호가 저장된 메모리 주소를 기술하는 방법이다.
+- Immediate addressing mode: A method of directly describing the operand in the instruction.
+- Direct addressing mode: When the operand is a memory address, this is a method of directly describing the memory address.
+- Indirect addressing mode: When the operand is a memory address, this is a method of describing the memory address where the memory address is stored.
+- Register addressing mode: When the operand is a register, this is the method of describing the register number.
+- Register indirect addressing mode: When the operand is a register, this is a method of describing the memory address where the register number is stored.
 
-## 스택과 큐
+## Stacks and Queues
 
-### 스택
+### stack
 
-스택(stack): 후입선출(LIFO, Last In First Out) 구조이다. 데이터를 넣는 것을 푸시(push), 데이터를 꺼내는 것을 팝(pop)이라고 한다.
+Stack: It is a last in first out (LIFO) structure. Inserting data is called push, and taking data out is called pop.
 
-### 큐
+### cue
 
-큐(queue): 선입선출(FIFO, First In First Out) 구조이다. 데이터를 넣는 것을 인큐(enqueue), 데이터를 꺼내는 것을 디큐(dequeue)라고 한다.
+Queue: It is a first-in, first-out (FIFO) structure. Inserting data is called enqueue, and taking data out is called dequeue.
 
-# Ch.04 CPU의 작동 원리
+# Ch.04 How the CPU Works
 
-## 4.1 ALU와 제어장치
+## 4.1 ALU and Control Unit
 
 ### ALU
 
-ALU는 레지스터로부터 피연산자를, 제어장치로부터 제어 신호를 받아 연산을 수행한다.
+The ALU receives operands from registers and control signals from the control unit and performs operations.
 
-받아들인 정보를 바탕으로, 레지스터에 결괏값 또는 플래그를 내보낸다.
+Based on the information received, the result value or flag is output to the register.
 
-플래그는 연산 결과에 대한 추가적인 상태 정보를 담고 있다.
+Flags contain additional status information about the result of an operation.
 
-### 제어장치
+### Control device
 
-제어장치가 받아들이는 정보
+Information received by the control unit
 
-- 클럭 신호
-- 명령어: 명령어 레지스터로부터 받아들인 명령어
-- 플래그: 플래그 레지스터로부터 받아들인 플래그
-- 제어 신호: 시스템 버스의 제어 버스로부터 받아들인 제어 신호
+- clock signal
+- Command: Command received from the command register
+- Flags: Flags received from the flag register
+- Control signal: Control signal received from the control bus of the system bus
 
-제어장치가 제어 신호를 내보내는 목적지
+The destination where the control device sends out the control signal
 
-- CPU 내부의 레지스터
-- CPU 내부의 ALU
-- CPU 외부의 메모리 또는 입출력 장치(제어 버스)
+- Registers inside the CPU
+- ALU inside the CPU
+- Memory or input/output devices (control bus) outside the CPU
 
-## 4.2 레지스터
+## 4.2 Register
 
-레지스터는 CPU 내부의 작은 임시저장장치로, 프로그램 속 명령어를 저장하거나 연산에 사용되는 데이터를 저장한다.
+A register is a small temporary storage device inside the CPU that stores instructions within a program or data used in operations.
 
-### 반드시 알아야 할 레지스터
+### Registers you must know
 
-CPU 마다 레지스터의 종류가 다르다.
+Each CPU has different types of registers.
 
-공통적인 레지스터는 8개이다.
+There are eight common registers.
 
-- 프로그램 카운터(PC, Program Counter): 다음에 실행할 명령어의 주소를 저장한다.
-- 명령어 레지스터(IR, Instruction Register): 현재 실행 중인 명령어를 저장한다.
-- 메모리 주소 레지스터(MAR, Memory Address Register): 메모리에 접근할 때 사용하는 주소를 저장한다.
-- 메모리 버퍼 레지스터(MBR, Memory Buffer Register): 메모리에 접근할 때 사용하는 데이터를 저장한다.
-- 플래그 레지스터(FR, Flag Register): 연산 결과에 대한 상태 정보를 저장한다.
-- 범용 레지스터(AX, BX, CX, DX): 연산에 사용되는 데이터를 저장한다.
-- 스택 포인터(SP, Stack Pointer): 스택의 최상위 주소를 저장한다.
-- 베이스 포인터(BP, Base Pointer): 스택의 최하위 주소를 저장한다.(기준 주소)
+- Program Counter (PC): Stores the address of the next instruction to be executed.
+- Instruction Register (IR): Stores the currently executing instruction.
+- Memory Address Register (MAR): Stores the address used when accessing memory.
+- Memory Buffer Register (MBR): Stores data used when accessing memory.
+- Flag Register (FR): Stores status information about the operation results.
+- General purpose registers (AX, BX, CX, DX): Store data used in operations.
+- Stack Pointer (SP): Stores the top address of the stack.
+- Base Pointer (BP): Stores the lowest address of the stack (base address)
 
-### 특정 레지스터를 이용한 주소 지정 방식(1): 스택 주소 지정 방식
+### Addressing method using specific registers (1): Stack addressing method
 
-스택 주소 지정 방식은 스택 포인터(SP) 레지스터를 이용하여 스택의 주소를 지정하는 방식이다.
+Stack addressing is a method of specifying the address of the stack using the stack pointer (SP) register.
 
-### 특정 레지스터 이용한 주소 지정 방식(2): 변위 주소 지정 방식
+### Addressing method using a specific register (2): Displacement addressing method
 
-오퍼랜드 필드 값(변위)을 이용하여 유효 주소를 계산하는 방식이다.
+This is a method of calculating the effective address using the operand field value (displacement).
 
-- 변위 주소 지정 방식은 오퍼랜드 필드값(변위)과 특정 레지스터를 이용하여 유효 주소를 지정한다.
-- 상대 주소 지정 방식은 오퍼랜드 필드값(변위)과 프로그램 카운터(PC) 레지스터를 이용하여 유효 주소를 지정한다
-- 베이스 레지스터 주소 지정 방식은 오퍼랜드 필드값(변위)과 베이스 레지스터(BP) 레지스터를 이용하여 유효 주소를 지정한다.
+- Displacement addressing specifies an effective address using the operand field value (displacement) and a specific register.
+- The relative addressing method specifies the effective address using the operand field value (displacement) and the program counter (PC) register.
+- The base register addressing method specifies an effective address using the operand field value (displacement) and the base register (BP) register.
 
-### 확인 문제
+### Verification problem
 
-2. 설명에 맞는 레지스터를 보기에서 찾아 빈칸을 채워보세요.
+2. Find the register that matches the description in the view and fill in the blanks.
 
-> `플래그 레지스터`: 연산 결과 혹은 CPU 상태에 대한 부가 정보를 저장하는 레지스터
-> `프로그램 카운터`: 메모리에서 가져올 명령어의 주소를 저장하는 레지스터
-> `범용 레지스터`: 데이터와 주소를 모두 저장할 수 있는 레지스터
-> `명령어 레지스터`: 해석할 명령어를 저장하는 레지스터
+> `Flag register`: A register that stores additional information about the results of operations or CPU status
+> `Program counter`: A register that stores the address of an instruction to be fetched from memory
+> `General register`: A register that can store both data and addresses
+> `Instruction register`: A register that stores the instruction to be interpreted
 
-## 4.3 명령어 사이클과 인터럽트
+## 4.3 Instruction Cycle and Interrupts
 
-### 명령어 사이클
+### Command cycle
 
-하나의 명령어를 처리하는 과정을 명령어 사이클이라고 한다.
+The process of processing one instruction is called an instruction cycle.
 
-인출 사이클(Fetch Cycle): 명령어를 메모리에서 가져오는 과정
-실행 사이클(Execute Cycle): 명령어를 실행하는 과정
-간접 사이클(Indirect Cycle): 간접 주소 지정 방식을 사용하는 명령어를 처리하는 과정
+Fetch Cycle: Process of retrieving instructions from memory
+Execute Cycle: Process of executing instructions
+Indirect Cycle: Process of processing instructions using indirect addressing
 
-### 인터럽트
+### interrupt
 
-인터럽트는 CPU의 작업을 방해하는 신호를 말한다.
+An interrupt is a signal that interrupts the CPU's work.
 
-동기 인터럽트(Synchronous Interrupt): CPU에 의해 발생하는 인터럽트. 예외라고도 한다. 폴트, 트랩, 중단, 소프트웨어 인터럽트 등이 있다.
+Synchronous Interrupt: An interrupt generated by the CPU. It is also called an exception. There are faults, traps, aborts, software interrupts, etc.
 
-비동기 인터럽트(Asynchronous Interrupt): 외부 장치에 의해 발생하는 인터럽트. 하드웨어 인터럽트라고도 한다.
+Asynchronous Interrupt: An interrupt generated by an external device. Also called hardware interrupt.
 
-하드웨어 인터럽트: 알림과 같은 역할을 하는 인터럽트. 예를 들어, 타이머 인터럽트, 키보드 인터럽트 등이 있다.
+Hardware interrupt: An interrupt that acts like a notification. For example, there are timer interrupts, keyboard interrupts, etc.
 
-하드웨어 인터럽트의 처리 순서
+Hardware interrupt processing order
 
-- 입출력 장치는 CPU에 인터럽트 요청 신호를 보낸다.
-- CPU는 실행 사이클이 끝나고 명령어를 인출하기 전 항상 인터럽트 요청 신호를 확인한다.
-- CPU는 인터럽트 요청을 확인하고 인터럽트 플래그를 통해 현재 인터럽트를 받아들일 수 있는지 여부를 확인한다.
-- 인터럽트를 받아들일 수 있다면 CPU는 지금까지의 작업을 백업한다.
-- CPU는 인터럽트 벡터를 참조하여 인터럽트 서비스 루틴을 실행한다.
-- 인터럽트 서비스 루틴 실행이 끝나면 CPU는 백업한 작업을 복원한다.
+- The input/output device sends an interrupt request signal to the CPU.
+- The CPU always checks for an interrupt request signal before fetching an instruction at the end of an execution cycle.
+- The CPU acknowledges the interrupt request and checks the interrupt flag to see if it can currently accept the interrupt.
+- If the interrupt can be accepted, the CPU backs up the work it has done so far.
+- The CPU executes the interrupt service routine by referencing the interrupt vector.
+- After the interrupt service routine execution is complete, the CPU restores the backed up work.
 
-인터럽트 요청 신호: 인터럽트 요청을 CPU에 알리는 신호. 플래그 레지스터의 인터럽트 플래그를 통해 인터럽트 요청을 확인한다.
+Interrupt request signal: A signal that notifies the CPU of an interrupt request. Interrupt requests are confirmed through the interrupt flag in the flag register.
 
-하드웨어 인터럽트에는 인터럽트 플래그로 막을 수 있는 인터럽트(maskable interrupt)와 막을 수 없는 인터럽트(non-maskable interrupt)가 있다.
+Hardware interrupts include interrupts that can be blocked with interrupt flags (maskable interrupts) and interrupts that cannot be blocked (non-maskable interrupts).
 
-인터럽트 서비스 루틴: 인터럽트가 발생했을 때 실행되는 루틴으로 메모리에 저장된다. 인터럽트 벡터를 참조하여 실행된다.
+Interrupt service routine: A routine that is executed when an interrupt occurs and is stored in memory. It is executed by referencing the interrupt vector.
 
-인터럽트 벡터: 인터럽트 서비스 루틴의 주소를 저장한 테이블. 각각의 인터럽트를 구분하기 위한 정보를 가지고 있다.
+Interrupt vector: A table that stores the addresses of interrupt service routines. It contains information to distinguish each interrupt.
 
-인터럽트 벡터 테이블: 인터럽트 벡터를 모아놓은 테이블. 인터럽트 벡터 테이블은 메모리에 저장된다.
+Interrupt vector table: A table that contains interrupt vectors. The interrupt vector table is stored in memory.
 
-# Ch.05 CPU 성능 향상 기법
+# Ch.05 CPU Performance Improvement Techniques
 
-## 5.1 빠른 CPU를 위한 설계 기법
+## 5.1 Design Techniques for Fast CPUs
 
-### 클럭
+### Clock
 
-클럭 속도: 헤르츠(Hz) 단위로 측정한다. 1초에 몇 번 클럭 신호가 발생하는지를 나타낸다.
+Clock speed: Measured in Hertz (Hz). Indicates how many times a clock signal occurs per second.
 
-### 코어와 멀티코어
+### Core and multicore
 
-코어(Core): CPU 내부에 존재하는 연산장치.
+Core: A computing unit that exists inside the CPU.
 
-멀티코어(Multi-Core): 하나의 CPU에 여러 개의 코어가 존재하는 것.
+Multi-Core: Multiple cores exist in one CPU.
 
-### 스레드와 멀티스레드
+### Threads and multithreading
 
-스레드(Thread): 프로세스 내에서 실행되는 흐름의 단위.
+Thread: A unit of flow executed within a process.
 
-하드웨어적 스레드(Hardware Thread): 하나의 코어가 동시에 처리하는 명령어 단위. 하나의 코어로 여러 명령어를 동시에 처리하는 CPU를 멀티스레드 CPU라고 한다. 논리 프로세서(Logical
-Processor)라고도 한다.
+Hardware Thread: A unit of instruction that one core processes simultaneously. A CPU that processes multiple instructions simultaneously with one core is called a multithreaded CPU. Also called a logical processor (Logical
+Processor).
 
-소프트웨어적 스레드(Software Thread): 하나의 프로그램에서 독립적으로 실행되는 단위. 하나의 프로그램을 여러 개의 스레드로 분할하여 동시에 실행하는 것을 멀티스레드 프로그래밍이라고 한다.
+Software Thread: A unit that runs independently in a program. Dividing a program into multiple threads and executing them simultaneously is called multithreaded programming.
 
-멀티코어 프로세서(Multi-Core Processor): 하나의 CPU에 여러 개의 코어가 존재하는 CPU.
+Multi-Core Processor: A CPU with multiple cores in one CPU.
 
-멀티스레드 프로세서(Multi-Thread Processor): 하나의 프로세서가 여러 개의 스레드를 동시에 처리하는 CPU.
+Multi-Thread Processor: A CPU in which a single processor processes multiple threads simultaneously.
 
-### 확인문제
+### Verification problem
 
-4. 코어
+4. Core
 
-## 5.2 명령어 병렬 처리 기법
+## 5.2 Command Parallel Processing Techniques
 
-### 명령어 파이프라인
+### Command pipeline
 
-명령어가 처리되는 과정을 비슷한 시간 간격으로 나누면 다음과 같다.
+The process of processing a command is divided into similar time intervals as follows:
 
-1. 명령어 인출(Instruction Fetch): 명령어를 메모리에서 가져오는 과정
-2. 명령어 해석(Instruction Decode): 명령어를 해석하는 과정
-3. 명령어 실행(Instruction Execute): 명령어를 실행하는 과정
-4. 결과 저장(Write Back): 명령어의 실행 결과를 저장하는 과정
+1. Instruction Fetch: The process of retrieving an instruction from memory
+2. Instruction Decode: The process of interpreting instructions
+3. Instruction Execute: The process of executing a command
+4. Write Back: The process of saving the results of command execution.
 
-CPU는 같은 단계가 겹치지만 않으면 명령어를 동시에 처리할 수 있다. 이를 명령어 파이프라인이라고 한다.
+A CPU can process instructions simultaneously as long as the steps do not overlap. This is called a command pipeline.
 
-명령어 파이프라인(Pipeline): 명령어가 처리되는 과정을 나누어서 동시에 처리하는 기법.
+Command Pipeline: A technique for dividing the command processing process and processing it simultaneously.
 
-하지만, 파이프라인 위험이 따른다.
+However, pipeline risks follow.
 
-데이터 위험(Data Hazard): 명령어의 실행 결과가 다음 명령어의 실행에 영향을 미치는 경우. 명령어 간의 의존성에 의해 발생한다.
-제어 위험(Control Hazard): 프로그램 카운터의 갑작스러운 변화에 의해 발생한다. 분기 예측(Branch Prediction)으로 해결한다.
-구조적 위험(Structural Hazard): 서로 다른 명령어가 같은 CPU 부품(ALU, 레지스터 등)을 사용하는 경우.
+Data Hazard: When the result of executing a command affects the execution of the next command. It is caused by dependencies between commands.
+Control Hazard: Caused by sudden changes in the program counter. It is solved with branch prediction.
+Structural Hazard: When different instructions use the same CPU components (ALU, registers, etc.).
 
-### 슈퍼스칼라
+### Superscalar
 
-명령어 파이프라인을 여러 개 사용하는 기법. 명령어를 여러 개의 파이프라인으로 나누어서 동시에 처리한다.(멀티 스레드 프로세서와 유사)
+A technique that uses multiple command pipelines. Divide instructions into multiple pipelines and process them simultaneously (similar to a multi-threaded processor).
 
-### 비순차적 명령어 처리(OoOE, Out-of-Order Execution)
+### Out-of-Order Execution (OoOE)
 
-명령어를 순차적으로 처리하는 것이 아니라, 명령어의 실행 결과가 필요한 명령어를 먼저 처리하는 기법.
+A technique that processes commands that require the execution results of commands first, rather than processing commands sequentially.
 
-## 5.3 CISR와 RISC
+## 5.3 CISR and RISC
 
-### 명령어 집합
+### instruction set
 
-명령어 집합(Instruction Set): CPU가 처리할 수 있는 명령어의 집합. 명령어 집합 구조(Instruction Set Architecture, ISA)라고도 한다.
+Instruction Set: A set of instructions that a CPU can process. It is also called Instruction Set Architecture (ISA).
 
-현대 CPU의 명령어 집합은 크게 CISC와 RISC로 나뉜다.
+The instruction sets of modern CPUs are broadly divided into CISC and RISC.
 
 ### CISC
 
-CISC(Complex Instruction Set Computer): 복잡한 명령어 집합. 다양하고 강력한 명령어를 활용한다. 상대적으로 적은 수의 명령어로 복잡한 작업을 처리할 수 있다.
+CISC(Complex Instruction Set Computer): Complex instruction set. Utilizes a variety of powerful commands. It can handle complex tasks with a relatively small number of commands.
 
-명령어 파이프라이닝이 불리한 단점이 있다.
+Command pipelining has some disadvantages.
 
 ### RISC
 
-RISC(Reduced Instruction Set Computer): 간단한 명령어 집합. 명령어의 수가 적고, 각 명령어의 기능이 단순하다. 명령어 파이프라이닝이 용이하다.
+RISC(Reduced Instruction Set Computer): Simple instruction set. The number of commands is small, and the function of each command is simple. Command pipelining is easy.
 
-load-store 구조를 사용한다. 메모리 접근을 최소화 하고 레지스터를 많이 사용한다.
+Uses the load-store structure. Minimize memory access and use a lot of registers.
 
-# Ch.06 메모리와 캐시 메모리
+# Ch.06 Memory and Cache Memory
 
-## 6.1 RAM의 특징과 종류
+## 6.1 RAM Features and Types
 
-### RAM의 특징
+### RAM Features
 
-RAM에는 실행할 대상이 저장된다. 하지만 휘발성 저장 장치로 전원을 끄게 되면 저장된 내용이 사라진다.
+RAM stores the target to be executed. However, since it is a volatile storage device, the stored contents are lost when the power is turned off.
 
-### RAM의 용량과 성능
+### RAM capacity and performance
 
-RAM의 용량이 작다면, 보조기억장치 에서 실행할 프로그램을 가져오는 일이 잦아 실행시간이 길어진다.
+If the RAM capacity is small, the program to be executed is frequently retrieved from the auxiliary storage device, which increases the execution time.
 
-### RAM의 종류
+### Types of RAM
 
-- DRAM(Dynamic RAM): 저장된 데이터가 동적으로 사라지는 RAM으로 데이터 소멸을 막기 위해 주기적으로 재활성화가 필요하다.
-- SRAM(Static RAM): 저장된 데이터가 정적인 RAM으로 입출력 속도가 일반적으로 DRAM보다 빠르다. 캐시 메모리로 사용된다.
-- SDRAM(Synchronous RAM): 클럭 신호와 동기화된 DRAM이다.
-- DDR SDRAM(Double Data Rate SDRAM): 가장 대중적으로 사용하는 RAM이다. 대역폭을 넓혀 속도를 빠르게 만든 SDRAM으로,
-  - DDR2 SDRAM은 SDR SDRAM의 두 배의 대역폭,
-  - DDR4 SDRAM의 경우 16배의 대역폭을 갖는다.
+- DRAM (Dynamic RAM): RAM in which stored data is dynamically erased, requiring periodic reactivation to prevent data loss.
+- SRAM (Static RAM): RAM where the stored data is static, so the input/output speed is generally faster than DRAM. It is used as cache memory.
+- SDRAM (Synchronous RAM): DRAM synchronized with a clock signal.
+- DDR SDRAM (Double Data Rate SDRAM): This is the most popular type of RAM. SDRAM, which increases bandwidth and speeds up the speed.
+  - DDR2 SDRAM has twice the bandwidth of SDR SDRAM,
+  - For DDR4 SDRAM, it has 16 times the bandwidth.
 
-## 6.2 메모리의 주소 공간
+## 6.2 Memory address space
 
-### 물리 주소와 논리 주소
+### Physical and logical addresses
 
-메모리에 저장된 정보의 위치를 나타내는 주소에는 물리 주소와 논리 주소가 있다.
+Addresses that indicate the location of information stored in memory include physical addresses and logical addresses.
 
-물리 주소는 메모리 하드웨어가 사용하는 주소로 정보가 실제로 저장된 하드웨어상의 주소이다.
+A physical address is the address used by memory hardware, which is the address on the hardware where information is actually stored.
 
-논리 주소는 CPU와 실행 중인 프로그램이 사용하는 주소로 실행 중인 프로그램 각각에게 부여된 0부터 시작되는 주소를 의미한다.
+A logical address is an address used by the CPU and the running program, and is an address starting from 0 assigned to each running program.
 
-CPU가 메모리와 상호작용하려면 논리 주소를 물리 주소로 변환하는 과정이 필요하다.
+For a CPU to interact with memory, a process of converting logical addresses into physical addresses is required.
 
-이 과정은 메모리 관리 장치(MMU,Memory Management Unit)라는 하드웨어에 의해 수행된다.
+This process is performed by a hardware called the Memory Management Unit (MMU).
 
-MMU는 논리 주소와 베이스 레지스터(프로그램의 기준 주소)값을 더하여 물리 주소로 변환한다.
+The MMU converts the logical address and the base register (the program's base address) value into a physical address.
 
-### 메모리 보호 기법
+### Memory protection techniques
 
-한계 레지스터(limit register)는 다른 프로그램의 영역을 침범할 수 있는 명령어의 실행을 막는다.
+The limit register prevents the execution of instructions that could invade the domain of other programs.
 
-`베이스 레지스터 값 <= 프로그램의 물리 주소 범위 < 베이스 레지스터 값 + 한계 레지스터 값`
+`Base register value <= program's physical address range < Base register value + limit register value`
 
-이 됨을 알 수 있다.
+You can see that this is the case.
 
-CPU가 한계 레지스터보다 높은 논리 주소에 접근하려고 하면 인터럽트(트랩)를 발생시켜 실행을 중단한다.
+If the CPU attempts to access a logical address higher than the limit register, it generates an interrupt (trap) and stops execution.
 
-## 6.3 캐시 메모리
+## 6.3 Cache Memory
 
-CPU가 메모리에 접근 하는 시간은 CPU의 연산 속도보다 느리기 때문에 완충이 필요하다 라는 접근으로 시작한다.
+It starts with the idea that buffering is necessary because the time it takes for the CPU to access memory is slower than the CPU's computational speed.
 
-### 저장 장치 계층 구조(Memory Hierarchy)
+### Memory Hierarchy
 
-일반적으로 아래와 같은 명제를 따른다.
+In general, it follows the following proposition:
 
-CPU와 가까운 저장 장치는 빠르고, 멀리 있는 저장 장치는 느리다.
-속도가 빠른 저장 장치는 저장 용량이 작고 가격이 비싸다.
+Storage devices close to the CPU are fast, while storage devices farther away are slow.
+Fast storage devices have small storage capacities and are expensive.
 
-### 캐시 메모리
+### cache memory
 
-CPU와 메모리 사이에 위치한 SRAM 기반의 저장 장치이다.
+It is an SRAM-based storage device located between the CPU and memory.
 
-메모리에서 CPU가 사용할 일부 데이터를 미리 캐시 메모리로 가져와 쓴다.
+Some data to be used by the CPU is brought from memory to cache memory in advance and written.
 
-일반적으로, 계층적 캐시 메모리(L1-L2-L3 캐시)의 경우 L1과 L2의 경우 코어 내부에, L3 캐시는 코어 외부에 위치한다. 멀티 코어의 경우 L3는 공유하여 사용하기도 한다.
+Typically, in a hierarchical cache memory (L1-L2-L3 cache), L1 and L2 are located within the core, and L3 cache is located outside the core. In case of multi-core, L3 is also shared and used.
 
-### 참조 지역성의 원리(locality of reference)
+### locality of reference
 
-먼저 기반이 되는 내용에 대해 알아보자.
+First, let's look at the basic content.
 
-캐시 메모리는 메모리보다 용량이 작기 때문에, 메모리의 일부 정보를 저장하게 된다. 주로, CPU가 자주 사용할 법한 대상을 예측하여 저장한다.
+Because cache memory has a smaller capacity than memory, it stores some of the information in memory. Mainly, it predicts and stores objects that the CPU is likely to use frequently.
 
-예측한 데이터가 실제로 들어맞아 캐시 메모리 내 데이터가 CPU에서 활용될 경우를 캐시 히트(cache hit)라고 하고, 틀렸을 경우를 캐시 미스(cache miss)라고 한다.
+If the predicted data is correct and the data in the cache memory is used by the CPU, it is called a cache hit, and if it is incorrect, it is called a cache miss.
 
-### 캐시 적중률(cache hit ratio)
+### cache hit ratio
 
-캐시 히트 횟수 / (캐시 히트 횟수 + 캐시 미스 횟수)
+Cache Hit Count / (Cache Hit Count + Cache Miss Count)
 
-캐시 메모리가 메모리로부터 가져올 데이터를 결정하는 방법이 참조 지역성의 원리이다. 주된 경향은 다음과 같다.
+The principle of locality of reference is how cache memory determines which data to retrieve from memory. The main trends are as follows:
 
-CPU는 최근에 접근했던 메모리 공간에 다시 접근하려는 경향이 있다.
-다음과 같이 구구단 2단을 출력하는 코드를 보자.
+The CPU tends to re-access memory spaces it has recently accessed.
+Let's look at the code that prints the second multiplication table as follows.
 
 ```java
 public static void main(String[] args) {  
@@ -454,837 +454,835 @@ public static void main(String[] args) {
 **/
 ```
 
-CPU는 접근한 메모리 공간 근처를 접근하려는 경향이 있다.(공간 지역성)CPU가 실행하려는 프로그램은 보통 관련 데이터들끼리 한데 모여있다.
+The CPU tends to access memory spaces close to where it has accessed them (spatial locality). Programs that the CPU is trying to execute are usually grouped together with related data.
 
-프로그램 내부의 각 기능들 또한 서로 모여있다.
+Each function within the program is also grouped together.
 
-## 확인 문제(185p)
+## Verification problem (p. 185)
 
-다음 설명을 읽고 SRAM에 대한 설명인지 DRAM에 대한 설명인지 쓰세요.
-보기: SRAM, DRAM
-책 깃허브에 올라온 이슈에 따라서 문항내용을 수정했다.
+Read the following description and write whether it is about SRAM or DRAM.
+View: SRAM, DRAM
+The question content has been modified according to the issue posted on the book GitHub.
 
 1. SRAM
 2. DRAM
 3. DRAM
 4. SRAM
 
-# Ch.07 보조 기억 장치
+# Ch.07 Auxiliary memory devices
 
-## 7.1 다양한 보조기억장치
+## 7.1 Various auxiliary memory devices
 
-### 하드 디스크
+### hard disk
 
-자기장의 원리로 데이터를 저장한다.
+Data is stored based on the principle of magnetic fields.
 
-여러겹의 플래터와 스핀들로 구성되어 있다.
+It consists of multiple layers of platters and spindles.
 
-플래터는 자기 물질로 덮여 있어 0과 1의 역할을 하는 N극과 S극을 저장 한다.
+The platter is covered with a magnetic material that stores the N and S poles that act as 0 and 1.
 
-스핀들은 플래터를 회전시킨다.
+The spindle rotates the platter.
 
-플래터의 데이터를 읽고 쓰는 구성 요소는 헤드로, 디스크 암에 부착되어 있다.
+The component that reads and writes data on the platter is the head, which is attached to the disk arm.
 
-플래터는 트랙과 섹터 단위로 데이터를 저장한다. 여러 겹의 플래터 상의 같은 트랙이 위치한 곳을 모아 연결한 논리적 단위를 실린더라고 한다.
+Platters store data in units of tracks and sectors. A logical unit that connects the locations of the same tracks on multiple layers of platters is called a cylinder.
 
-### 하드 디스크의 데이터 접근 과정
+### Data access process on hard disk
 
-하드 디스크가 저장된 데이터에 접근 하는 시간은 탐색 시간, 회전 지연, 전송 시간으로 나뉜다.
+The time it takes for a hard disk to access stored data is divided into seek time, rotational delay, and transfer time.
 
-탐색 시간(seek time)은 접근하려는 데이터가 저장된 트랙까지 헤드를 이동시키는 시간을 의미한다.
+Seek time refers to the time it takes to move the head to the track where the data to be accessed is stored.
 
-회전 지연(rotational latency)은 헤드가 있는 곳으로 플래터를 회전시키는 시간을 의미한다.
+Rotational latency refers to the time it takes for the platter to rotate to where the head is.
 
-전송 시간(transfer time)은 하드 디스크와 컴퓨터 간에 데이터를 전송하는 시간을 의미한다.
+Transfer time refers to the time it takes to transfer data between a hard disk and a computer.
 
-### 플래시 메모리
+### flash memory
 
-전기적으로 데이터를 읽고 쓸 수 있는 반도체 기반 저장 장치이다.
+It is a semiconductor-based storage device that can read and write data electrically.
 
-플래시 메모리의 종류에는 NAND 플래시 메모리와 NOR 플래시 메모리가 있지만 주로 NAND 플래시 메모리가 사용된다.
+There are two types of flash memory: NAND flash memory and NOR flash memory, but NAND flash memory is mainly used.
 
-플래시 메모리에는 셀이라는 단위가 있다.
+Flash memory has units called cells.
 
-한 셀에 저장할 수 있는 비트에 따라 1비트(SLC), 2비트(MLC), 3비트(TLC), 4비트(QLC)가 있다.
+Depending on the number of bits that can be stored in one cell, there are 1-bit (SLC), 2-bit (MLC), 3-bit (TLC), and 4-bit (QLC).
 
-QLC는 주로 사용 되지 않고, 나머지 세개의 차이점은 다음과 같다.
+QLC is not widely used, and the differences between the other three are as follows:
 
 ![img.png](img.png)
 
-이건 표 하나로 정리할 수 있겠다.
+This can be summarized in one table.
 
-셀보다 더 큰 단위들에 대해 알아보자.
+Let's learn about units larger than cells.
 
-플래시 메모리의 저장단위인 셀들이 모여 페이지, 페이지가 모여 블록, 블록이 모여 플레인, 플레인이 모여 다이가 된다.
+Cells, which are the storage units of flash memory, come together to form pages, pages come together to form blocks, blocks come together to form planes, and planes come together to form dies.
 
-플래시 메모리에서 읽기와 쓰기는 페이지 단위로 이루어 진다. 하지만 삭제는 더 큰 단위인 블록 단위로 이루어진다.
+Reading and writing in flash memory is done on a page-by-page basis. However, deletion is done in larger units, called blocks.
 
-이 때, 페이지는 세 개의 상태를 가질 수 있다. Free, Valid, Invalid 상태이다.
+At this point, a page can have three states: It is in Free, Valid, and Invalid states.
 
-Free 상태는 어떠한 데이터도 저장하고 있지 않아 새로운 데이터를 저장할 수 있는 상태이다.
+The Free state is a state in which no data is stored and new data can be stored.
 
-Valid 상태는 이미 유요한 데이터를 저장하고 있는 상태이다.
+The Valid state is a state in which valid data is already stored.
 
-Invalid 상태는 쓰레기 값이라 부르는 유요하지 않은 데이터를 저장하고 있는 상태이다.
+Invalid state is a state where invalid data, called garbage values, is stored.
 
-플래시 메모리에는 덮어 쓰기가 불가능 하기 때문에, 수정하고 싶은 값이 있다면 이를 Invalid 상태로 바꾸고 수정한 값을 남은 페이지에 저장한다. 플래시 메모리는 이러한 Invalid 값들을 정리하는 카비지
-컬렉션 기능을 제공한다.
+Since flash memory cannot be overwritten, if there is a value that you want to modify, change it to Invalid and save the modified value in the remaining pages. Flash memory provides a garbage collection function
+to clean up these invalid values.
 
-## 7.2 RAID의 정의와 종류
+## 7.2 Definition and Types of RAID
 
-같은 용량이라면, 작은 단위의 하드 디스크로 RAID를 구성하는 것이 큰 단위의 하드 디스크 를 이용하는 것 보다 성능과 안정성 면에서 더 뛰어나다.
+If the capacity is the same, configuring RAID with small hard disks is superior in terms of performance and stability than using large hard disks.
 
-### RAID의 정의
+### Definition of RAID
 
-RAID(Redundant Array of Independent Disks)는 주로 하드 디스크와 SSD를 사용하는 기술로 데이터의 안전성 혹은 높은 성능을 위해 여러 개의 물리적 보조기억장치를 마치 하나의 논리적
-보조기억장치처럼 사용하는 기술을 말한다.
+RAID (Redundant Array of Independent Disks) is a technology that mainly uses hard disks and SSDs to use multiple physical auxiliary storage devices as if they were one logical
+auxiliary storage device for data security or high performance.
 
-### RAID의 종류
+### Types of RAID
 
-RAID의 구성 방법을 RAID 레벨이라 표현하는데 대표적으로 RAID 0 ~ RAID6이 있다.
+The RAID configuration method is expressed as RAID level, and representative levels include RAID 0 to RAID6.
 
-이중 0, 1, 4, 5, 6에 대해 알아보자
+Let's learn about 0, 1, 4, 5, and 6
 
-RAID 0은 데이터를 단순히 나누어 저장하는 방식이다.
+RAID 0 is a method of simply dividing and storing data.
 
-분산되어 저장된 데이터를 스트라입(stripe, 줄무늬)이라고 하고 이런 방식으로 저장하는 것을 스트라이핑이라고 한다.
+Data that is stored in a distributed manner is called a stripe, and storing it in this way is called striping.
 
-입출력 속도를 향상 시킬 수 있지만 저장된 정보가 안전하지 않을 수 있다.
+It may improve input/output speed, but stored information may not be secure.
 
-RAID 1은 복사본을 만드는 방식으로 미러링이라고도 부른다. 원본과 복사본을 만들게 되므로 쓰기 속도가 RAID 0보다 느리다.
+RAID 1 is also called mirroring because it creates copies. Because it creates an original and a copy, the write speed is slower than RAID 0.
 
-백업과 복구가 쉽지만 필요한 용량이 증가하는 단점이 있다.
+Backup and recovery are easy, but the downside is that the required capacity increases.
 
-RAID 4는 완전한 복사본을 만드는 대신 패리티 비트를 이용하여 오류를 검출하고 복구 하기 위한 정보를 저장한다.
+RAID 4 uses parity bits to store information for error detection and recovery, rather than creating complete copies.
 
-RAID 1보다 적은 용량을 필요로 하지만, 쓰기 작업에서 패리티 디스크의 병목 현상이 발생한다.
+It requires less capacity than RAID 1, but the parity disk becomes a bottleneck during write operations.
 
-RAID 5는 패리티를 분산하여 저장하는 방식이다.
+RAID 5 is a method of storing parity by distributing it.
 
-RAID 6는 두 종류의 패리티를 저장하는 방식이다. RAID5 보다 안전하지만 쓰기 속도는 느리다.
+RAID 6 is a method of storing two types of parity. It is more secure than RAID5, but the write speed is slower.
 
-각 RAID의 장단점에 대해 알아두는 것이 중요하다.
+It is important to know the pros and cons of each RAID.
 
-## 확인문제(p.205)
+## Verification problem (p.205)
 
-다음 보기에 있는 저장 장치들로 저장 장치 계층 구조 도식도를 채우세요.
-보기: 메모리, 보조기억장치, 캐시 메모리, 레지스터
+Fill in the storage device hierarchy diagram with the storage devices in the following view.
+See: memory, auxiliary storage, cache memory, register
 
-위 부터 1) 레지스터, 2) 캐시메모리, 3) 메모리, 4) 보조저장장치
+From the top: 1) register, 2) cache memory, 3) memory, 4) auxiliary storage device
 
-RAID의 정의와 종류를 간단히 정리해보자
-RAID(Redundant Array of Independent Disks)는 다수의 하드 디스크나 SSD를 하나의 저장장치 처럼 사용하는 기술로, 데이터의 안정성이나 성능을 향상 시킬 수 있다.
+Let's briefly summarize the definition and types of RAID
+RAID (Redundant Array of Independent Disks) is a technology that uses multiple hard disks or SSDs as a single storage device, which can improve data stability and performance.
 
-- RAID 0: 데이터를 단순히 병렬로 분산하여 저장한다.
-- RAID 1: 데이터의 복사본을 만들어 저장한다.
-- RAID 4: 패리티를 따로 저장하는 방식이다.
-- RAID 5: 패리티를 분산하여 저장하는 방식이다.
-- RAID 6: 두 종류의 패리티를 저장하는 방식이다.
+- RAID 0: Data is simply stored by distributing it in parallel.
+- RAID 1: Creates and stores copies of data.
+- RAID 4: This is a method of storing parity separately.
+- RAID 5: A method of storing parity by distributing it.
+- RAID 6: A method of storing two types of parity.
 
-# Ch.08 입출력 장치
+# Ch.08 Input/Output Devices
 
-## 8.1 장치 컨트롤러와 장치 드라이버
+## 8.1 Device Controllers and Device Drivers
 
-스피커, 모니터, 키보드, 마우스 등과 같은 입출력장치와 외장 하드 디스크나 USB 메모리 등 보조 기억장치가 어떻게 컴퓨터 내부와 정보를 주고받는 지 알아보자.
+Let's learn how input/output devices such as speakers, monitors, keyboards, and mice, and auxiliary storage devices such as external hard disks and USB memory devices exchange information with the computer's internal components.
 
-### 장치 컨트롤러(device controller)
+### device controller
 
-입출력 장치는 종류가 다양해 규격화하기 어렵고, 데이터 전송률이 낮기 때문에 CPU, 메모리보다 다루기가 까다롭다.
+Input/output devices are difficult to standardize due to their diverse types, and their low data transfer rates make them more difficult to handle than CPUs and memory.
 
-이와 같은 이유로, 입출력장치는 입출력 제어기(I/O controller), 입출력 모듈(I/O module) 등으로 불리는 장치 컨트롤러를 통하여 컴퓨터 내부와 연결된다.
+For this reason, input/output devices are connected to the inside of the computer through device controllers called I/O controllers, I/O modules, etc.
 
-장치 컨트롤러는 CPU와 입출력장치 간의 통신 중개, 오류 검출, 데이터 버퍼링등의 역할을 한다.
+The device controller mediates communication between the CPU and input/output devices, detects errors, and buffers data.
 
-데이터 버퍼링은 전송률이 높은 장치와 낮은 장치 사이에 주고받는 데이터를 버퍼라는 임시 저장 공간에 저장하여 전송률을 비슷하게 맞추는 방법이다.
+Data buffering is a method of making the transmission rates similar by storing data exchanged between devices with high and low transmission rates in a temporary storage space called a buffer.
 
-### 장치 컨트롤러의 구조
+### Structure of the device controller
 
 ![img_1.png](img_1.png)
 
-데이터 레지스터는 CPU와 입출력장치 사이에 주고받을 데이터가 담기는 레지스터이다. 앞서 말한 버퍼 역할을 한다. 데이터가 많은 입출력장치에서는 레지스터 대신 RAM을 사용하기도 한다.
+Data registers are registers that contain data to be exchanged between the CPU and input/output devices. It acts as a buffer as mentioned above. In input/output devices with a lot of data, RAM is sometimes used instead of registers.
 
-상태 레지스터는 입출력장치가 입출력 작업을 한 준비가 되었는지, 입출력 작업이 완료되었는지, 입출력장치에 오류는 없는지 등의 상태 정보가 저장된다.
+The status register stores status information such as whether the input/output device is ready to perform an input/output operation, whether the input/output operation has been completed, and whether there are any errors in the input/output device.
 
-제어 레지스터는 입출력장치가 수행할 내용에 대한 제어 정보와 명령을 저장한다.
+Control registers store control information and commands about what the input/output device is to do.
 
-### 장치 드라이버(device driver)
+### device driver
 
-장치 컨트롤러의 동작을 감지하고 제어하는 프로그램이다. 운영체제가 장치 드라이버를 인식하고 실행한다.
+A program that detects and controls the operation of the device controller. The operating system recognizes and runs the device driver.
 
-장치 컨트롤러는 하드웨어, 장치 드라이버는 소프트웨어
+Device controller is hardware, device driver is software
 
-장치 컨트롤러를 통해 연결된 입출력 장치의 사용법을 메모리(장치 드라이버)가 알려준다.
+Memory (device driver) informs how to use the connected input/output devices through the device controller.
 
-## 8.2 다양한 입출력 방법
+## 8.2 Various input/output methods
 
-3가지 입출력 방법에 대해 알아보자.
+Let's learn about three input/output methods.
 
-프로그램 입출력, 인터럽트 기반 입출력, DMA 입출력이 있다.
+There are program input/output, interrupt-based input/output, and DMA input/output.
 
-### 프로그램 입출력(programmed I/O)
+### Programmed I/O
 
-프로그램 속 명령어로 입출력 장치를 제어하는 방법이다. 입출력 명령어로써 장치 컨트롤러와 상호작용한다.
+This is a method of controlling input/output devices using commands within a program. Interacts with the device controller as an input/output command.
 
-메모리에 저장된 정보를 하드 디스크에 백업 하는 과정을 살펴보자.
+Let's look at the process of backing up information stored in memory to a hard disk.
 
-CPU는 하드디스크 컨트롤러의 제어 레지스터에 쓰기 명령을 보낸다.
-하드 디스크 컨트롤러는 하드 디스크 상태를 확인하고, 준비된 상태라면 상태 레지스터에 준비되었다고 표시한다.
-CPU는 상태 레지스터를 주기적으로 읽으며 하드 디스크의 준비여부를 확인하는데, 하드 디스크가 준비가 됐음을 알게 되면 백업할 메모리의 정보를 데이터 레지스터에 쓴다.
-백업 작업이 완료 될 때 까지 1~3을 반복한다.
+The CPU sends a write command to the control register of the hard disk controller.
+The hard disk controller checks the status of the hard disk and, if it is ready, marks it as ready in the status register.
+The CPU periodically reads the status register to check whether the hard disk is ready, and when it determines that the hard disk is ready, it writes the information about the memory to be backed up to the data register.
+Repeat steps 1 to 3 until the backup task is complete.
 
-정리하자면, CPU가 장치 컨트롤러의 레지스터 값을 읽고 쓰는 것이다.
+To summarize, the CPU reads and writes the register values of the device controller.
 
-그렇다면 CPU는 여러 장치 컨트롤러 내부의 레지스터들과 어떻게 소통할 수 있는 것일까?
+So how can the CPU communicate with the registers inside the various device controllers?
 
-프로그램 입출력 방식에는 메모리 맵 입출력과 고립형 입출력 방식이 있다.
+Program input/output methods include memory-mapped input/output and isolated input/output.
 
-메모리 맵 입출력(memory-mapped I/O)은 메모리에 접근하기 위한 주소 공간과 입출력장치에 접근하기 위한 주소 공간을 하나의 주소 공간으로 간주하는 방법이다. 통일된 메모리에 접근하는 명령어와 입출력장치에
-접근하는 명령어를 사용하게 된다.
+Memory-mapped I/O is a method that considers the address space for accessing memory and the address space for accessing input/output devices as a single address space. Commands for accessing unified memory and commands for accessing input/output devices
+are used.
 
-고립형 입출력(isolated I/O)은 메모리를 위한 주소 공간과 입출력장치를 위한 주소 공간을 분리하는 방법이다. 서로 다른 버스를 이용하기 때문에, 독립된 명령어를 사용하게 된다.
+Isolated I/O is a method of separating the address space for memory and the address space for input/output devices. Because they use different buses, they use independent commands.
 
-### 인터럽트 기반 입출력
+### Interrupt-based I/O
 
-장치 컨트롤러가 CPU에 인터럽트가 요청 신호를 보내면 CPU는 하던 일을 잠시 백업하고 인터럽스 서비스 루틴을 실행한다.
+When the device controller sends an interrupt request signal to the CPU, the CPU temporarily backs up what it was doing and executes the interrupt service routine.
 
-동시다발적인 인터럽트가 발생했을 때 어떻게 처리하는지 알아보자.
+Let's learn how to handle simultaneous interrupts.
 
-순차적으로 처리하는 방법, 우선순위를 반영한 처리 방법이 있다.
+There are two ways to process: sequentially and priority-based.
 
-현실적으로 순차적으로 처리하는 방법은 불가능하기 때문에, 플래그 레지스터 속 인터럽트 비트가 활성화 되어있거나 인터럽트 비트를 비활성화해도 무시할 수 없는 인터럽트인 NMI(Non-Maskalbe Interrupt)
-가 발생한 경우 CPU는 우선순위가 높은 인터럽트부터 처리한다.
+Since it is realistically impossible to process sequentially, if an NMI (Non-Maskalbe Interrupt)
+interrupt occurs that cannot be ignored even if the interrupt bit in the flag register is enabled or the interrupt bit is disabled, the CPU processes the interrupt with the highest priority first.
 
-우선순위를 반영한 처리방법은 주로 PIC(Programmable Interrupt Controller, 프로그래머블 인터럽트 컨트롤러)라는 하드웨어를 사용한다.
+The processing method that reflects priority mainly uses hardware called PIC (Programmable Interrupt Controller).
 
-PIC는 여러 장치 컨트롤러에 연결되어 장치 컨트롤러에서 보낸 하드웨어 인터럽트 요청들의 우선순위를 판별한 뒤 CPU에 지금 처리해야 할 하드웨어 인터럽트를 알려준다.
+The PIC is connected to multiple device controllers, determines the priorities of hardware interrupt requests sent by the device controllers, and then informs the CPU which hardware interrupt needs to be processed now.
 
-### DMA 입출력(Direct Memory Access I/O)
+### DMA input/output (Direct Memory Access I/O)
 
-위의 두 방식은 입출력장치와 메모리 간의 데이터 이동은 CPU가 주도하고, 이동하는 데이터도 반드시 CPU를 거친다는 공통점을 갖는다.
+The two methods above have in common that the CPU drives the movement of data between the input/output device and memory, and the data being moved must also pass through the CPU.
 
-입출력장치를 위한 연산을 CPU가 처리하게 되므로 CPU 부담이 커진다. 이를 개선한 입출력 장치의 메모리가 CPU를 거치지 않고도 상호작용 할 수 있는 DMA방식이 등장했다.
+Since the CPU processes operations for input/output devices, the CPU burden increases. The DMA method, which allows the memory of input/output devices to interact without going through the CPU, has been introduced to improve this.
 
-이름 그대로 장치 컨트롤러가 메모리에 직접 접근할 수 있는 입출력 기능이다. 시스템 버스에 연결된 DMA 컨트롤러라는 하드웨어가 필요하다.
+As the name suggests, it is an input/output function that allows the device controller to directly access memory. It requires a piece of hardware called a DMA controller connected to the system bus.
 
-CPU는 DMA컨트롤러에 입출력 작업을 명령하면, DMA 컨트롤러는 CPU를 대신하여 장치 컨트롤러와 상호작용한다. 작업이 끝나게 되면 DMA 컨트롤러는 CPU에 인터럽트를 걸어 작업이 끝났음을 알리게 된다.
+When the CPU commands an input/output operation to the DMA controller, the DMA controller interacts with the device controller on behalf of the CPU. When the task is finished, the DMA controller interrupts the CPU to notify it that the task is finished.
 
-결국 CPU는 입출력 작업과 끝만 관여하게 된다.
+Ultimately, the CPU is only involved in input/output operations.
 
-하지만 시스템 버스는 공용자원이기 때문에, CPU와 DMA 컨트롤러가 동시에 접근이 불가능하다. DMA의 시스템 버스 이용을 사이클 스틸링(cycle stealing)이라고 한다.
+However, since the system bus is a shared resource, the CPU and DMA controller cannot access it simultaneously. DMA's use of the system bus is called cycle stealing.
 
-마지막으로 DMA 컨트롤러와 장치 컨트롤러의 연결 방식과 입출력 버스에 대해 알아보자.
+Finally, let's learn about the connection method between the DMA controller and the device controller, and the input/output bus.
 
-장치 컨트롤러가 시스템 버스에 직접 연결되면, DMA 과정에서 시스템 버스를 2번 이용하게 된다. 즉 CPU가 시스템 버스를 이용하지 못하는 상황이 자주 발생한다는 뜻이다.
+When the device controller is directly connected to the system bus, the system bus is used twice during the DMA process. This means that situations where the CPU cannot use the system bus often occur.
 
-DMA 컨트롤러와 장치 컨트롤러들을 입출력 버스(input/output bus)라는 별도의 버스에 연결하여 이를 해결 할 수 있다.
+This can be solved by connecting the DMA controller and device controllers to a separate bus called the input/output bus.
 
-입출력 버스의 종류에는 PCI(Peripheral Component Interconnect)버스, PCI Express(PCIe) 버스가 있다.
+Types of input/output buses include the PCI (Peripheral Component Interconnect) bus and the PCI Express (PCIe) bus.
 
-현재는 입출력 전용 프로세서 (입출력 채널)를 탑재하기도 한다.
+Nowadays, it is also equipped with a dedicated input/output processor (input/output channel).
 
-# Ch.09 운영체제 시작하기
+# Ch.09 Starting the Operating System
 
-## 9.1 운영체제를 알아야 하는 이유
+## 9.1 Why You Need to Know Your Operating System
 
-### 운영체제
+### operating system
 
-모든 프로그램은 실행을 위해 시스템 자원을 필요로 한다.
+All programs require system resources to run.
 
-운영체제는 시스템 자원을 관리하고, 프로그램이 필요로 하는 자원을 할당해주는 역할을 하는 프로그램이다.
+An operating system is a program that manages system resources and allocates resources needed by programs.
 
-운영체제 또한 프로그램이기 때문에, 메모리에 적재 되지만 그 중에서 커널 영역에 적재되어 실행된다.
+Since the operating system is also a program, it is loaded into memory, but it is loaded into the kernel area and executed.
 
-운영체제는 응용 프로그램들을 메모리의 어느 위치에 적재할지, 어느 시점에 실행할지, 어느 시점에 종료할지를 관리한다.
+The operating system manages where applications are loaded into memory, when they are executed, and when they are terminated.
 
-또한 운영체제는 CPU도 관리한다. CPU는 한 번에 하나의 프로그램만 실행할 수 있기 때문에, CPU를 어떤 프로그램에 할당할지를 관리한다.
+The operating system also manages the CPU. Because the CPU can only run one program at a time, it manages which programs the CPU is allocated to.
 
-### 운영체제를 알아야 하는 이유
+### Why You Need to Know Your Operating System
 
-운영체제는 개발자를 위한 프로그램이 아닌 프로그램을 위한 프로그램이다.
+An operating system is a program for programs, not a program for developers.
 
-운영체제는 개발자가 프로그램을 개발할 때, 개발자가 신경쓰지 않아도 되는 부분을 대신 처리해준다.
+When developers develop programs, the operating system handles the parts that developers don't have to worry about.
 
-## 9.2 운영체제의 큰 그림
+## 9.2 The Big Picture of the Operating System
 
-### 운영체제의 심장, 커널
+### The heart of the operating system, the kernel
 
-자원에 접근하고 조작하는 기능, 프로그램이 올바르고 안전하게 실행되게 하는 이러한 운영체제의 핵심 서비스를 담당하는 부분이 커널이다.
+The kernel is the core service of the operating system that provides the ability to access and manipulate resources and ensures that programs run correctly and safely.
 
-### 이중모드와 시스템 호출
+### Dual mode and system calls
 
-응용 프로그램은 자원에 직접 접근할 수 없다.
+Applications cannot access resources directly.
 
-운영체제는 응용 프로그램이 자원에 접근할 수 있도록 시스템 호출을 제공한다.
+The operating system provides system calls that allow applications to access resources.
 
-시스템 호출은 운영체제의 커널 영역에 있는 함수를 호출하는 것이다.
+A system call is a call to a function in the kernel area of the operating system.
 
-이중모드란 CPU가 명령어를 실행하는 모드를 크게 사용자 모드와 커널 모드로 나누는 것이다.
+Dual mode is a method of dividing the mode in which the CPU executes instructions into user mode and kernel mode.
 
-사용자 모드로 실행되는 프로그램이 자원에 접근하는 운영체제 서비스를 제공 받으려면 시스템 호출을 통해 커널 모드로 변경되어야 한다.
+A program running in user mode must change to kernel mode through a system call to access operating system services that provide access to resources.
 
-시스템 호출은 소프트웨어 인터럽트를 발생시켜 커널 모드로 변경한다.
+A system call causes a software interrupt to change to kernel mode.
 
-### 운영체제의 핵심 서비스
+### Core services of the operating system
 
-실행중인 프로그램을 프로세스라고 한다.
+A running program is called a process.
 
-일반적으로 CPU는 한 번에 하나의 프로세스만 실행할 수 있기 때문에 번갈아가며 실행한다.
+Normally, the CPU can only run one process at a time, so they run alternately.
 
-운영체제는 CPU를 어떤 프로세스에 할당할지를 관리하는데, 이 내용은 10장에서 다룬다.
+The operating system manages which processes are allocated the CPU, a topic covered in Chapter 10.
 
-모든 프로세스는 실행을 위해 자원을 필요로 한다.
+Every process requires resources to run.
 
-운영체제는 프로세스가 필요로 하는 자원을 할당하고, 프로세스가 자원을 사용하는 것을 관리한다.
+The operating system allocates resources that processes need and manages their use of those resources.
 
-CPU 스케줄링, 메모리 관리, 파일 관리, 입출력 관리 등이 이러한 자원 관리에 해당한다.
+Resource management includes CPU scheduling, memory management, file management, and input/output management.
 
-이후의 내용에서 다룬다.
+This will be covered in the following content.
 
-# Ch.10 프로세스와 스레드
+# Ch.10 Processes and Threads
 
-## 10.1 프로세스 개요
+## 10.1 Process Overview
 
-### 프로세스 직접 확인하기
+### Check the process yourself
 
-포그라운드 프로세스(foreground process)는 사용자가 볼 수 있는 공간에서 실행되는 프로세스이다.
+A foreground process is a process that runs in a space that is visible to the user.
 
-백그라운드 프로세스(background process)는 사용자가 볼 수 없는 공간에서 실행되는 프로세스이다.
+A background process is a process that runs in a space that is not visible to the user.
 
-백그라운드 프로세스에는 두 가지 종류가 있는데, 하나는 사용자와 직접 상호작용할 수 있는 프로세스이고, 다른 하나는 사용자와 직접 상호작용할 수 없는 프로세스이다.
+There are two types of background processes: those that can interact directly with the user, and those that cannot.
 
-사용자와 상호작용하지 않고 백그라운드에서 실행되는 프로세스를 데몬(daemon), 서비스라고 한다.
+A process that runs in the background without user interaction is called a daemon or service.
 
-### 프로세스 제어 블록
+### Process Control Block
 
-모든 프로세스는 실행을 위해 CPU를 필요로 한다.
+Every process requires a CPU to execute.
 
-운영체제는 프로세스 제어 블록(Process Control Block, PCB)이라는 자료구조를 사용하여 프로세스를 관리한다.
+The operating system manages processes using a data structure called a Process Control Block (PCB).
 
-타이머 인터럽트를 통하여 프로세스를 스위칭한다.
+Switch processes via timer interrupts.
 
-프로세스 제어 블록에는 프로세스의 상태, 프로그램 카운터, 레지스터, 스택 포인터, 스택, 프로세스 번호, 프로세스 우선순위, 프로세스가 사용하는 자원 등이 포함되어 있다.
+The process control block contains the process's state, program counter, registers, stack pointer, stack, process number, process priority, and resources used by the process.
 
-프로세스 ID(Process ID, PID): 프로세스를 구분하기 위한 고유한 번호이다.
-레지스터 값: 프로세스가 실행되는 동안 변경되는 값이다. 프로그램 카운터를 비롯한 레지스터 값들이 담긴다.
-프로세스 상태: 현재 프로세스가 어떤 상태인지를 나타낸다.
-CPU 스케쥴링 정보: 프로세스의 우선순위, 스케쥴 큐에 대한 포인터 등이 포함된다.
-메모리 관리 정보: 프로세스가 사용하는 메모리의 주소 범위, 페이지 테이블에 대한 포인터 등이 포함된다.
-사용한 파일과 입출력장치목록: 프로세스가 사용하는 입출력 장치에 대한 포인터 등이 포함된다.
+Process ID (PID): A unique number used to identify a process.
+Register value: A value that changes while a process is running. Contains register values including the program counter.
+Process Status: Indicates the current status of the process.
+CPU scheduling information: Includes process priorities, pointers to schedule queues, etc.
+Memory management information: Includes address ranges of memory used by the process, pointers to page tables, etc.
+List of files and input/output devices used: Includes pointers to input/output devices used by the process.
 
-### 문맥 교환
+### Context Switching
 
-문맥: 프로세스 수행을 재개하기 위해 기억해야할 중간 정보를 말한다.
+Context: Intermediate information that must be remembered to resume process execution.
 
-문맥 교환(context switch)은 프로세스가 CPU를 사용하다가 다른 프로세스가 CPU를 사용하도록 하는 것을 말한다.
+A context switch is when a process uses the CPU and then allows another process to use the CPU.
 
-### 프로세스의 메모리 영역
+### Process memory area
 
-프로세스는 사용자 영역에 코드 영역, 데이터 영역, 힙 영역, 스택 영역으로 나뉘어 저장된다.
+The process is stored in the user area divided into code area, data area, heap area, and stack area.
 
-코드 영역(텍스트 영역): 기계어로 이루어진 명령어가 저장된다. 쓰기가 금지되어 있는 읽기 전용(read-only) 영역이다.
-데이터 영역: 전역 변수와 정적 변수가 저장된다. 초기화된 데이터는 데이터 영역에 저장되고, 초기화되지 않은 데이터는 BSS 영역에 저장된다.
-힙 영역: 프로그래머가 직접 할당할 수 있는 영역이다. 메모리 누수가 발생할 수 있으므로 주의해야 한다.
-스택 영역: 함수의 호출과 관계되는 지역 변수와 매개변수가 저장된다. 함수의 호출이 끝나면 스택 영역에서 제거된다.
+Code area (text area): Instructions written in machine language are stored. This is a read-only area where writing is prohibited.
+Data area: Global and static variables are stored here. Initialized data is stored in the data area, and uninitialized data is stored in the BSS area.
+Heap area: This is an area that can be directly allocated by the programmer. Be careful, as this may cause memory leaks.
+Stack area: Local variables and parameters related to function calls are stored here. When a function call is finished, it is removed from the stack area.
 
-## 10.2 프로세스 상태와 계층 구조
+## 10.2 Process States and Hierarchy
 
-### 프로세스 상태
+### Process status
 
-프로세스 상태는 프로세스가 현재 어떤 작업을 하고 있는지를 나타낸다.
+Process status indicates what the process is currently doing.
 
-생성 상태: 프로세스를 생성 중인 상태이다. 메모리에 적재되어 PCB를 할당받은 상태이다.
-준비 상태: 프로세스가 메모리에 적재되어 CPU를 기다리는 상태이다. 준비 상태인 프로세스가 실행 상태로 전환되는 것을 디스패치(dispatch)라고 한다.
-실행 상태: 프로세스가 CPU를 점유하고 명령어를 실행하는 상태이다.
-대기 상태: 프로세스가 입출력을 기다리는 상태이다. 입출력이 완료되면 준비 상태로 전환된다.
-종료 상태: 프로세스가 실행을 마치고 종료된 상태이다. 운영체제는 PCB와 메모리를 해제한다.
+Creating state: The process is being created. It is loaded into memory and assigned a PCB.
+Ready state: The process is loaded into memory and waiting for the CPU. The process of transitioning from a ready state to a running state is called dispatch.
+Running state: The process is occupying the CPU and executing instructions.
+Waiting state: The process is waiting for input/output. When input/output is complete, it switches to the ready state.
+Terminate state: The process has finished executing and terminated. The operating system frees the PCB and memory.
 
-### 프로세스 계층 구조
+### Process Hierarchy
 
-프로세스는 계층 구조로 관리된다. 부모 프로세스는 자식 프로세스를 생성할 수 있고, 자식 프로세스는 부모 프로세스의 자원을 공유할 수 있다.
+Processes are managed in a hierarchical structure. A parent process can create child processes, and child processes can share the resources of the parent process.
 
-부모 프로세스와 자식 프로세스는 별개의 프로세스이므로 각각의 PCB를 가진다.
+Since the parent process and the child process are separate processes, they each have their own PCB.
 
-### 프로세스 생성 기법
+### Process creation techniques
 
-부모 프로세스는 fork와 exec를 통해 자식 프로세스를 생성할 수 있다.
+A parent process can create child processes through fork and exec.
 
-부모 프로세스는 fork 시스템 호출을 통해 자신의 복사본을 자식 프로세스로 생성한다.
+A parent process creates a copy of itself as a child process through the fork system call.
 
-자식 프로세스는 exec 시스템 호출을 통해 자신의 메모리 공간을 다른 프로그램으로 덮어쓴다.
+A child process overwrites its memory space with another program via the exec system call.
 
-### 확인 문제
+### Verification problem
 
-1. 다음은 프로세스 상태를 보여주는 프로세스 상태 다이어그램입니다.
+1. Below is a process state diagram showing the process states.
 
 ![img_2.png](img_2.png)
 
-## 10.3 스레드
+## 10.3 Thread
 
-여기서 다루는 스레드는 소프트웨어적인 스레드이다.
+The threads covered here are software threads.
 
-### 프로세스와 스레드
+### Processes and Threads
 
-스레드(thread)는 프로세스를 구성하는 실행 흐름의 단위이다. 프로세스는 하나 이상의 스레드를 가질 수 있다.
+A thread is a unit of execution flow that constitutes a process. A process can have one or more threads.
 
-많은 프로그램은 하나의 프로세스에서 여러 개의 스레드를 생성하여 병렬 처리를 수행한다. 이러한 프로그램을 멀티스레드 프로그램이라고 한다.
+Many programs perform parallel processing by creating multiple threads in a single process. These programs are called multithreaded programs.
 
-스레드는 스레드 ID, 프로그램 카운터, 레지스터 집합, 스택으로 구성된다. 실행에 필요한 죄소한의 정보를 갖고 있다.
+A thread consists of a thread ID, a program counter, a set of registers, and a stack. It has the bare minimum information required to run.
 
-스레드는 프로세스의 자원을 공유한다.
+Threads share the resources of a process.
 
-### 멀티프로세스와 멀티스레드
+### Multiprocessing and multithreading
 
-여러 프로세스를 동시에 실행하는 것을 멀티프로세싱, 여러 스레드로 프로세스를 동시에 실행하는 것을 멀티스레딩이라고 한다.
+Running multiple processes simultaneously is called multiprocessing, and running processes simultaneously with multiple threads is called multithreading.
 
-프로세스 끼리는 자원을 공유할 수 없지만, 스레드는 프로세스의 자원을 공유할 수 있다.
+Processes cannot share resources, but threads can share the resources of a process.
 
-# Ch.11 CPU 스케줄링
+# Ch.11 CPU Scheduling
 
-CPU 스케줄링이란 운영체제가 프로세스들에게 CPU 자원을 할당하는 것이다.
+CPU scheduling is how the operating system allocates CPU resources to processes.
 
-## 11.1 CPU 스케줄링 개요
+## 11.1 CPU Scheduling Overview
 
-### 프로세스 우선순위
+### Process Priority
 
-프로세스들은 우선순위를 가지고 있다. 우선순위가 높은 프로세스가 우선적으로 CPU를 할당받는다.
+Processes have priorities. Higher priority processes are allocated the CPU first.
 
-보통 입출력 작업이 많은 입출력 집중 프로세스(Interactive Process)의 우선순위가 CPU 집중 프로세스(CPU-Bound Process)보다 높다.
+Usually, the priority of an interactive process that performs a lot of input/output work is higher than that of a CPU-bound process.
 
-프로세스의 우선순위는 프로세스의 PCB(Process Control Block)에 저장된다.
+The priority of a process is stored in the process control block (PCB).
 
-### 스케줄링 큐
+### Scheduling Queue
 
-PCB에 우선순위가 저장되어 있지만, CPU를 사용할 다음 프로세스를 찾기 위해 운영체제가 모든 프로세스를 검색하는 것은 비효율적이다.
+Although priorities are stored in the PCB, it is inefficient for the operating system to search through all processes to find the next process to use the CPU.
 
-이를 해결하기 위해 운영체제는 스케줄링 큐(Scheduling Queue)를 사용한다. 반드시 FIFO 방식이지는 않다.
+To solve this, the operating system uses a scheduling queue. It is not necessarily FIFO.
 
-준비 큐는 프로세스가 CPU를 사용할 준비가 되었을 때, 대기 큐는 프로세스가 입출력을 기다리고 있을 때, 완료 큐는 프로세스가 종료되었을 때 사용된다.
+The ready queue is used when a process is ready to use the CPU, the wait queue is used when a process is waiting for input/output, and the done queue is used when a process has terminated.
 
-대기큐는 같은 장치를 요구한 프로세스들은 같은 큐에 저장된다.
+Waiting queue: Processes requesting the same device are stored in the same queue.
 
-### 선점형 스케줄링과 비선점형 스케줄링
+### Preemptive and non-preemptive scheduling
 
-선점형 스케줄링(Preemptive Scheduling)은 프로세스가 CPU를 사용하고 있을 때, 운영체제가 강제로 프로세스를 중단시키고 다른 프로세스를 실행시키는 것이다.
+Preemptive scheduling is when the operating system forcibly stops a process that is using the CPU and runs another process.
 
-비선점형 스케줄링(Non-Preemptive Scheduling)은 프로세스가 CPU를 사용하고 있을 때, 운영체제가 강제로 프로세스를 중단시키지 않는 것이다.
+Non-preemptive scheduling means that the operating system does not forcibly terminate a process when the process is using the CPU.
 
-각각의 장단점이 있다.
+Each has its own pros and cons.
 
-## 11.2 CPU 스케줄링 알고리즘
+## 11.2 CPU Scheduling Algorithm
 
-### 선입 선처리 스케줄링(FCFS, First-Come First-Served Scheduling)
+### First-Come First-Served Scheduling (FCFS)
 
-준비 큐에 있는 프로세스들을 도착한 순서대로 CPU를 할당하는 비선점형 스케줄링이다.
+Non-preemptive scheduling is a scheduling method that assigns the CPU to processes in the ready queue in the order in which they arrive.
 
-호위 효과(convoy effect)가 발생할 수 있다.
+A convoy effect may occur.
 
-### 최단 작업 우선 스케줄링(SJF, Shortest-Job-First Scheduling)
+### Shortest-Job-First Scheduling (SJF)
 
-CPU 사용이 가장 짧은 프로세스를 우선적으로 CPU를 할당하는 비선점형 스케줄링이다. 선점형으로도 구현 가능하다.
+Non-preemptive scheduling is a scheduling method that gives priority to the process with the shortest CPU usage. It can also be implemented in a preemptive manner.
 
-### 라운드 로빈 스케줄링(RR, Round-Robin Scheduling)
+### Round-Robin Scheduling (RR)
 
-선입 선처리 스케줄링 + 타임 슬라이스(Time Slice)를 사용하는 선점형 스케줄링이다.
+It is a preemptive scheduling that uses first-come, first-served scheduling + time slice.
 
-타임 슬라이스는 프로세스가 CPU를 사용할 수 있는 시간을 의미한다.
+A time slice is the amount of time a process can use the CPU.
 
-타임 슬라이스가 끝나면 프로세스는 준비 큐의 맨 뒤로 이동한다.
+When the time slice ends, the process moves to the back of the ready queue.
 
-### 최소 잔여 시간 우선 스케줄링(SRT, Shortest-Remaining-Time Scheduling)
+### Shortest-Remaining-Time Scheduling (SRT)
 
-라운드 로빈 스케줄링 + 최단 작업 우선 스케줄링을 사용하는 선점형 스케줄링이다.
+It is a preemptive scheduling that uses round robin scheduling + shortest job first scheduling.
 
-### 우선순위 스케줄링(Priority Scheduling)
+### Priority Scheduling
 
-프로세스마다 우선순위를 부여하고, 우선순위가 높은 프로세스를 우선적으로 CPU를 할당하는 비선점형 스케줄링이다.
+It is a non-preemptive scheduling method that assigns a priority to each process and allocates the CPU to processes with higher priorities.
 
-기아 현상(starvation)이 발생할 수 있다. 이를 해결하기 위한 방법으로 에이징 기법(Aging)이 있다.
+Starvation may occur. Aging is a method to solve this problem.
 
-이는 오랫동안 CPU를 사용하지 못한 프로세스의 우선순위를 높여주는 방법이다.
+This is a way to increase the priority of a process that has not used the CPU for a long time.
 
-### 다단계 큐 스케줄링(Multi-Level Queue Scheduling)
+### Multi-Level Queue Scheduling
 
-우선순위 스케줄링의 발전된 형태이다.
+It is an advanced form of priority scheduling.
 
-우선순위별로 준비 큐를 여러 개 만들고, 우선순위가 높은 큐에 있는 프로세스를 우선적으로 CPU를 할당한다.
+Create multiple ready queues by priority, and give priority to CPU allocation to processes in queues with higher priorities.
 
-### 다단계 피드백 큐 스케줄링(Multi-Level Feedback Queue Scheduling)
+### Multi-Level Feedback Queue Scheduling
 
-다단계 큐 스케줄링의 발전된 형태이다.
+It is an advanced form of multi-level queue scheduling.
 
-새로 준비 상태가 된 프로세스가 있다면 우선순위가 가장 높은 큐에 넣고, 타임 슬라이스동안 실행한다.
+If there is a newly ready process, it is placed in the highest priority queue and executed during the time slice.
 
-타임 슬라이스 동안 실행이 끝나지 않으면 우선순위를 낮추고, 다음 우선순위 큐에 넣는다.
+If the execution does not finish during the time slice, the priority is lowered and put in the next priority queue.
 
-CPU를 오래 사용해야 하는 프로세스는 점차 우선순위가 낮아진다.
+Processes that require long CPU usage are gradually given lower priority.
 
-에이징 기법을 사용하여 우선순위가 낮아진 프로세스의 우선순위를 높여서 기아 현상을 방지할 수 있다.
+Starvation can be prevented by using aging techniques to raise the priority of lower priority processes.
 
-### 확인 문제
+### Verification problem
 
-1. 준비 큐에 프로세스 A,B,C,D 순으로 삽입되었다고 가정했을 때, 선입 선처리 스케줄링 알고리즘을 적용하면 어떤 프로세스 순서대로 CPU를 할당받게 될까?
+1. Assuming that processes A, B, C, and D are inserted into the ready queue in that order, in what order will the processes be allocated the CPU if the FIFO scheduling algorithm is applied?
 
-`A-B-C-D`
+`ABCD`
 
-# Ch.12 프로세스 동기화
+# Ch.12 Process Synchronization
 
-## 12.1 동기화란
+## 12.1 What is Synchronization?
 
-동시다발적으로 실행되는 프로세스들은 서로 협력하며 작업을 수행한다.
+Concurrently running processes cooperate with each other to perform tasks.
 
-이 과정에서 자원의 일관성을 보장해야 한다.
+Consistency of resources must be ensured throughout this process.
 
-### 동기화의 의미
+### Meaning of synchronization
 
-동기화는 프로세스들이 서로 협력하여 작업을 수행하는 것을 의미한다.
+Synchronization means that processes cooperate with each other to perform tasks.
 
-동기화에는 실행 순서 제어를 위한 동기화와 상호 배제를 위한 동기화가 있다.
+Synchronization includes synchronization for execution order control and synchronization for mutual exclusion.
 
-- 실행 순서 제어를 위한 동기화: reader writer 문제
+- Synchronization for Execution Order Control: The Reader-Writer Problem
 
-Writer: 파일에 값을 저장하는 프로세스
-Reader: 파일에서 값을 읽어오는 프로세스
+Writer: Process that saves values to a file
+Reader: Process that reads values from a file
 
-둘은 실행의 순서가 있다. Reader 프로세스는 Writer 프로세스가 파일에 값을 저장할 때까지 기다려야 한다.
+The two have an order of execution. The Reader process must wait until the Writer process writes the value to the file.
 
-- 상호 배제를 위한 동기화: Bank Account 문제, Producer Consumer 문제
+- Synchronization for Mutual Exclusion: Bank Account Problem, Producer Consumer Problem
 
-공유가 불가능한 자원의 동시 사용을 막는 것이다.
+It prevents simultaneous use of non-shareable resources.
 
-### 공유 자원과 임계 구역
+### Shared resources and critical zones
 
-공유 자원: 여러 프로세스 혹은 스레드가 공유하고 있는 자원
+Shared resources: Resources shared by multiple processes or threads.
 
-전역 변수, 파일, 입출력장치, 메모리 등이 있다.
+There are global variables, files, input/output devices, memory, etc.
 
-임계 구역: 동시에 실행하면 문제가 발생하는 자원에 접근하는 코드
+Critical section: Code that accesses resources that would otherwise cause problems if executed concurrently.
 
-진입한 프로세스가 임계 구역을 빠져나가기 전까지 다른 프로세스는 임계 구역에 진입할 수 없다.
+No other process can enter the critical section until the process that entered it exits the critical section.
 
-임계 구역에 동시에 접근하면 자원의 일관성이 깨질 수 있고, 이를 레이스 컨디션(race condition)이라고 한다.
+Simultaneous access to critical sections can break resource consistency, which is called a race condition.
 
-상호 배제를 위한 동기화를 위한 세 가지 원칙
+Three Principles for Synchronization for Mutual Exclusion
 
-- 상호 배제: 임계 구역에 진입한 프로세스는 다른 프로세스가 진입할 수 없다.
-- 진행: 임계 구역에 어떤 프로세스도 진입하지 않았다면, 임계 구역에 진입하고자 하는 프로세스는 진입할 수 있어야 한다.
-- 유한 대기: 한 프로세스가 임계 구역에 진입하고 싶다면 그 프로세스는 언젠가는 임계 구역에 진입할 수 있어야 한다.
+- Mutual exclusion: Once a process enters its critical section, no other process can enter it.
+- Progress: If no process has entered the critical section, a process wishing to enter the critical section must be able to do so.
+- Bounded Waiting: If a process wants to enter its critical section, it must be able to enter its critical section at some point.
 
-## 12.2 동기화 기법
+## 12.2 Synchronization Techniques
 
-뮤텍스 락, 세마포, 모니터를 학습한다.
+Learn about mutex locks, semaphores, and monitors.
 
-### 뮤텍스 락
+### mutex lock
 
-상호 배제를 위한 동기화 기법이다.
+It is a synchronization technique for mutual exclusion.
 
-뮤텍스 락은 전역 변수 하나와 함수 두 개로 구성된다.
+A mutex lock consists of one global variable and two functions.
 
-- lock: 프로세스들이 공유하는 전역 변수
-- acquire: 임계 구역을 잠그는 역할
-- release: 임계 구역의 잠금을 해제하는 역할
+- lock: a global variable shared by processes
+- acquire: The role of locking the critical section
+- release: The role of unlocking the critical section
 
-뮤텍스 락은 임계 구역에 진입하기 전에 acquire 함수를 호출하여 잠금을 걸고, 임계 구역을 빠져나올 때 release 함수를 호출하여 잠금을 해제한다.
+Mutex locks are locked by calling the acquire function before entering the critical section, and unlocked by calling the release function when exiting the critical section.
 
-### 세마포
+### semaphore
 
-세마포는 뮤텍스 락과 비슷하지만, 조금 더 일반화 된 방식의 동기화 도구이다.
+A semaphore is a synchronization tool similar to a mutex lock, but in a more general way.
 
-공유 자원이 여러 개인 경우에도 사용할 수 있다.
+It can be used even when there are multiple shared resources.
 
-세마포는 전역 변수 하나와 함수 두 개로 구성된다.
+A semaphore consists of one global variable and two functions.
 
-- semaphore: 임계 구역에 진입할 수 있는 프로세스의 개수를 나타내는 전역 변수
-- wait: 임계구역에 들어가도 좋은지 기다려야 할지를 알려주는 역할
-- signal: 임계구역에 들어가도 좋다는 신호를 보내는 역할
+- semaphore: A global variable that indicates the number of processes that can enter the critical section.
+- wait: A role that indicates whether it is okay to enter the critical section or whether we need to wait.
+- signal: The role of sending a signal that it is okay to enter the critical area.
 
-wait 함수는 사용할 수 있는 자원이 없을 경우 해당 프로세스를 대기 상태로 만들고, 해당 프로세스의 PCB를 세마로를 위한 대기 큐에 넣는다.
+The wait function puts the process into a waiting state if no resources are available and puts the PCB of the process into the waiting queue for the semaphore.
 
-세마포는 실행 순서 동기화에도 사용이 가능하다.
+Semaphores can also be used to synchronize execution order.
 
-세마포 변수 S를 0으로 두고, 먼저 실행할 프로세스 뒤에 signal 함수를 호출하고, 나중에 실행할 프로세스 뒤에 wait 함수를 호출한다.
+Set the semaphore variable S to 0, call the signal function after the process to be executed first, and call the wait function after the process to be executed later.
 
-### 모니터
+### monitor
 
-자바가 이용하는 동기화 기법이다.
+It is a synchronization technique used by Java.
 
-모니터는 공유 자원과 공유 자원에 접근하기 위한 인터페이스를 묶어서 관리한다. 공유 자원에 접근하기 위해서는 반드시 인터페이스를 통해 접근해야 한다.
+A monitor manages shared resources and interfaces for accessing those resources. To access shared resources, you must access them through an interface.
 
-상호 배제를 위한 동기화는 인터페이스를 위한 큐를 이용한다.
+Synchronization for mutual exclusion uses a queue for the interface.
 
-실행 순서 제어를 위한 동기화는 조건 변수를 이용한다. 조건 변수에 대한 큐를 이용한다.
+Synchronization for controlling execution order uses condition variables. Use a queue for condition variables.
 
-### 확인 문제
+### Verification problem
 
-1. 뮤텍스 락과 세마포에 대한 설명으로 옳지 않은 것
+1. What is incorrect about mutex locks and semaphores?
 
-4) 세마포를 이용하면 반드시 바쁜 대기를 해야 한다.
+4) If you use a semaphore, you will definitely have to wait a long time.
 
-# Ch.13 교착 상태
+# Ch.13 Deadlock
 
-## 13.1 교착 상태란
+## 13.1 What is a deadlock?
 
-### 식사하는 철학자 문제
+### The Dining Philosophers Problem
 
-서로가 점거하고 있는 자원을 서로가 기다리고 있을 때 발생한다.
+This happens when two parties are waiting for each other to occupy a resource.
 
-### 자원 할당 그래프
+### Resource Allocation Graph
 
-교착 상태가 발생했을 때의 상황을 그래프로 표현한 것이다.
+This is a graph showing the situation when a deadlock occurs.
 
-프로세스는 원으로, 자원은 사각형으로 표현한다.
+Processes are represented by circles, and resources are represented by squares.
 
-자원의 개수는 자원 사각형 내에 점으로 표현한다.
+The number of resources is represented by dots within the resource square.
 
-프로세스가 어떤 자원을 할당받아 사용 중이라면 자원에서 프로세스를 향해 화살표를 그린다.
+If a process is using a resource that has been allocated to it, an arrow is drawn from the resource to the process.
 
-프로세스가 어떤 자원을 기다리고 있다면 프로세스에서 자원을 향해 화살표를 그린다.
+If a process is waiting for some resource, draw an arrow from the process to the resource.
 
-교착 상태가 발생한 자원 할당 그래프는 원의 형태를 띈다.
+The resource allocation graph in which a deadlock occurs takes the shape of a circle.
 
-### 교착 상태 발생 조건
+### Deadlock occurrence conditions
 
-교착 상태가 발생하기 위해서는 다음 네 가지 조건이 모두 충족되어야 한다.
+For a deadlock to occur, all four of the following conditions must be met:
 
-1. 상호 배제(Mutual exclusion): 자원은 한 번에 한 프로세스만 사용할 수 있다.
-2. 점유 대기(Hold and wait): 프로세스가 할당된 자원을 가진 상태에서 다른 자원을 기다린다.
-3. 비선점(No preemption): 프로세스가 어떤 자원을 점유하고 있으면 다른 프로세스가 강제로 뺏을 수 없다.
-4. 순환 대기(Circular wait): 각 프로세스는 순환적으로 다음 프로세스가 요구하는 자원을 가지고 있다.
+1. Mutual exclusion: A resource can only be used by one process at a time.
+2. Hold and wait: A process waits for another resource while holding the allocated resource.
+3. No preemption: If a process is holding a resource, another process cannot forcibly take it away.
+4. Circular wait: Each process has resources that the next process requires in a circular manner.
 
-## 13.2 교착 상태 해결 방법
+## 13.2 How to resolve deadlocks
 
-교착 상태 해결 방법에는 크게 세 가지가 있다.
+There are three main ways to resolve deadlock.
 
-### 교착 상태 예방
+### Preventing deadlocks
 
-1. 상호 배제 조건을 제거한다. 모든 자원을 공유하게 만드는 것이다. 현실적이지 않다.
-2. 점유 대기 조건을 제거한다. 자원을 할당받은 후에 다른 자원을 요구하지 않도록 한다. 자원의 활용률을 낮춘다.
-3. 비선점 조건을 제거한다. 자원을 점유하고 있는 프로세스가 다른 자원을 요구할 때 자원을 뺏을 수 있도록 한다. 선점이 가능한 자원에 한해 효과적이지만 선점이 불가능한 자원에 대해서는 효과가 없다.
-4. 순환 대기 조건을 제거한다. 자원을 요구하는 순서를 정해 순환을 없앤다. 자원의 활용률을 낮춘다.
+1. Remove mutual exclusion conditions. It's about making all resources shareable. It's not realistic.
+2. Remove the occupied waiting condition. After a resource is allocated, it is not requested for other resources. Reduces resource utilization.
+3. Remove non-preemptive conditions. Allows a process holding a resource to take the resource away when it requests another resource. It is effective only for resources that can be preempted, but not for resources that cannot be preempted.
+4. Remove the circular waiting condition. Eliminate cycles by determining the order in which resources are requested. Reduces resource utilization.
 
-### 교착 상태 회피
+### Deadlock avoidance
 
-교착 상태가 무분별한 자원 할당으로 인해 발생했다고 간주한다. 따라서 자원을 할당하기 전에 교착 상태가 발생하지 않을 것이라고 예상되는 경우에만 자원을 할당한다.
+We assume that the deadlock is caused by indiscriminate resource allocation. Therefore, resources are allocated only when it is expected that deadlock will not occur before allocating resources.
 
-안전 순서열: 시스템의 자원을 할당해도 교착 상태가 발생하지 않는 순서열
-안전 상태: 안전 순서열이 있는 상태.
-불안전 상태: 안전 순서열이 없는 상태.
+Safe sequence: A sequence that does not cause deadlock even if the system's resources are allocated
+Safe state: A state in which a safe sequence exists.
+Unsafe condition: A condition in which there is no safe sequence.
 
-### 교착 상태 검출 후 회복
+### Recovery after deadlock detection
 
-사후에 조치하는 방식이다.
+It is a method of taking action after the fact.
 
-선점을 통한 회복: 교착 상태가 해결될 때까지 한 프로세스씩 자원을 몰아주는 방식.
-프로세스 강제 종료를 통한 회복: 교착 상태가 해결될 때까지 교착 상태에 있는 프로세스를 강제로 종료시키는 방식.
+Recovery through preemption: A method of giving resources to one process at a time until the deadlock is resolved.
+Recovery by forcibly terminating a process: A method of forcibly terminating a deadlocked process until the deadlock is resolved.
 
-# Ch.14 가상 메모리
+# Ch.14 Virtual Memory
 
-## 14.1 연속 메모리 할당
+## 14.1 Contiguous Memory Allocation
 
-연속 메모리 할당은 프로세스 내에 연속적인 메모리 공간을 할당하는 방식이라고 한다.
+Contiguous memory allocation is a method of allocating contiguous memory space within a process.
 
-### 스와핑
+### Swapping
 
-현재 사용되지 않는 프로세스들을 보조기억장치의 스왑 영역으로 옮기고, 새로 생긴 빈 공간에 실행할 프로세스를 적재하는 것을 말한다.
+This refers to moving currently unused processes to the swap area of auxiliary memory and loading the processes to be executed into the newly created empty space.
 
-스와핑을 하게 되면, 프로세스들이 요구하는 메모리 공간의 크기가 실제 메모리 크기보다 크더라도 동시에 실행할 수 있다.
+Swapping allows processes to run concurrently even if the amount of memory space they require is larger than the actual memory size.
 
-### 메모리 할당
+### Memory allocation
 
-프로세스가 실행되기 위해서는 메모리 내의 빈 공간에 적재되어야 한다. 최초 적합, 최적 적합, 최악 적합의 세 가지 적재 방식이 있다.
+For a process to run, it must be loaded into an empty space in memory. There are three loading methods: first fit, best fit, and worst fit.
 
-최초 적합(first-fit)은 운영체제가 메모리 내의 빈 공간을 탐색할 때, 가장 먼저 발견되는 공간에 프로세스를 적재하는 방식이다. 검색을 최소화할 수 있고 할당이 빠르다.
-최적 적합(best-fit)은 운영체제가 매모리 내의 빈 공간을 모두 탐색한 후, 적재 가능한 가장 작은 공간에 할당하는 방식이다
-최악 적합(worst-fit)은 운영체제가 매모리 내의 빈 공간을 모두 탐색한 후, 적재 가능한 가장 큰 공간에 할당하는 방식이다.
+First-fit is a method in which the operating system loads a process into the first free space it finds when searching for free space in memory. It can minimize searches and has fast allocation.
+Best-fit is a method in which the operating system searches all free spaces in memory and then allocates to the smallest space that can be loaded.
+Worst-fit is a method in which the operating system searches all free spaces in memory and then allocates to the largest space that can be loaded.
 
-### 외부 단편화
+### External fragmentation
 
-프로세스를 메모리에 연속적으로 배치하는 연속 메모리 할당은 메모리를 효율적으로 사용하는 방법이 아니다.
-외부 단편화(external fragmentation)라는 메모리 내에 여러 개의 작은 빈 공간이 존재하는 상황이 발생하기 때문이다.
+Contiguous memory allocation, which places processes contiguously in memory, is not an efficient way to use memory.
+This is because a situation called external fragmentation occurs where there are multiple small empty spaces within the memory.
 
-외부 단편화는 빈 공간보다 큰 프로세스를 적재하기 어려운 상황을 초래하고 메모리의 효율성을 떨어뜨린다.
+External fragmentation makes it difficult to load processes larger than the free space, reducing memory efficiency.
 
-메모리 압축을 통하여 외부 단편화를 해결할 수 있다. 메모리 압축은 프로세스들을 메모리의 시작 주소부터 차례대로 배치하는 방식이다.
+External fragmentation can be resolved through memory compression. Memory compression is a method of arranging processes in order from their starting addresses in memory.
 
-### 확인 문제
+### Verification problem
 
-> 1. 메모리 할당 방식에 대한 설명으로 올바른 것을 다음 보기에서 찾아 써 보세요.
->    \> 최초 적합: 최초로 발견한 적재 가능한 빈 공간에 프로세스를 배치하는 방식
->    \> 최악 적합: 프로세스가 적재될 수 있는 가장 큰 공간에 프로세스를 배치하는 방식
->    \> 최적 적합: 프로세스가 적재될 수 있는 가장 작은 공간에 프로세스를 배치하는 방식
+> 1. Find the correct explanation of how memory is allocated in the following examples.
+>    \>    \> 최초 적합: 최초로 발견한 적재 가능한 빈 공간에 프로세스를 배치하는 방식> \> 최악 적합: 프로세스가 적재될 수 있는 가장 큰 공간에 프로세스를 배치하는 방식
+>    > \> 최적 적합: 프로세스가 적재될 수 있는 가장 작은 공간에 프로세스를 배치하는 방식
 
-## 14.2 페이징을 통한 가상 메모리 관리
+## 14.2 Virtual Memory Management through Paging
 
-페이징은 가상 메모리 관리 기법 중 하나이다.
+Paging is one of the virtual memory management techniques.
 
-### 페이징이란
+### What is paging?
 
-프로세스를 일정한 크기로 나누고, 불연속적으로 메모리에 적재하는 방식이다. 프로세스의 논리 주소 공간을 페이지라는 일정 단위로 자르고, 메모리의 물리 주소 공간을 프레임이라는
-일정한 단위로 나눈 뒤 페이지를 프레임에 매핑하는 방식이다.
+This is a method of dividing a process into pieces of a certain size and loading them into memory discontinuously. This method divides the logical address space of a process into fixed units called pages, divides the physical address space of memory into fixed units called frames
+, and then maps pages to frames.
 
-페이징에서의 스왑은 페이지 인, 페이지 아웃이라고 한다.
+Swaps in paging are called page in and page out.
 
-### 페이지 테이블
+### Page table
 
-프로세스를 이루는 페이지가 어떤 프레임에 적재되어 있는지를 나타내는 테이블이다. 페이지 번호와 프레임 번호를 매핑하는 테이블이다.
+This is a table that indicates which frame the pages that make up the process are loaded into. This is a table that maps page numbers to frame numbers.
 
-하나의 페이지 크기보다 작은 메모리 공간을 요구하는 프로세스로 인해 내부 단편화가 발생할 수 있다. 프로세스마다 페이지 테이블이 있고, 각 페이지 테이블은 CPU 내의 프로세스
-테이블 베이스 레지스터(PTBR)에 저장된다.
+Internal fragmentation can occur due to processes requiring memory space smaller than the size of one page. Each process has a page table, and each page table is stored in the Process
+Table Base Register (PTBR) within the CPU.
 
-페이지 테이블을 메모리에 두게 되면, 메모리 접근 시간이 두 배로 늘어나게 된다. 이를 위해서 TLB(Translation Lookaside Buffer)를 사용한다.
+Placing the page table in memory doubles the memory access time. For this purpose, TLB (Translation Lookaside Buffer) is used.
 
-TLB는 페이지 테이블의 캐시로, 페이지 테이블의 일부 내용을 저장한다. TLB에는 최근에 사용된 페이지 위주로 저장하게 된다.
+The TLB is a cache of page tables, storing some of the contents of the page tables. TLB stores pages that have been recently used.
 
-CPU가 접근하려는 논리 주소가 TLB에 있을 경우 이를 TLB 히트, 없을 경우 TLB 미스라고 한다.
+If the logical address that the CPU is trying to access is in the TLB, it is called a TLB hit; if not, it is called a TLB miss.
 
-### 페이징에서의 주소 변환
+### Address translation in paging
 
-특정 주소에 접근하기 위해서는 어떤 페이지 혹은 프레임에 접근하고 싶은지, 접근하려는 주소가 그 페이지 혹은 프레임에서 얼마나 떨어져 있는지를 알아야 한다.
+To access a specific address, you need to know which page or frame you want to access and how far away the address you want to access is from that page or frame.
 
-페이징 시스템에서의 논리 주소는 페이지 번호(page number)와 변위(offset)로 구성된다. 이는 페이지 테이블을 통해 물리 주소(프레임 번호, 변위)로 변환된다.
+A logical address in a paging system consists of a page number and an offset. This is converted into a physical address (frame number, displacement) through the page table.
 
-### 페이지 테이블 엔트리
+### Page table entry
 
-페이지 테이블 엔트리는 페이지 테이블의 각 행을 의미한다. 페이지 번호와 프레임 번호 외의 정보도 포함한다.
+A page table entry represents each row in the page table. It also includes information other than page numbers and frame numbers.
 
-유효 비트: 현재 해당 페이지에 접근 가능한지 여부를 알려준다. 유효비트가 0이면 해당 페이지는 메모리에 적재되어 있지 않다. 이를 페이지 폴트라고 한다.
+Valid Bit: Indicates whether the page is currently accessible. If the valid bit is 0, the page is not loaded into memory. This is called a page fault.
 
-보호 비트: 페이지 보호를 위한 비트이다. 보호 비트가 0이면 읽기 전용, 1이면 읽기/쓰기가 가능하다.
+Protection bit: A bit for page protection. If the protection bit is 0, it is read-only, and if it is 1, it is read/write.
 
-참조 비트: CPU가 해당 페이지에 접근했는지 여부를 알려준다. 참조 비트가 0이면 해당 페이지에 접근하지 않았다.
+Reference bit: Indicates whether the CPU has accessed the page. If the reference bit is 0, the page was not accessed.
 
-수정 비트: CPU가 해당 페이지에 쓰기 접근했는지 여부를 알려준다. 수정 비트가 0이면 해당 페이지에 쓰기 접근하지 않았다.
+Modification bit: Indicates whether the CPU has had a write access to the page. If the modification bit is 0, no write access was made to that page.
 
-## 추가 강의
+## Additional lectures
 
-### 페이징의 이점 - 쓰기 시 복사
+### Advantages of Paging - Copy on Write
 
-프로세스는 기본적으로 자원을 공유하지 않는다. 이론적인 fork()는 부모 프로세스의 메모리를 그대로 복사하게 되고, 이는 프로세스 생성 시간 지연과 메모리 낭비등의 문제를
-낳는다.
+Processes do not share resources by default. Theoretically, fork() copies the memory of the parent process as is, which causes problems such as process creation time delay and memory waste
+.
 
-쓰기 시 복사는 자식 프로세스가 부모 프로세스와 동일한 프레임을 가리키고 있다가, 쓰기 작업 수행시 해당 페이지를 별도의 공간으로 복제한다.
+Copy-on-write means that the child process points to the same frame as the parent process, and then copies the page to a separate space when a write operation is performed.
 
-### 계층적 페이징
+### Hierarchical paging
 
-페이지 테이블을 페이징하여 여러 단계의 페이지를 두는 방식이다.
+This is a method of paging page tables to place pages in multiple levels.
 
-바깥 페이지 번호, 안쪽 페이지 번호, 변위 세 가지로 이루어진 논리 주소를 사용한다.
+It uses a logical address consisting of three parts: outer page number, inner page number, and displacement.
 
-페이지 폴트가 발생했을 경우, 메모리 참조 횟수가 증가하여 성능 저하가 발생할 수 있다.
+When a page fault occurs, the number of memory references increases, which can lead to performance degradation.
 
-## 14.3 페이지 교체와 프레임 할당
+## 14.3 Page Replacement and Frame Allocation
 
-### 요구 페이징
+### Demand paging
 
-요구 페이징(demand paging)은 요구되는 페이지만 적재하는 기법이다. 페이지 교체와 프레임 할당이 필요하다.
+Demand paging is a technique that loads only the pages that are requested. Page replacement and frame allocation are required.
 
-### 페이지 교체 알고리즘
+### Page replacement algorithm
 
-좋은 페이지 교체 알고리즘은 일반적으로 페이지 폴트가 적은 알고리즘을 의미한다.
+A good page replacement algorithm is generally one that produces few page faults.
 
-FIFO 페이지 교체 알고리즘(First In First Out)은 가장 오래 전에 적재된 페이지를 교체하는 알고리즘이다.
+The FIFO page replacement algorithm (First In First Out) is an algorithm that replaces the page that was loaded the longest time ago.
 
-2차 기회 페이지 교체 알고리즘은 FIFO 알고리즘의 단점을 보완하기 위해 만들어졌다. 2차 기회 알고리즘은 참조 비트를 추가하여, 참조 비트가 0인 페이지를 교체한다.
+The second-chance page replacement algorithm was created to compensate for the shortcomings of the FIFO algorithm. The second-chance algorithm replaces pages with a reference bit of 0 by adding a reference bit.
 
-최적 페이지 교체 알고리즘은 CPU에 의해 참조되는 횟수를 고려한 알고리즘이다. 메모리에 오래 남아야 할 페이지는 참조 횟수가 많을 것이고, 이를 고려하여 페이지를 교체한다.
+The optimal page replacement algorithm is one that takes into account the number of times it is referenced by the CPU. Pages that need to remain in memory for a long time will have a high number of references, and pages are replaced accordingly.
 
-LRU 페이지 교체 알고리즘(Least Recently Used)은 가장 오랫동안 참조되지 않은 페이지를 교체하는 알고리즘이다.
+The LRU (Least Recently Used) page replacement algorithm is an algorithm that replaces the page that has not been referenced for the longest time.
 
-### 스래싱과 프레임 할당
+### Thrashing and Frame Allocation
 
-페이지 폴트가 자주 발생하는 상황은 나쁜 페이지 교체 알고리즘을 사용해서만이 아닌 프로세스가 사용할 수 있는 프레임 자체가 적어서 일수도 있다.
+A situation where page faults occur frequently may not only be due to a bad page replacement algorithm, but also because the process itself has fewer frames available.
 
-프로세스가 실제 실행되는 시간보다 페이징에 더 많은 시간을 소요하여 성능이 저해되는 문제를 스래싱(thrashing)이라고 한다.
+Thrashing is a problem in which a process spends more time paging than it actually runs, resulting in poor performance.
 
-스래싱은 각 프로세스가 필요로 하는 최소한의 프레임 수를 파악하고, 프로세스들에게 적절한 프레임을 할당하는 것으로 해결할 수 있다.
+Thrashing can be solved by determining the minimum number of frames each process needs and allocating appropriate frames to the processes.
 
-프레임 할당 방식에 대해 알아보자. 정적 할당 방식은 다음과 같다.
+Let's learn about frame allocation methods. The static allocation method is as follows:
 
-균등 할당(equal allocation)은 각 프로세스에게 동일한 프레임 수를 할당하는 방식이다. 비합리적인 느낌이다.
+Equal allocation is a method of allocating the same number of frames to each process. It feels irrational.
 
-비례 할당(proportional allocation)은 각 프로세스에게 프레임 수를 프로세스 크기에 비례하여 할당하는 방식이다.
+Proportional allocation is a method of allocating the number of frames to each process in proportion to the process size.
 
-동적 할당 방식은 다음과 같다.
+The dynamic allocation method is as follows:
 
-작업 집합 모델(workset model)은 CPU가 특정 시간동안 주로 참조한 페이지 개수만큼만을 프레임으로 할당하는 방식이다.
+The working set model is a method in which the CPU assigns only the number of pages that have been primarily referenced during a specific period of time to a frame.
 
-프로세스가 참조한 페이지와 시간 간격을 통해 작업 집합을 구할 수 있다.
+The working set can be obtained through the pages referenced by the process and the time interval.
 
-페이지 폴트 빈도 모델(page fault frequency model)은 페이지 폴트가 발생한 횟수를 기준으로 프레임을 할당하는 방식이다.
+The page fault frequency model is a method of allocating frames based on the number of times page faults occur.
 
-페이지 폴트율이 너무 높으면 그 프로세스는 너무 적은 프레임을 갖고 있다, 페이지 폴트율이 너무 낮으면 그 프로세스는 너무 많은 프레임을 갖고 있다의 가정에서 시작한다.
+We start with the assumption that if the page fault rate is too high, the process has too few frames, and if the page fault rate is too low, the process has too many frames.
 
-상한선과 하한선을 설정하여, 그 범위 내에서 프레임을 할당한다.
+Set upper and lower limits and allocate frames within that range.
 
-### 선택 미션
+### Optional mission
 
-> 프로세스가 사용할 수 있는 프레임이 3개 있고, 페이지 참조열이 '2414523423' 일 때 FIFO, 최적 페이지, LRU 페이지 교체 알고리즘으로 이 페이지를 참조한다면
-> 몇 번의 페이지 폴트가 발생하는지 풀어보기
+> If a process has 3 frames available and the page reference string is '2414523423', how many page faults will occur if this page is referenced using FIFO, optimal page, and LRU page replacement algorithms?
 >
 > FIFO: 2414_5234_23 -> 4번
 > 최적: 2414_5_2_3_423 -> 2번
 > LRU: 2414_5234_23 -> 4번
 
-# Ch.15 파일 시스템
+# Ch.15 File System
 
-## 15.1 파일과 디렉터리
+## 15.1 Files and Directories
 
-파일 시스템(file system)은 파일과 디렉터리를 관리하는 운영체제 내의 프로그램이다.
+A file system is a program within an operating system that manages files and directories.
 
-### 파일
+### file
 
-하드 디스크나 SSD와 같은 보조기억장치에 저장된 관련 정보의 집합을 의미한다.
+It refers to a collection of related information stored in auxiliary storage devices such as hard disks or SSDs.
 
-파일을 이루는 정보에는 파일을 실행하기 위한 정보와 부가 정보가 있다. 확장자를 통해 파일의 유형을 알 수 있다.
+The information that makes up a file includes information for executing the file and additional information. You can tell what type of file it is by its extension.
 
-### 디렉터리
+### Directory
 
-요새는 거의 트리 구조 디렉터리를 사용한다. 트리 구조 디렉터리는 파일과 디렉터리를 계층적으로 관리한다.
+These days, most forts use a tree-structured directory structure. A tree-structured directory manages files and directories hierarchically.
 
-최상위 디렉터리를 루트 디렉터리라고 한다. 자연스럽게, 디렉터리를 이용해 파일/디렉터리의 위치, 즉 경로(path)를 표현할 수 있다.
+The top-level directory is called the root directory. Naturally, you can use directories to express the location of a file/directory, i.e., the path.
 
-절대 경로: 루트 디렉터리부터 시작하는 경로
-상대 경로: 현재 디렉터리부터 시작하는 경로
+Absolute path: Path starting from the root directory
+Relative path: Path starting from the current directory
 
-디렉터리 엔트리(directory entry)는 디렉터리에 포함된 파일/디렉터리의 이름과 위치를 저장한다.
+A directory entry stores the names and locations of files/directories contained in the directory.
 
-## 15.2 파일 시스템
+## 15.2 File System
 
-### 파티셔닝과 포매팅
+### Partitioning and Formatting
 
-파티셔닝(partitioning)은 저장 장치의 논리적인 영역을 구획하는 작업을 의미한다.
+Partitioning refers to the task of dividing a storage device into logical areas.
 
-포매팅(formatting)은 파일 시스템을 설정하는 작업으로 어떤 방식으로 파일을 관리할지 결정, 새로운 데이터를 쓸 준비를 하는 작업이다.
+Formatting is the process of setting up a file system, deciding how to manage files, and preparing to write new data.
 
-### 파일 할당 방법
+### File allocation method
 
-운영체제는 파일/디렉터리를 블록 단위로 읽고 쓴다.
+The operating system reads and writes files/directories in block units.
 
-보조기억장치에 할당하는 방법에는 크게 두 가지가 있다. 연속 할당과 불연속 할당이다.
+There are two main ways to allocate auxiliary memory. There are continuous and discontinuous allocations.
 
-연속할당(Contiguous allocation): 파일을 연속된 블록에 저장하는 방법, 디렉터리 엔트리에는 파일 이름, 첫 번째 블록 주소, 블록 단위 길이 명시가 들어간다.
+Contiguous allocation: A method of storing files in contiguous blocks. Directory entries contain the file name, the address of the first block, and the block length.
 
-외부 단편화를 야기한다는 단점이 있다.
+It has the disadvantage of causing external fragmentation.
 
-불연속 할당에는 두가지가 있는데, 연결 할당과 색인 할당이 있다.
+There are two types of discontinuous assignment: linked assignment and indexed assignment.
 
-연결 할당(Linked allocation): 파일을 불연속된 블록에 저장하는 방법이다. 각 블록의 일부에 다음 블록의 주소를 저장한다.
+Linked allocation: A method of storing files in discontinuous blocks. Store the address of the next block in part of each block.
 
-반드시 첫 번째 블록부터 하나씩 차례대로 읽어야 하고, 하드웨어 고장이나 오류 발생 시 해당 블록 이후 블록은 접근이 불가능한 단점이 있다.
+It has the disadvantage that it must be read sequentially, starting from the first block, and blocks after that block cannot be accessed in case of hardware failure or error.
 
-색인 할당(Indexed allocation): 파일의 모든 블록 주소를 색인 블록이라는 하나의 블록에 모아 관리하는 방식이다. 파일 내 임의의 위치에 접근하기 용이하다.
+Indexed allocation: A method of managing all block addresses of a file in a single block called an index block. Easy to access any location within the file.
 
-디렉터리 엔트리에는 파일이름과 색인 블록 주소를 저장한다.
+Directory entries store the file name and the index block address.
 
-### 파일 시스템 살펴보기
+### Exploring the File System
 
-FAT 파일 시스템: 불연속 할당 기법의 연결 할당 기법을 이용한 파일 시스템이다. 파일 할당 테이블(FAT)이라는 특수한 블록에 파일의 블록 주소를 저장한다.
+FAT file system: A file system that uses the concatenated allocation technique of the discontinuous allocation technique. The block addresses of files are stored in a special block called the File Allocation Table (FAT).
 
-FAT 파일 시스템의 디렉터리 엔트리에는 파일 이름, 확장자, 속성, 예약 영역, 생성 시간, 마지막 접근 시간, 마지막 수정 시간, 첫 번째 블록 주소, 파일 크기 등이 들어간다.
+Directory entries in the FAT file system contain the file name, extension, attributes, reserved area, creation time, last access time, last modification time, first block address, file size, etc.
 
-유닉스 파일 시스템: 색인 할당 기법을 이용한 파일 시스템이다. 색인 블록(i-node)이라는 특수한 블록에 파일의 블록 주소를 저장한다.
+Unix file system: A file system that uses index allocation techniques. The block address of the file is stored in a special block called the index block (i-node).
 
-유닉스 파일 시스템의 디렉터리 엔트리에는 i-node 번호와 파일 이름이 들어간다.
+Directory entries in a Unix file system contain an i-node number and a file name.
 
-파일 속성 정보와 15개의 블록 주소를 저장할 수 있다. 블록 주소 중 12개에는 직접 블록 주소를 저장하고, 13번째에는 단일 간접 블록 주소를 저장하고, 14번째에는 이중 간접 블록 주소를 저장한다.
+It can store file attribute information and 15 block addresses. Twelve of the block addresses store direct block addresses, the 13th stores single indirect block addresses, and the 14th stores double indirect block addresses.
 
-15번째에는 삼중 간접 블록 주소를 저장한다.
+The 15th one stores the triple indirect block address.
