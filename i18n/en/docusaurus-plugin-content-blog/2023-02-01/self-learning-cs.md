@@ -462,7 +462,7 @@ Each function within the program is also grouped together.
 
 Read the following description and write whether it is about SRAM or DRAM.
 View: SRAM, DRAM
-The question content has been modified according to the issue posted on the book GitHub.
+The question content was modified according to the issue posted on the book GitHub.
 
 1. SRAM
 2. DRAM
@@ -1108,8 +1108,9 @@ External fragmentation can be resolved through memory compression. Memory compre
 ### Verification problem
 
 > 1. Find the correct explanation of how memory is allocated in the following examples.
->    \>    \> 최초 적합: 최초로 발견한 적재 가능한 빈 공간에 프로세스를 배치하는 방식> \> 최악 적합: 프로세스가 적재될 수 있는 가장 큰 공간에 프로세스를 배치하는 방식
->    > \> 최적 적합: 프로세스가 적재될 수 있는 가장 작은 공간에 프로세스를 배치하는 방식
+>    \> First fit: A method of placing a process in the first available space found
+>    \> Worst fit: A method of placing a process in the largest space where a process can be loaded
+>    \> Best fit: A method of placing a process in the smallest space where a process can be loaded
 
 ## 14.2 Virtual Memory Management through Paging
 
@@ -1218,9 +1219,9 @@ Set upper and lower limits and allocate frames within that range.
 
 > If a process has 3 frames available and the page reference string is '2414523423', how many page faults will occur if this page is referenced using FIFO, optimal page, and LRU page replacement algorithms?
 >
-> FIFO: 2414_5234_23 -> 4번
-> 최적: 2414_5_2_3_423 -> 2번
-> LRU: 2414_5234_23 -> 4번
+> FIFO: 2414_5234_23 -> 4 times
+> Optimal: 2414_5_2_3_423 -> 2 times
+> LRU: 2414_5234_23 -> 4 times
 
 # Ch.15 File System
 
