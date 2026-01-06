@@ -26,7 +26,7 @@ NIPA AWS Developer 부트캠프에서 진행한 3주간의 협력 프로젝트�
 
 전체 아키텍처입니다.
 
-![2.png](2.png)
+![2.png](/img/blog/2025-01-19/2.png)
 
 주요 컴포넌트들은 다음과 같이 구성되어 있습니다:
 
@@ -43,7 +43,7 @@ NIPA AWS Developer 부트캠프에서 진행한 3주간의 협력 프로젝트�
 
 ## 주요 기능 구현
 
-![3.png](3.png)
+![3.png](/img/blog/2025-01-19/3.png)
 
 ### 1. 논문 수집 파이프라인
 
@@ -132,7 +132,7 @@ def get_prompt_template(extracted_text):
 
 검색과 구독 기능은 사용자들이 관심 있는 논문을 쉽게 찾고 유저 리텐션을 위한 핵심 기능입니다. 이를 위해 DynamoDB와 OpenSearch Service의 조합을 선택했습니다.
 
-![4.png](4.png)
+![4.png](/img/blog/2025-01-19/4.png)
 
 #### 검색 시스템 구현
 
@@ -155,7 +155,7 @@ DynamoDB와의 [Zero-ETL 통합기능](https://docs.aws.amazon.com/opensearch-se
 
 와 같은 이점을 얻을 수 있었습니다.
 
-![5.png](5.png)
+![5.png](/img/blog/2025-01-19/5.png)
 
 > 관련 영상:
 > [AWS re:Invent 2023 - Amazon DynamoDB zero-ETL integration with Amazon OpenSearch Service (DAT339) - YouTube |](https://lilys.ai/digest/2350334)
@@ -283,7 +283,7 @@ def get_newsletters(query_params):
 
 알림 시스템은 DynamoDB Streams를 시작점으로 하는 이벤트 체인으로 구현되어 있습니다:
 
-![6.png](6.png)
+![6.png](/img/blog/2025-01-19/6.png)
 
 ```python
 def lambda_handler(event, context):
@@ -380,7 +380,7 @@ def lambda_handler(event, context):
 
 ### Step Functions 도입 검토와 한계
 
-![7.png](7.png)
+![7.png](/img/blog/2025-01-19/7.png)
 
 서버리스 컴포넌트들이 늘어나면서 전체 워크플로우 관리의 필요성을 느꼈고, 이를 위해 Step Functions를 도입을 검토했습니다.
 

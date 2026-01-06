@@ -26,7 +26,7 @@ description: 2024년 2월부터 10월까지 진행한 `우쑤한국사` 앱 프�
 
 위 두 글외에도 회고에 대한 다양한 글을 참고하였고 그 때 당시의 KPT는 다음과 같습니다.
 
-![kpt.png](kpt.png)
+![kpt.png](/img/blog/2024-10-13/kpt.png)
 
 몇 가지 아쉬운 점이 있었습니다.
 
@@ -48,7 +48,7 @@ description: 2024년 2월부터 10월까지 진행한 `우쑤한국사` 앱 프�
 
 `git log --pretty=format:"%h - %an, %ar : %s%n%b"` 명령어를 통해 프로젝트의 커밋 로그를 확인하고, 프로젝트의 주요 이벤트를 정리했습니다.
 
-![commit log.png](commit-log.png)
+![commit log.png](/img/blog/2024-10-13/commit-log.png)
 
 이 외에 메신저들에서 주고 받은 대화들과 파편화된 메모들을 정리하며 타임라인을 작성해보면서 프로젝트의 전체적인 흐름을 파악할 수 있었습니다.
 

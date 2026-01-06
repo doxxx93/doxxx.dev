@@ -13,7 +13,7 @@ image: https://cf.festa.io/img/2024-11-23/578a092e-8a55-43f7-8f6e-0da67d52ebb4.p
 description: I'd like to share my experience participating in the Open Contribution Jam 2024 event and contributing to the Glues project.
 ---
 
-![img.png](img.png)
+![img.png](/img/blog/2024-11-23/img.png)
 
 I went to Open Contribution Jam 2024.
 
@@ -46,7 +46,7 @@ While helping another participant implement Delete Mode related functionality (c
 - [e] Revised the command description to be more accurate
 - Improve documentation to match vim's standard behavior
 
-![img_2.png](img_2.png)
+![img_2.png](/img/blog/2024-11-23/img_2.png)
 
 Everyone who worked with us submitted at least one PR and it was successfully merged.
 
@@ -61,7 +61,7 @@ It was a valuable opportunity to look into the internal structure of an actual o
 The event started at 10am, but I arrived early at 9am and was able to get a lap blanket.
 There was also the luck of winning a pair of AirPods 4th generation in the lucky draw at the end of the event.
 
-![img_3.png](img_3.png)
+![img_3.png](/img/blog/2024-11-23/img_3.png)
 
 ## finish
 
