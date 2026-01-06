@@ -1,5 +1,5 @@
 ---
-title: 컨테이너 기술의 이해, 커널부터 쿠버네티스까지
+title: Understanding Container Technology, From Kernel to Kubernetes
 authors: doxxx
 tags:
   [
@@ -15,37 +15,37 @@ tags:
   ]
 date: 2025-02-01 23:26:30 +0900
 image: https://i.imgur.com/OmPuTTB.png
-description: 컨테이너 기술의 기본 개념부터 런타임 아키텍처까지, 리눅스 커널의 핵심 기능과 쿠버네티스의 컨테이너 관리 방식을 자세히 설명합니다.
+description: From the fundamental concepts of container technology to the runtime architecture, we will explain in detail the core functions of the Linux kernel and how Kubernetes manages containers.
 ---
 
 ![](https://i.imgur.com/OmPuTTB.png)
 
-컨테이너 기술은 클라우드 네이티브 환경에서 필수적인 요소입니다. 본 글에서는 리눅스 커널 기반 기술부터 Kubernetes에서의 관리 방식까지 다룹니다.
+Container technology is an essential element in cloud-native environments. This article covers everything from Linux kernel-based technologies to management methods in Kubernetes.
 
 <!-- truncate -->
 
-## 1. 리눅스와 컨테이너 기술의 역사
+## 1. A History of Linux and Container Technology
 
-컨테이너는 클라우드 네이티브 환경에서 필수적인 역할을 합니다. 이 기술을 제대로 이해하기 위해서는 리눅스의 기본 기술부터 쿠버네티스의 컨테이너 관리 방식까지 살펴볼 필요가 있습니다.
+Containers play a vital role in cloud-native environments. To properly understand this technology, we need to look at everything from the basics of Linux to how Kubernetes manages containers.
 
-### 1.1 Linux의 발전
+### 1.1 The evolution of Linux
 
-Linux는 1991년 UNIX를 기반으로 시작되어 컨테이너 기술의 근간이 되었습니다. UNIX에서 시작된 운영체제는 RedHat Enterprise Linux(RHEL)와 같은 상용 배포판과 CentOS 같은 무료
-배포판으로 발전했습니다. 최근에는 컨테이너 워크로드에 최적화된 경량 운영체제가 등장하면서, 기존의 범용 운영체제와는 다른 방향으로 발전하고 있습니다.
+Linux started out as a UNIX-based system in 1991 and became the foundation of container technology. Operating systems that originated from UNIX have evolved into commercial distributions such as RedHat Enterprise Linux (RHEL) and free
+distributions such as CentOS. Recently, lightweight operating systems optimized for container workloads have emerged, evolving in a different direction from existing general-purpose operating systems.
 
-최근 CentOS 서비스 종료로 Rocky Linux가 대체재로 등장했습니다.
+With the recent end of CentOS service, Rocky Linux has emerged as a replacement.
 
-### 1.2. 컨테이너 기술의 등장
+### 1.2. The emergence of container technology
 
-컨테이너는 리눅스 커널의 핵심 3가지 기술들을 기반으로 합니다. 먼저 `chroot`는 프로세스별로 독립된 디렉토리 환경을 제공합니다. `namespace`는 프로세스별로 시스템 자원을 분리하여 독립된 공간을
-만들어주는데, 여기에는 마운트(mnt), 프로세스 ID(pid), 네트워크(net), 사용자(user), IPC, UTS 등의 분리가 포함됩니다. 마지막으로 `cgroup`은 프로세스별로 메모리, CPU, 네트워크,
-디스크 I/O 등의 시스템 리소스 사용을 제어합니다.
+Containers are based on three core technologies of the Linux kernel: First, `chroot` provides an isolated directory environment for each process. `namespace` creates an independent space
+by separating system resources by process, which includes separation of mounts (mnt), process ID (pid), networks (net), users (user), IPC, UTS, etc. Finally, `cgroup` controls the use of system resources such as memory, CPU, network, and
+disk I/O on a per-process basis.
 
-위 기술들을 활용하여 컨테이너 기술이 발전하게 되었습니다.
+Container technology has advanced by utilizing the above technologies.
 
-## 2. 컨테이너 런타임 아키텍처
+## 2. Container runtime architecture
 
-### 2.1 컨테이너 런타임의 계층 구조
+### 2.1 Hierarchy of container runtimes
 
 ```mermaid
 graph TB
@@ -72,48 +72,48 @@ graph TB
     style LowLevel fill: #ced4da, stroke: #333
 ```
 
-컨테이너 런타임은 크게 두 가지 수준으로 나눌 수 있습니다.
+Container runtimes can be broadly divided into two levels:
 
 - 고수준(High Level) 런타임인 `Docker`나 `containerd`는 이미지 관리, 네트워크 설정 등 사용자 친화적인
   추가 기능을 제공합니다.
 
-- 저수준(Low Level) 런타임은 `runC`와 같이 기계와 직접 상호작용하는 컴포넌트입니다. 이는 OCI(Open Container
-  Initiative) 표준을 따르며, 실제 컨테이너의 생성과 실행을 담당합니다.
+- Low-level runtimes are components that interact directly with the machine, such as `runC`. It follows the OCI (Open Container
+  Initiative) standard and is responsible for creating and running the actual container.
 
-### 2.2 Docker와 containerd: 전환 배경과 결과
+### 2.2 Docker and Containerd: Background and Results of the Transition
 
-Docker는 초기 컨테이너 기술의 대중화를 이끌며, 개발 환경에서는 유용한 도구로 자리 잡았습니다. 그러나 Kubernetes와 같은 대규모 오케스트레이션 환경에서는 다음과 같은 문제가 있었습니다:
+Docker pioneered the popularization of early container technology and has established itself as a useful tool in development environments. However, in large-scale orchestration environments like Kubernetes, the following challenges existed:
 
-- 복잡한 계층 구조: `kubelet` → `dockershim` → `Docker Engine` → `containerd` → `runC`로 이어지는 경로는 불필요한 중간 계층을 포함해 성능 저하를 초래했습니다.
-- 비효율성: `Docker`의 이미지 빌드, `CLI` 등은 `Kubernetes` 운영 환경에서 사용되지 않아 리소스 낭비로 이어졌습니다.
+- Complex hierarchy: `kubelet` → `dockershim` → `Docker Engine` → `containerd` → `runC` path included unnecessary intermediate layers, which resulted in poor performance.
+- Inefficiency: `Docker` image build, `CLI`, etc. are not used in `Kubernetes` operating environment, which leads to waste of resources.
 
-이를 해결하기 위해 Kubernetes는 1.24 버전부터 `dockershim`을 제거하고, 더 경량화된 `containerd`를 기본 런타임으로 채택했습니다. 이 전환은 다음과 같은 결과를 가져왔습니다:
+To address this, Kubernetes removed `dockershim` starting with version 1.24 and adopted the more lightweight `containerd` as the default runtime. This transition resulted in:
 
-- 단순화된 경로: kubelet → CRI → containerd → runC
-- 성능 향상: 불필요한 계층 제거로 리소스 효율성 증가
-- 표준화된 인터페이스: OCI 표준 준수를 통해 다양한 런타임 간 호환성을 확보
+- Simplified path: kubelet → CRI → containerd → runC
+- Performance improvements: Increased resource efficiency by eliminating unnecessary layers.
+- Standardized interface: Compliance with OCI standards ensures compatibility across different runtimes.
 
-### 2.3 현대적 컨테이너 런타임 아키텍처
+### 2.3 Modern Container Runtime Architecture
 
-현대적인 컨테이너 런타임 아키텍처는 Kubernetes 환경에서 효율성과 표준화를 목표로 설계되었습니다. Kubernetes는 CRI(Container Runtime Interface)를 통해 다양한 런타임과
-호환성을 유지하며, `containerd`와 같은 경량화된 런타임을 선호합니다. 이 구조는 다음과 같은 장점을 제공합니다:
+Modern container runtime architectures are designed for efficiency and standardization in Kubernetes environments. Kubernetes는 CRI(Container Runtime Interface)를 통해 다양한 런타임과
+호환성을 유지하며, `containerd`와 같은 경량화된 런타임을 선호합니다. This structure offers the following advantages:
 
-- 불필요한 계층 제거로 성능 최적화
-- OCI 표준 준수를 통한 호환성 보장
-- 유연성 강화로 다양한 환경에서의 활용 가능
+- Optimize performance by removing unnecessary layers
+- Ensure compatibility through compliance with OCI standards
+- Enhanced flexibility allows for use in a variety of environments
 
-### 2.4 Docker의 역할 변화
+### 2.4 Docker's Changing Role
 
-Docker는 여전히 로컬 개발 환경에서 중요한 도구로 사용됩니다. 특히 이미지 빌드 및 테스트와 같은 작업에 적합하며, 개발자 친화적인 CLI 도구를 제공합니다. 하지만 운영 환경에서는 containerd와 같은
-경량화된 런타임이 선호됩니다. 이는 Kubernetes의 확장성과 효율성을 높이는 데 기여하며, Docker는 주로 개발 중심 작업에 집중하는 역할로 변화하고 있습니다.
+Docker is still an important tool in local development environments. It is particularly suited for tasks such as building and testing images, and provides developer-friendly CLI tools. However, in production environments, a
+lightweight runtime such as containerd is preferred. This contributes to the scalability and efficiency of Kubernetes, while Docker is shifting its role to focus primarily on development-centric tasks.
 
-## 3. 쿠버네티스의 컨테이너 관리
+## 3. Container Management in Kubernetes
 
-### 3.1. 쿠버네티스에서의 Pod 생성 과정
+### 3.1. Pod creation process in Kubernetes
 
-Kubernetes에서 Pod는 가장 기본적인 배포 단위입니다. Pod 생성 요청은 kubelet → CRI → containerd → runC라는 경로를 거쳐 실행됩니다. 이 과정에서 Kubernetes는 gRPC
-기반의 CRI(Container Runtime Interface)를 통해 컨테이너 런타임과 효율적으로 통신합니다. gRPC는 표준화된 프로토콜로 다양한 런타임(containerd, cri-o 등)을 지원하며, 일관된
-인터페이스를 제공합니다.
+In Kubernetes, a Pod is the most basic unit of deployment. A Pod creation request is executed through the path kubelet → CRI → containerd → runC. During this process, Kubernetes communicates efficiently with the container runtime via the Container Runtime Interface (CRI) based on gRPC
+. gRPC is a standardized protocol that supports various runtimes (containerd, cri-o, etc.) and provides a consistent
+interface.
 
 ```mermaid
 sequenceDiagram
@@ -132,50 +132,49 @@ sequenceDiagram
     Kubelet -->> API: 8. Pod Status Update
 ```
 
-- Pod 생성 요청 단계
-  - 사용자가 kube-apiserver에 Pod 생성을 요청합니다.
-  - kube-apiserver는 요청을 받아 kubelet에 전달합니다.
+- Pod creation request step
+  - A user requests kube-apiserver to create a Pod.
+  - kube-apiserver receives requests and passes them to the kubelet.
 
-- 컨테이너 생성 단계
-  - kubelet은 CRI(Container Runtime Interface)를 통해 containerd에 명령을 전달합니다.
-  - containerd는 필요한 이미지를 다운로드하고 runC를 통해 실제 컨테이너를 생성 및 실행합니다.
+- Container creation steps
+  - kubelet passes commands to containerd through the Container Runtime Interface (CRI).
+  - containerd downloads the required images and creates and runs the actual containers via runC.
 
-### 3.2 CRI 구현체들의 역할
+### 3.2 Role of CRI implementations
 
-CRI는 다양한 런타임을 지원할 수 있도록 설계되었습니다. 현재 주요 구현체로는 다음 두 가지가 있습니다:
+CRI is designed to support a variety of runtimes. There are currently two major implementations:
 
-1. **CRI-Containerd**는 `containerd`의 공식 CRI 구현체로, 안정성과 성능을 인정받아 가장 널리 사용되고 있습니다. OCI 표준 준수를 통해 다양한 환경에서 호환성을 제공합니다.
+1. **CRI-Containerd** is the official CRI implementation of `containerd`, and is the most widely used due to its stability and performance. Compliance with OCI standards provides compatibility across a variety of environments.
 
-2. **cri-dockerd**는 기존 `Docker` 기반 환경의 마이그레이션을 위한 브릿지 역할을 합니다. `dockershim`이 쿠버네티스에서 제거된 후, `Docker`를 계속 사용해야 하는 환경을 위해
-   제공되는 솔루션입니다.
+2. **cri-dockerd** acts as a bridge for migrating existing `Docker`-based environments. This is a solution provided for environments that need to continue using `Docker` after `dockershim` is removed from Kubernetes.
 
-## 4) 컨테이너 격리와 리소스 관리
+## 4) Container isolation and resource management
 
-### 4.1 리소스 격리와 제어 기술
+### 4.1 Resource Isolation and Control Technologies
 
-컨테이너는 호스트 시스템의 리소스를 공유하면서도 서로 격리된 환경에서 실행됩니다. 이는 다음과 같은 리눅스 커널 기능들을 통해 구현됩니다:
+Containers run in isolated environments while sharing the resources of the host system. This is implemented through the following Linux kernel features:
 
 ```mermaid
 graph TD
-    subgraph HostOS[Host OS]
-        subgraph Containers[컨테이너]
-            C1[컨테이너 1]
-            C2[컨테이너 2]
+    subgraph HostOS
+        subgraph Containers
+            C1
+            C2
         end
 
-        subgraph Isolation[격리 기술]
-            subgraph NS[Namespace]
-                N1[프로세스 격리<br/>PID]
-                N2[네트워크 격리<br/>NET]
-                N3[파일시스템 격리<br/>MNT]
-                N4[기타 격리<br/>USER/IPC/UTS]
+        subgraph Isolation
+            subgraph NS
+                N1<br/>PID]
+                N2<br/>NET]
+                N3<br/>MNT]
+                N4[Other Isolation<br/>USER/IPC/UTS]
             end
 
-            subgraph CG[cgroups 리소스 제어]
-                R1[CPU 사용량]
-                R2[메모리 사용량]
-                R3[디스크 I/O]
-                R4[네트워크 대역폭]
+            subgraph CG[cgroups resource control]
+                R1[CPU usage]
+                R2[Memory usage]
+                R3[Disk I/O]
+                R4[Network bandwidth]
             end
         end
     end
@@ -188,72 +187,71 @@ graph TD
     style CG fill: #dee2e6, stroke: #ced4da
 ```
 
-이러한 격리 기술들이 적절히 조합되어 컨테이너라는 하나의 논리적 단위를 형성합니다. 각 컨테이너는 자신만의 격리된 환경에서 실행되면서도, 필요한 만큼의 시스템 리소스만을 사용하도록 제어됩니다.
+These isolation technologies are appropriately combined to form a single logical unit called a container. Each container runs in its own isolated environment, while being controlled to use only as many system resources as it needs.
 
-### 4.2 네트워킹과 CNI(Container Network Interface)
+### 4.2 Networking and Container Network Interface (CNI)
 
-컨테이너 네트워킹은 CNI(Container Network Interface)를 통해 구현됩니다. CNI는 컨테이너의 네트워크 설정을 담당하는 표준 인터페이스로, 다음과 같은 기능을 제공합니다:
+Container networking is implemented via the Container Network Interface (CNI). CNI is a standard interface responsible for configuring the network settings of containers, providing the following features:
 
-- Pod 간 통신
-- 서비스 디스커버리
-- 네트워크 정책 적용
-- 로드 밸런싱
+- Pod-to-Pod Communication
+- Service Discovery
+- Apply network policies
+- load balancing
 
-## 5. 컨테이너의 표준화와 OCI(Open Container Initiative)
+## 5. Container standardization and the Open Container Initiative (OCI)
 
-### 5.1. OCI 표준의 필요성과 영향
+### 5.1. The Need and Impact of OCI Standards
 
-컨테이너 기술이 급속도로 발전하면서, 서로 다른 구현체들 간의 호환성 문제가 대두되었습니다. 이러한 문제를 해결하기 위해 2015년 Docker를 주축으로 OCI가 설립되었습니다. OCI는 두 가지 핵심 표준을
-정의했습니다:
+As container technology rapidly evolves, compatibility issues between different implementations have emerged. To address these issues, OCI was founded in 2015 with Docker at its core. OCI defined two core standards:
 
 #### Runtime Specification
 
-- 컨테이너 실행 환경에 대한 표준
-- 컨테이너의 라이프사이클 관리 방법 정의
-- 리소스 격리와 제어 방식 표준화
+- Standards for container execution environments
+- Defining how to manage the lifecycle of containers
+- Standardizing resource isolation and control methods
 
 #### Image Specification
 
-- 컨테이너 이미지 포맷 표준화
-- 이미지 생성 및 배포 방식 정의
-- 이미지 레이어 관리 방식 표준화
+- Standardizing container image formats
+- Defining how images are created and distributed
+- Standardizing image layer management methods
 
-### 5.2. runC: OCI 표준의 참조 구현체
+### 5.2. runC: Reference implementation of the OCI standard
 
-runC는 OCI 표준의 대표적인 구현체로, 저수준 컨테이너 런타임의 기준이 되었습니다. 다음과 같은 특징을 가집니다:
+runC is a representative implementation of the OCI standard and has become the standard for low-level container runtimes. It has the following characteristics:
 
-- 경량화된 구조
-- 리눅스 커널 기능 직접 활용
-- 높은 보안성과 안정성
-- 다양한 고수준 런타임에서 활용
+- lightweight structure
+- Direct use of Linux kernel functions
+- High security and stability
+- Utilized in various high-level runtimes
 
-### 5.3. containerd의 역할
+### 5.3. The role of containerd
 
-containerd는 Docker에서 분리되어 나온 고수준 컨테이너 런타임으로, 다음과 같은 기능을 제공합니다:
+Containerd is a high-level container runtime forked from Docker that provides the following features:
 
-- 컨테이너 실행 및 관리
-- 이미지 풀/푸시
-- 스토리지 관리
-- 네트워크 인터페이스 제공
+- Running and managing containers
+- Image pull/push
+- Storage Management
+- Provide network interface
 
-특히 쿠버네티스 환경에서 containerd는 다음과 같은 장점을 제공합니다:
+Specifically in a Kubernetes environment, containerd offers the following advantages:
 
 ```mermaid
 flowchart LR
-    subgraph Management[컨테이너 관리 계층]
-        kubelet[kubelet<br/>관리]
+    subgraph Management[Container Management Layer]
+        kubelet[kubelet<br/>Management]
     end
 
-    subgraph Interface[인터페이스 계층]
-        cri[CRI<br/>통신]
+    subgraph Interface[Interface Layer]
+        cri[CRI<br/>Communication]
     end
 
-    subgraph Runtime[런타임 계층]
-        containerd[containerd<br/>조정]
+    subgraph Runtime[Runtime Layer]
+        containerd[containerd<br/>Coordination]
     end
 
-    subgraph Execution[실행 계층]
-        runc[runC<br/>실행]
+    subgraph Execution[Execution Layer]
+        runc[runC<br/>run]
     end
 
     kubelet --> cri
@@ -265,43 +263,43 @@ flowchart LR
     style Execution fill: #f5fffa, stroke: #333
 ```
 
-이러한 단순화된 구조는 성능 향상과 안정성 개선에 큰 도움이 되었습니다.
+This simplified structure has greatly helped in improving performance and stability.
 
-컨테이너 기술은 리소스 격리와 효율성을 제공하며, 현대 IT 환경에서 필수적인 요소로 자리 잡았습니다. 특히 OCI 표준화와 쿠버네티스와 같은 도구들의 발전은 이 기술을 더욱 강력하고 유연하게 만들었습니다.
+Container technology provides resource isolation and efficiency, making it an essential element of modern IT environments. In particular, the standardization of OCI and the advancement of tools such as Kubernetes have made this technology more powerful and flexible.
 
 ## 6. conclusion
 
-지금까지 살펴본 컨테이너 기술은 리눅스 커널의 기본 기능에서 시작하여 현대적인 클라우드 네이티브 환경의 핵심 요소로 발전해왔습니다. 주요 발전 과정을 정리해보면 다음과 같습니다
+The container technology we've looked at so far has evolved from a fundamental feature of the Linux kernel to a core element of modern cloud-native environments. The main development processes are summarized as follows:
 
-1. 기술적 진화
-   - 리눅스 커널의 namespace, cgroups, chroot에서 시작
-   - Docker를 통한 컨테이너 기술의 대중화
-   - OCI 표준화를 통한 생태계 확장
-   - 쿠버네티스를 통한 오케스트레이션 표준화
-2. 아키텍처 최적화
-   - 복잡한 Docker 기반 구조에서 경량화된 containerd 중심으로 전환
-   - CRI를 통한 표준 인터페이스 확립
-   - 효율적인 리소스 관리와 격리 구현
+1. technological evolution
+   - Starting with namespaces, cgroups, and chroot in the Linux kernel
+   - Popularizing container technology through Docker
+   - Expanding the ecosystem through OCI standardization
+   - Standardizing Orchestration with Kubernetes
+2. Architecture Optimization
+   - Transition from a complex Docker-based architecture to a lightweight containerd-centric one.
+   - Establishing a standard interface through CRI
+   - Implement efficient resource management and isolation
 
 ## Appendix
 
-### 주요 용어 설명:
+### Key Terms Explained:
 
-- CRI (Container Runtime Interface): 쿠버네티스와 컨테이너 런타임 간의 표준 통신 인터페이스
-- OCI (Open Container Initiative): 컨테이너 포맷과 런타임에 대한 산업 표준을 정의하는 단체
-- namespace: 프로세스 격리를 위한 리눅스 커널 기능
-- cgroups: 리소스 사용을 제어하는 리눅스 커널 기능
-- containerd: OCI 표준을 구현한 산업 표준 컨테이너 런타임
-- runC: 저수준 컨테이너 런타임의 참조 구현체
+- CRI (Container Runtime Interface): A standard communication interface between Kubernetes and the container runtime.
+- OCI (Open Container Initiative): An organization that defines industry standards for container formats and runtimes.
+- namespace: Linux kernel feature for process isolation
+- cgroups: A Linux kernel feature that controls resource usage.
+- containerd: An industry-standard container runtime that implements the OCI standard.
+- runC: A reference implementation of a low-level container runtime.
 
-### 참고 자료
+### References
 
-- [인프런 쿠버네티스 어나더 클래스 (지상편) - Sprint 1, 2 강의 섹션3 컨테이너 한방 정리](https://inf.run/NzKy)
+- [Infraon Kubernetes Another Class (Ground Edition) - Sprint 1, 2 Lecture Section 3: Containers in One Shot] (https://inf.run/NzKy)
 
 **Sprint1**
 
-\#1.컨테이너 한방정리 [컨테이너 기술의 이해, 커널부터 쿠버네티스까지(현재 글)](/2025/02/01/from-linux-kernel-to-kubernetes)
+\#1. Containers in One Shot [Understanding Container Technology, From Kernel to Kubernetes (Current Article)] (/2025/02/01/from-linux-kernel-to-kubernetes)
 
-\#2.쿠버네티스 설치 [쿠버네티스 클러스터 구축, 아키텍처부터 네트워크까지](/2026/01/05/the-weight-of-kubernetes-installation)
+\#2. Installing Kubernetes [Building a Kubernetes Cluster, from Architecture to Networking] (/2026/01/05/the-weight-of-kubernetes-installation)
 
-시리즈 글로 이어집니다. 다음 글에서는 쿠버네티스 Pod와 Service 네트워킹에 대해 다룰 예정입니다.
+This continues in the series. In the next article, we will cover Kubernetes Pod and Service networking.

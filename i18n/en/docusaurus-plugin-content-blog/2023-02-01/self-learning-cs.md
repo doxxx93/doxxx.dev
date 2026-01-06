@@ -462,7 +462,7 @@ Each function within the program is also grouped together.
 
 Read the following description and write whether it is about SRAM or DRAM.
 View: SRAM, DRAM
-The question content was modified according to the issue posted on the book GitHub.
+The question content has been modified according to the issue posted on the book GitHub.
 
 1. SRAM
 2. DRAM
