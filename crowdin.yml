@@ -5,8 +5,8 @@ pull_request_branch_prefix: l10n_
 
 files:
   - source: /blog/**/*.md
-    translation: /i18n/%two_letters_code%/docusaurus-plugin-content-blog/%file_path%/%file_name%
+    translation: /i18n/%two_letters_code%/docusaurus-plugin-content-blog/**/%original_file_name%
     ignore:
       - /blog/authors.yml
   - source: /docs/**/*.md
-    translation: /i18n/%two_letters_code%/docusaurus-plugin-content-docs/current/%file_path%/%file_name%
+    translation: /i18n/%two_letters_code%/docusaurus-plugin-content-docs/current/**/%original_file_name%
