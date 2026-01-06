@@ -1,7 +1,11 @@
 import React from "react";
 import Giscus from "@giscus/react";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 export default function Comments(): JSX.Element {
+  const {i18n} = useDocusaurusContext();
+  const lang = i18n.currentLocale === "en" ? "en" : "ko";
+
   return (
     <div>
       <Giscus
@@ -11,12 +15,12 @@ export default function Comments(): JSX.Element {
         category="Comments"
         categoryId="DIC_kwDOM8mMuc4CjM3m"
         mapping="pathname"
-        strict="1"
+        strict="0"
         reactionsEnabled="1"
         emitMetadata="0"
         inputPosition="bottom"
         theme="preferred_color_scheme"
-        lang="ko"
+        lang={lang}
         loading="lazy"
       />
     </div>
