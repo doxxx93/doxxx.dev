@@ -140,7 +140,7 @@ Areas of improvement in the current pipeline include:
 2. **Cost Optimization**: As your Textract and Bedrock usage increases, so do your costs. You may want to consider introducing caching or batch processing.
 3. **Error Handling**: Extraction quality can vary depending on the PDF format or quality, requiring more robust error handling and quality verification.
 
-### 4) 알림 발송 시스템
+### 3) Search and Subscription System
 
 Search and subscription features are key features that enable users to easily find articles of interest and increase user retention. For this purpose, we chose a combination of DynamoDB and OpenSearch Service.
 
@@ -439,16 +439,16 @@ Security remains an important consideration even in serverless architectures. Th
 
 1. WAF for basic web attack defense
 
-- SQL Injection Prevention
-- XSS blocking
-- Detect abnormal traffic patterns
-- Region-based access control
+- SQL Injection 방지
+- XSS 차단
+- 비정상 트래픽 패턴 감지
+- 지역 기반 접근 제어
 
-2. Managing SSL/TLS Certificates with ACM
-3. DNS Security with Route 53
-4. Integrating API Gateway with Cognito
+2. ACM으로 SSL/TLS 인증서 관리
+3. Route 53을 통한 DNS 보안
+4. API Gateway와 Cognito 통합
 
-API Gateway handles authentication as follows:
+API Gateway에서 다음과 같이 인증을 처리하고 있습니다:
 
 ```python
 const auth = {
@@ -467,67 +467,67 @@ const auth = {
 };
 ```
 
-This is a situation that needs some improvement.
+몇 가지 개선이 필요한 상황입니다.
 
-If you are considering implementing Cognito,
+Cognito의 도입을 고려한다면,
 
-1. **Fine-Grained Permission Control**
+1. **세분화된 권한 제어**
 
-- Currently, all API access is allowed to authenticated users.
-- Access control based on subscription status or user role is required.
+- 현재는 인증된 사용자에게 모든 API 접근 허용
+- 구독 상태나 사용자 역할 기반의 접근 제어 필요
 
-2. **Token Management**
+2. **토큰 관리**
 
-- Insufficient refresh token processing logic
-- User experience needs to be improved when tokens expire.
+- 리프레시 토큰 처리 로직 미흡
+- 토큰 만료 시 사용자 경험 개선 필요
 
-I think it's important not to miss points like this.
+와 같은 점들을 놓치지 않는 것이 중요할 것 같습니다.
 
-### Front-end implementation
+### 프론트엔드 구현
 
-The front-end is built on Next.js and TypeScript, with a focus on efficient integration with AWS services. In particular, the configuration using AWS Amplify was very
-effective for rapid prototyping and deployment.
+프론트엔드는 Next.js와 TypeScript를 기반으로 구현했으며, AWS 서비스들과의 효율적인 통합에 중점을 두었습니다. 특히 AWS Amplify를 활용한 구성이 빠른 프로토타이핑과 배포에 매우
+효과적이었습니다.
 
-### Operations and Monitoring - Future Improvements
+### 운영 및 모니터링 - 향후 개선점
 
-Only basic CloudWatch monitoring is implemented. To ensure stable service operation, the following factors should be considered:
+기본적인 CloudWatch 모니터링만 구현된 상태입니다. 안정적인 서비스 운영을 위해서는 다음과 같은 요소들을 고려해야 할 것 같습니다:
 
-- **Comprehensive monitoring system**
-  - Establishing an Error Reporting System
-  - API Performance Monitoring
-- **Notification System**
-  - Set key indicator threshold alerts
-  - Automated daily/weekly reports
-- **Logging Strategy**
-  - Defining a structured log format
-  - Processing policy by log level
+- **종합적인 모니터링 체계**
+  - Error Reporting 시스템 구축
+  - API 성능 모니터링
+- **알림 시스템**
+  - 주요 지표 임계값 알림 설정
+  - 일일/주간 리포트 자동화
+- **로깅 전략**
+  - 구조화된 로그 포맷 정의
+  - 로그 레벨별 처리 정책
 
-### Cost Management - What Needs Improvement
+### 비용 관리 - 개선 필요 사항
 
-At the MVP stage, we focused on implementing features rather than cost optimization. Going forward, we believe the following cost management strategies will be necessary:
+MVP 단계에서는 비용 최적화보다 기능 구현에 집중했습니다. 향후에는 다음과 같은 비용 관리 전략이 필요할 것 같습니다:
 
-- **Cost Analysis by Service**
-  - Optimizing Lambda function execution time and memory
-  - Adjusting DynamoDB's Read/Write Capacity
-  - S3 storage tiering
-- Caching Strategy
-  - API response caching
-  - Memory caching of frequently accessed data
-  - Leveraging CDN for static resources
-- **Resource Management**
-  - Automatic cleanup of unused resources
-  - Test environment resource management
-  - Backup Data Retention Policy
+- **서비스별 비용 분석**
+  - Lambda 함수의 실행 시간과 메모리 최적화
+  - DynamoDB의 읽기/쓰기 용량 조정
+  - S3 스토리지 계층화
+- **캐싱 전략**
+  - API 응답 캐싱
+  - 자주 접근되는 데이터의 메모리 캐싱
+  - 정적 자원의 CDN 활용
+- **리소스 정리**
+  - 미사용 리소스 자동 정리
+  - 테스트 환경 리소스 관리
+  - 백업 데이터 보관 정책
 
-## In conclusion
+## 마치며
 
-This project allowed me to utilize various AWS serverless services in an actual production environment. In particular, we have experienced that technologies such as Step Functions, SNS/SQS combination, and Zero-ETL integration are
-very effective in building actual services.
+이번 프로젝트를 통해 AWS의 다양한 서버리스 서비스들을 실제 프로덕션 환경에서 활용해볼 수 있었습니다. 특히 Step Functions, SNS/SQS 조합, Zero-ETL 통합 등의 기술들이 실제 서비스 구축에
+매우 효과적이었음을 경험했습니다.
 
-I hope this article will help you design a serverless architecture using AWS. If you have any further details or questions, please leave a comment.
+이 글이 AWS를 활용한 서버리스 아키텍처 설계에 도움이 되길 바랍니다. 더 자세한 내용이나 질문이 있으시다면 댓글로 남겨주세요.
 
 ## Ref.
 
-- [AWS What's New Korean Summary](https://aws-whats-new-korean.netlify.app/)
-- [I am Bibim AI. But with serverless - Kim Seon-woo](https://youtu.be/R_1seCDxv0E?list=PLX2fs3661XpPCc9wfHkc16TSs4DsNWL6R)
+- [AWS What's New 한국어 요약](https://aws-whats-new-korean.netlify.app/)
+- [저는 비빔AI 입니다. 그런데 서버리스를 곁들인 - 김선우](https://youtu.be/R_1seCDxv0E?list=PLX2fs3661XpPCc9wfHkc16TSs4DsNWL6R)
 - [AWS re:Invent 2023 - Amazon DynamoDB zero-ETL integration with Amazon OpenSearch Service (DAT339) - YouTube |](https://lilys.ai/digest/2350334)
