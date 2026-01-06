@@ -126,11 +126,10 @@ const config: Config = {
       items: [
         {to: "/archive", label: "Archive", position: "left"},
         {to: "/about", label: "About", position: "left"},
-        // {
-        //   href: 'https://github.com/doxxx93/doxxx93',
-        //   label: 'GitHub',
-        //   position: 'right',
-        // },
+        {
+          type: "localeDropdown",
+          position: "right",
+        },
         {
           "aria-label": "GitHub Repository",
           className: "navbar--github-link",
