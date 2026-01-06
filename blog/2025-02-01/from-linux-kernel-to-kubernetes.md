@@ -292,4 +292,4 @@ flowchart LR
 
 #2.쿠버네티스 설치 [쿠버네티스 클러스터 구축, 아키텍처부터 네트워크까지](/2026/01/05/the-weight-of-kubernetes-installation)
 
-시리즈 글로 이어집니다. 다음 글에서는 쿠버네티스 Pod와 Service 네트워킹에 대해 다룰 예정입니다.
+#3.쿠버네티스가 편한 이유 [실무자가 말하는 쿠버네티스, '복잡함' 너머의 '편리함' 4가지](/2026/01/06/kubernetes-practical-benefits)
