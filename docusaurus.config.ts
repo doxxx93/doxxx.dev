@@ -28,7 +28,17 @@ const config: Config = {
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "ko",
-    locales: ["ko"],
+    locales: ["ko", "en"],
+    localeConfigs: {
+      ko: {
+        label: "한국어",
+        htmlLang: "ko",
+      },
+      en: {
+        label: "English",
+        htmlLang: "en",
+      },
+    },
   },
 
   // Plugins

@@ -1,0 +1,18 @@
+{
+  "title": {
+    "message": "Doxxx Dev",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "Doxxx profile logo",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Archive": {
+    "message": "Archive",
+    "description": "Navbar item with label Archive"
+  },
+  "item.label.About": {
+    "message": "About",
+    "description": "Navbar item with label About"
+  }
+}
