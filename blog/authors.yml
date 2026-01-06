@@ -5,7 +5,7 @@ doxxx:
   image_url: https://avatars.githubusercontent.com/u/51396905?s=400&u=65840fab9273e12e5b3521af740027adfa28ef62&v=4
   description: >
     Cloud Engineer with a passion for building scalable and maintainable software.
-  page: true
+  page: false
   email: me@doxxx.dev
   socials:
     github: doxxx93
