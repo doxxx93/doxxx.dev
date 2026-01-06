@@ -72,7 +72,7 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/doxxx93.github.io/blob/master/",
+          editUrl: "https://github.com/doxxx93/doxxx.dev/edit/master/",
         },
         blog: {
           routeBasePath: "/", // 블로그를 메인 페이지로
@@ -93,7 +93,7 @@ const config: Config = {
           // },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/doxxx93.github.io/blob/master/",
+          editUrl: "https://github.com/doxxx93/doxxx.dev/edit/master/",
           // Useful options to enforce blogging best practices
           // onInlineTags: 'warn',
           // onInlineAuthors: 'warn',
