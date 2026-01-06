@@ -26,7 +26,7 @@ When I wrote a retrospective on another project, after the project was over, the
 
 In addition to the two articles above, I also referred to various articles on retrospectives, and the KPT at that time was as follows.
 
-![kpt.png](kpt.png)
+![kpt.png](/img/blog/2024-10-13/kpt.png)
 
 There were a few things I regret.
 
@@ -48,7 +48,7 @@ I also thought that if you are a developer, you will be able to understand the f
 
 I checked the project's commit log and organized the project's major events using the `git log --pretty=format:"%h - %an, %ar : %s%n%b"` command.
 
-![commit log.png](commit-log.png)
+![commit log.png](/img/blog/2024-10-13/commit-log.png)
 
 In addition, I was able to grasp the overall flow of the project by organizing conversations and fragmented notes exchanged through messengers and creating a timeline.
 

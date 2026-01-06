@@ -509,7 +509,7 @@ Depending on the number of bits that can be stored in one cell, there are 1-bit 
 
 QLC is not widely used, and the differences between the other three are as follows:
 
-![img.png](img.png)
+![img.png](/img/blog/2023-02-01/img.png)
 
 This can be summarized in one table.
 
@@ -599,7 +599,7 @@ Data buffering is a method of making the transmission rates similar by storing d
 
 ### Structure of the device controller
 
-![img_1.png](img_1.png)
+![img_1.png](/img/blog/2023-02-01/img_1.png)
 
 Data registers are registers that contain data to be exchanged between the CPU and input/output devices. It acts as a buffer as mentioned above. In input/output devices with a lot of data, RAM is sometimes used instead of registers.
 
@@ -816,7 +816,7 @@ A child process overwrites its memory space with another program via the exec sy
 
 1. Below is a process state diagram showing the process states.
 
-![img_2.png](img_2.png)
+![img_2.png](/img/blog/2023-02-01/img_2.png)
 
 ## 10.3 Thread
 
