@@ -42,7 +42,21 @@ const config: Config = {
   },
 
   // Plugins
-  plugins: ["docusaurus-plugin-sass"],
+  plugins: [
+    "docusaurus-plugin-sass",
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        createRedirects(existingPath) {
+          // /blog/... → /... 리다이렉트 (구글 인덱싱된 옛 URL 지원)
+          if (!existingPath.startsWith("/docs") && !existingPath.startsWith("/blog")) {
+            return [`/blog${existingPath}`];
+          }
+          return undefined;
+        },
+      },
+    ],
+  ],
   future: {
     experimental_faster: true,
     v4: true,
