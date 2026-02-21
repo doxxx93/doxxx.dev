@@ -32,8 +32,8 @@ reflector나 watch 쪽을 살펴보면서 해결이 안 된 이슈나 안정성 
 
 [PR #1836](https://github.com/kube-rs/kube/pull/1836)을 올렸다. 파일 체인지가 1개라 부담이 없었다. 메인테이너 clux의 첫 리뷰:
 
-![first-review-1.png](first-review-1.png)
-![first-review-2.png](first-review-2.png)
+![first-review-1.png](/img/blog/2026-02-20/first-review-1.png)
+![first-review-2.png](/img/blog/2026-02-20/first-review-2.png)
 
 예상과 다른 방식이라고 했다. 제안한 방향으로 수정했더니 코드가 깔끔해졌다. 이 과정에서 lint를 두 번 연속 실패시키기도 했지만, 덕분에 justfile로 fmt나 clippy를 관리하는 방식이나 프로젝트 전반의
 개발 흐름에 대한 이해가 생겼다. 이 구현을 끝낼 쯤 clux가 후속 이슈를 만들어줬고, [PR #1838](https://github.com/kube-rs/kube/pull/1838)로 자연스럽게 이어졌다.
@@ -49,11 +49,11 @@ reflector나 watch 쪽을 살펴보면서 해결이 안 된 이슈나 안정성 
 이슈에 먼저 리서치 결과를 남기고, 2단계로 나눠 [PR #1873](https://github.com/kube-rs/kube/pull/1873)
 과 [PR #1876](https://github.com/kube-rs/kube/pull/1876)을 올렸다. clux가 느린 클러스터에서 직접 테스트한 결과:
 
-![28s-to-2s.png](28s-to-2s.png)
+![28s-to-2s.png](/img/blog/2026-02-20/28s-to-2s.png)
 
 그 정도로 개선될 줄은 몰랐다. 내가 짠 코드가 숫자로 차이를 만들었다는 게 신기했고, 이때 성능 벤치마킹을 체계적으로 해야겠다는 생각이 처음 들었다. 이 PR이 머지된 직후, 코멘트 하나가 달렸다.
 
-![member-invite.png](member-invite.png)
+![member-invite.png](/img/blog/2026-02-20/member-invite.png)
 
 예상을 전혀 못했다. 주변 사람들한테 자랑했던 것 같다. 이후로 회사에서 kube-rs에 대해 이건 뭔지, 저건 뭔지, 어떤 게 나은지 같은 질문들을 받게 됐다.
 
@@ -79,7 +79,7 @@ ExponentialBackoff 대신 커스텀 구현을 택한 부분을 짚으면서도 "
 
 **버그 사냥.** 이 RetryPolicy를 구현하면서 기존 watcher 코드를 읽다가 버그를 발견했다.
 
-![bug.png](bug.png)
+![bug.png](/img/blog/2026-02-20/bug.png)
 
 builder 패턴인데 반환값을 버리고 있어서, jitter가 켜져 있지만 실제로는 적용되지 않는 상태였다.
 
@@ -103,7 +103,7 @@ approve는 "이 코드가 머지되어도 좋다"는 뜻인데, 확인하지 않
 
 다른 사람의 PR을 merge한다는 게 솔직히 겁이 있었고, 권한은 있지만 계속 미루고 있었다.
 
-![merge.png](merge.png)
+![merge.png](/img/blog/2026-02-20/merge.png)
 
 clux에게 merge는 판단의 문제가 아니라 흐름의 문제였다. CI가 통과하고 사소한 변경이면 굳이 기다릴 이유가 없다는 거다. 내가 무겁게 느끼던 걸 clux는 당연하게 보고 있었고, 그 관점을 받아들이고
 나서부터는 approve된 PR을 merge하기 시작할 수 있었다.
