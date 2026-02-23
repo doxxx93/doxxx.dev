@@ -69,7 +69,14 @@ const config: Config = {
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: '#3373f2',
+            media: '(prefers-color-scheme: light)',
+            content: '#ffffff',
+          },
+          {
+            tagName: 'meta',
+            name: 'theme-color',
+            media: '(prefers-color-scheme: dark)',
+            content: '#000000',
           },
         ],
       },
