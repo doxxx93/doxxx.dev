@@ -157,6 +157,14 @@ const config: Config = {
 
   headTags: [
     {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://cdn.jsdelivr.net',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
       tagName: 'script',
       attributes: {type: 'application/ld+json'},
       innerHTML: JSON.stringify({
@@ -177,7 +185,6 @@ const config: Config = {
   themeConfig: {
     // SEO 글로벌 메타데이터
     metadata: [
-      {name: "keywords", content: "cloud, engineer, devops, kubernetes, aws, docker, 클라우드, 데브옵스"},
       {name: "author", content: "Doxxx"},
     ],
     image: "img/og-image.jpg",
@@ -212,9 +219,7 @@ const config: Config = {
         "java",
         "bash",
         "json",
-        "sql",
         "toml",
-        "docker",
         "yaml",
         "swift",
       ],
