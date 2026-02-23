@@ -116,8 +116,8 @@ const config: Config = {
           blogTitle: "Doxxx Dev",
           blogDescription:
             "I am a cloud engineer.",
-          blogSidebarTitle: "All Posts",
-          blogSidebarCount: "ALL",
+          blogSidebarTitle: "Recent Posts",
+          blogSidebarCount: 5,
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
           showReadingTime: true,
