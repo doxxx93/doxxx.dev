@@ -1,6 +1,16 @@
 :root {
   --docsearch-primary-color: var(--ifm-color-primary);
   --docsearch-text-color: var(--ifm-font-color-base);
+  --docsearch-searchbox-focus-background: var(--ifm-background-color);
+  --docsearch-key-gradient: linear-gradient(-225deg, #d5dbe4, #f8f8f8);
+  --docsearch-key-shadow: inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff,
+    0 1px 2px 1px rgba(30, 35, 90, 0.4);
+}
+
+[data-theme='dark'] {
+  --docsearch-key-gradient: linear-gradient(-26.5deg, #444, #2a2a2a);
+  --docsearch-key-shadow: inset 0 -2px 0 0 #333, inset 0 0 1px 1px #555,
+    0 1px 2px 1px rgba(0, 0, 0, 0.6);
 }
 
 .DocSearch-Button {
