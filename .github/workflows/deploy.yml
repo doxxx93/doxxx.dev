@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -19,18 +19,15 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
+      - name: Enable Corepack
+        run: corepack enable
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Enable Yarn via Corepack
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: |
-          corepack enable
-          yarn set version 4.5.3
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install
