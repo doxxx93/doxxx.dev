@@ -114,7 +114,7 @@ const config: Config = {
           // onUntruncatedBlogPosts: 'warn',
         },
         gtag: {
-          trackingID: "G-6Z46YSGF2C",
+          trackingID: "G-S7SC61596T",
           anonymizeIP: true,
         },
         theme: {
