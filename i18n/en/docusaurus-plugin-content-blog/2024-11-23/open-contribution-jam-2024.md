@@ -13,7 +13,7 @@ image: https://cf.festa.io/img/2024-11-23/578a092e-8a55-43f7-8f6e-0da67d52ebb4.p
 description: I'd like to share my experience participating in the Open Contribution Jam 2024 event and contributing to the Glues project.
 ---
 
-![img.png](/img/blog/2024-11-23/img.png)
+![img.png](/img/blog/2024-11-23/img.webp)
 
 I went to Open Contribution Jam 2024.
 
@@ -61,7 +61,7 @@ It was a valuable opportunity to look into the internal structure of an actual o
 The event started at 10am, but I arrived early at 9am and was able to get a lap blanket.
 There was also the luck of winning a pair of AirPods 4th generation in the lucky draw at the end of the event.
 
-![img_3.png](/img/blog/2024-11-23/img_3.png)
+![img_3.png](/img/blog/2024-11-23/img_3.webp)
 
 ## finish
 

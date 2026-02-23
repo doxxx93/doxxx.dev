@@ -38,7 +38,7 @@ To address these challenges, we developed a paper summary service leveraging AWS
 
 This is the overall architecture.
 
-![2.png](/img/blog/2025-01-19/2.png)
+![2.png](/img/blog/2025-01-19/2.webp)
 
 The main components are as follows:
 
@@ -55,7 +55,7 @@ We chose a serverless architecture to focus on implementing features during the 
 
 ## Implementing key features
 
-![3.png](/img/blog/2025-01-19/3.png)
+![3.png](/img/blog/2025-01-19/3.webp)
 
 ### 1. Paper collection pipeline
 
@@ -144,7 +144,7 @@ Areas of improvement in the current pipeline include:
 
 Search and subscription features are key features that enable users to easily find articles of interest and increase user retention. For this purpose, we chose a combination of DynamoDB and OpenSearch Service.
 
-![4.png](/img/blog/2025-01-19/4.png)
+![4.png](/img/blog/2025-01-19/4.webp)
 
 #### Search system implementation
 
@@ -167,7 +167,7 @@ and, in particular, leveraged the recently released
 
 We were able to obtain the same benefits.
 
-![5.png](/img/blog/2025-01-19/5.png)
+![5.png](/img/blog/2025-01-19/5.webp)
 
 > Related video:
 > [AWS re:Invent 2023 - Amazon DynamoDB zero-ETL integration with Amazon OpenSearch Service (DAT339) - YouTube |](https://lilys.ai/digest/2350334)

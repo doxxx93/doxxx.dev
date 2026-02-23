@@ -7,7 +7,7 @@ image: https://cf.festa.io/img/2024-11-23/578a092e-8a55-43f7-8f6e-0da67d52ebb4.p
 description: Open Contribution Jam 2024 행사 참여 후기와 Glues 프로젝트 기여 경험을 공유합니다.
 ---
 
-![img.png](/img/blog/2024-11-23/img.png)
+![img.png](/img/blog/2024-11-23/img.webp)
 
 Open Contribution Jam 2024에 다녀왔습니다.
 
@@ -56,7 +56,7 @@ vim의 키 바인딩만이 아닌 일반적인 사용자들도 쉽게 사용할 
 오전 10시 시작 행사였지만, 9시에 일찍 도착해 무릎 담요를 받을 수 있었습니다.
 행사 말미의 럭키 드로우에서 에어팟 4세대를 당첨되는 행운도 있었습니다.
 
-![img_3.png](/img/blog/2024-11-23/img_3.png)
+![img_3.png](/img/blog/2024-11-23/img_3.webp)
 
 ## 마무리
 

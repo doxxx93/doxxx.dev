@@ -69,7 +69,7 @@ const config: Config = {
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: '#25c2a0',
+            content: '#3373f2',
           },
         ],
       },
@@ -82,16 +82,21 @@ const config: Config = {
   // mermaid configuration
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "throw",
+    },
   },
   themes: ["@docusaurus/theme-mermaid"],
 
-  // katex stylesheets
   stylesheets: [
+    // Pretendard (Korean web font)
+    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css",
+    // KaTeX
     {
-      href: "https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css",
+      href: "https://cdn.jsdelivr.net/npm/katex@0.16.32/dist/katex.min.css",
       type: "text/css",
       integrity:
-        "sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM",
+        "sha384-8K5tjYRcv7hr4uuSd0QJJchz//nSR63itKQtnYvhozplQjQG85jQyfkH1YIMAkUv",
       crossorigin: "anonymous",
     },
   ],
@@ -168,9 +173,7 @@ const config: Config = {
       {name: "keywords", content: "cloud, engineer, devops, kubernetes, aws, docker, 클라우드, 데브옵스"},
       {name: "author", content: "Doxxx"},
     ],
-    // Replace with your project's social card
-    image:
-      "https://avatars.githubusercontent.com/u/51396905?s=400&u=65840fab9273e12e5b3521af740027adfa28ef62&v=4",
+    image: "img/og-image.jpg",
     navbar: {
       title: "Doxxx Dev",
       logo: {

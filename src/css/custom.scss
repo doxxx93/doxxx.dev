@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Cascadia Code';
+  src: url('/fonts/CascadiaCode.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cascadia Code';
+  src: url('/fonts/CascadiaCodeItalic.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --ifm-color-primary: #3373f2;
   --ifm-color-primary-dark: #1750eb;
@@ -9,8 +25,8 @@
   --ifm-background-color: #ffffff;
   --ifm-font-color-base: #080808;
   --ifm-footer-background-color: #f9f9f9;
-  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --ifm-font-family-monospace: 'Caskaydia Cove Nerd Font', 'JetBrains Mono', 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --ifm-font-family-base: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --ifm-font-family-monospace: 'Cascadia Code', 'JetBrains Mono', 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --docusaurus-highlighted-code-line-bg: rgb(72, 77, 91);
 }
 
