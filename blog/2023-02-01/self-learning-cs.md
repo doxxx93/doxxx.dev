@@ -4,10 +4,10 @@ authors: doxxx
 tags: [ 서적, 컴퓨터 구조, 운영체제 ]
 date: 2023-02-01 14:26:57 +0900
 description: 혼자 공부하는 컴퓨터 구조 + 운영체제 정리
-image: https://image.yes24.com/goods/111378840/XL
+image: ./self-learning-cs-cover.jpg
 ---
 
-# 혼자 공부하는 컴퓨터 구조 + 운영체제
+![혼자 공부하는 컴퓨터 구조 + 운영체제](./self-learning-cs-cover.jpg)
 
 혼자 공부하는 컴퓨터 구조 + 운영체제 서적을 읽고 정리한 글입니다.
 

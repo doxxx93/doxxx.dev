@@ -21,7 +21,7 @@ export default function Comments(): JSX.Element {
         inputPosition="bottom"
         theme="preferred_color_scheme"
         lang={lang}
-        loading="lazy"
+        loading="eager"
       />
     </div>
   );

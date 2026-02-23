@@ -15,33 +15,37 @@
 }
 
 :root {
-  --ifm-color-primary: #3373f2;
-  --ifm-color-primary-dark: #1750eb;
-  --ifm-color-primary-darker: #174be6;
-  --ifm-color-primary-darkest: #1341be;
-  --ifm-color-primary-light: #4f89f4;
-  --ifm-color-primary-lighter: #5b92f5;
-  --ifm-color-primary-lightest: #83adf7;
+  --ifm-color-primary: #282828;
+  --ifm-color-primary-dark: #1a1a1a;
+  --ifm-color-primary-darker: #111111;
+  --ifm-color-primary-darkest: #000000;
+  --ifm-color-primary-light: #404040;
+  --ifm-color-primary-lighter: #5d5d5d;
+  --ifm-color-primary-lightest: #8a8a8a;
   --ifm-background-color: #ffffff;
   --ifm-font-color-base: #080808;
   --ifm-footer-background-color: #f9f9f9;
   --ifm-font-family-base: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --ifm-font-family-monospace: 'Cascadia Code', 'JetBrains Mono', 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --docusaurus-highlighted-code-line-bg: rgb(72, 77, 91);
+  --sidebar-color: #5d5d5d;
+  --sidebar-color-hover: #181818;
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #548af7;
-  --ifm-color-primary-dark: #2f6ff5;
-  --ifm-color-primary-darker: #2065f4;
-  --ifm-color-primary-darkest: #0a50d8;
-  --ifm-color-primary-light: #79a5f9;
-  --ifm-color-primary-lighter: #88b0fa;
-  --ifm-color-primary-lightest: #b9d1fc;
+  --ifm-color-primary: #e0e0e0;
+  --ifm-color-primary-dark: #c0c0c0;
+  --ifm-color-primary-darker: #b0b0b0;
+  --ifm-color-primary-darkest: #8a8a8a;
+  --ifm-color-primary-light: #eeeeee;
+  --ifm-color-primary-lighter: #f5f5f5;
+  --ifm-color-primary-lightest: #ffffff;
   --ifm-background-color: #1e1f22;
   --ifm-font-color-base: #bcbec4;
   --ifm-footer-background-color: #2b2b2b;
   --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
+  --sidebar-color: #8a8a8a;
+  --sidebar-color-hover: #e0e0e0;
 }
 
 .navbar {
@@ -58,17 +62,151 @@ aside.col--3 {
   --ifm-col-width: calc(2 / 12 * 100%) !important;
   flex: 0 0 var(--ifm-col-width) !important;
   max-width: var(--ifm-col-width) !important;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--sidebar-color);
+  font-weight: 400;
+
+  a {
+    color: var(--sidebar-color);
+    font-weight: 400;
+    &:hover {
+      color: var(--sidebar-color-hover);
+    }
+  }
+
+  nav {
+    scrollbar-width: none; // Firefox
+    &::-webkit-scrollbar {
+      display: none; // Chrome, Safari
+    }
+    // Hide year group headings in sidebar
+    h3[class*='yearGroupHeading'] {
+      display: none;
+    }
+  }
 }
 
-// Expand main content area
+// Expand main content area with breathing room
 main.col--7 {
   --ifm-col-width: calc(8 / 12 * 100%) !important;
   flex: 0 0 var(--ifm-col-width) !important;
   max-width: var(--ifm-col-width) !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
 
+// Right TOC
 .table-of-contents {
-  font-size: 12px;
+  font-size: 13px;
+  color: var(--sidebar-color);
+
+  a {
+    color: var(--sidebar-color);
+    font-weight: 400;
+    &:hover {
+      color: var(--sidebar-color-hover);
+    }
+  }
+}
+
+
+// Blog post title styling (OpenAI-like)
+article header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  // Title (h1 on post page, h2 on list page)
+  h1[class*='title'],
+  h2[class*='title'] {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.6px;
+    line-height: 42px;
+
+    a {
+      color: var(--ifm-font-color-base);
+      text-decoration: none;
+      &:hover {
+        color: var(--ifm-font-color-base);
+        text-decoration: none;
+      }
+    }
+  }
+
+  // Date, reading time
+  div[class*='container'] {
+    justify-content: center;
+  }
+
+  // Hide author on blog posts (single-author blog)
+  .avatar {
+    display: none;
+  }
+}
+
+// Blog post body headings - smaller than title (30px)
+article .markdown {
+  h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+  h4 { font-size: 15px; }
+}
+
+// Blog tags - neutral colors instead of primary blue
+article footer .tag {
+  color: var(--sidebar-color);
+  border-color: var(--ifm-color-emphasis-300);
+  &:hover {
+    color: var(--sidebar-color-hover);
+    border-color: var(--ifm-color-emphasis-500);
+  }
+}
+
+// Hide "자세히 보기" (Read more) - title is already a link
+article footer .col.text--right {
+  display: none;
+}
+
+// Make article clickable from title to content (not tags/separator)
+article.margin-bottom--xl {
+  position: relative;
+
+  header h2[class*='title'] a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  // Tags stay above overlay and clickable
+  footer {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+// Separate blog posts on list page with uniform height
+article.margin-bottom--xl {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  margin-bottom: 2.5rem !important;
+  min-height: 320px;
+
+  .markdown {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .button {
@@ -95,6 +233,21 @@ main.col--7 {
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
 }
 
+// Clean up archive page - hide hero banner
+.hero {
+  display: none;
+}
+
+// Make links distinguishable with underline (since primary is black)
+.markdown a,
+.about-content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
 // Center mermaid diagrams and blog images
 .docusaurus-mermaid-container {
   display: flex;
@@ -104,6 +257,14 @@ main.col--7 {
 .markdown p > img {
   display: block;
   margin: 0 auto;
+}
+
+// Thumbnail in blog list
+article.margin-bottom--xl .markdown p > img {
+  max-height: 280px;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 html[data-theme=dark] .navbar--github-link:before {
