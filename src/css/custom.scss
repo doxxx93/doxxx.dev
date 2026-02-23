@@ -269,6 +269,10 @@ article.margin-bottom--xl {
 .markdown p > img {
   display: block;
   margin: 0 auto;
+}
+
+// Thumbnail (first image) only
+article .markdown > p:first-child > img {
   max-width: 45%;
 }
 
