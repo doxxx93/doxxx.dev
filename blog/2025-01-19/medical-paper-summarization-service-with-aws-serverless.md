@@ -1,7 +1,7 @@
 ---
 title: AWS 서버리스로 구현한 논문 요약 서비스 개발기
 authors: doxxx
-tags: [ aws, serverless, textract, bedrock, claude, opensearch, dynamodb, lambda, medical-paper, summarization ]
+tags: [ aws, serverless, bedrock, claude ]
 date: 2025-01-19 20:48:30 +0900
 image: https://i.imgur.com/6IkEE2X.png
 description: NIPA AWS Developer 부트캠프에서 3주간 진행한 의학 논문 요약 서비스 프로젝트를 통해 AWS 서버리스 아키텍처 설계와 구현 경험을 공유합니다.

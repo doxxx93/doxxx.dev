@@ -1,7 +1,7 @@
 ---
 title: 컨테이너 기술의 이해, 커널부터 쿠버네티스까지
 authors: doxxx
-tags: [ container, kubernetes, docker, containerd, runc, linux-kernel, namespace, cgroups, chroot ]
+tags: [ container, kubernetes, linux-kernel, docker ]
 date: 2025-02-01 23:26:30 +0900
 image: https://i.imgur.com/OmPuTTB.png
 description: 컨테이너 기술의 기본 개념부터 런타임 아키텍처까지, 리눅스 커널의 핵심 기능과 쿠버네티스의 컨테이너 관리 방식을 자세히 설명합니다.

@@ -1,7 +1,7 @@
 ---
 title: 쿠버네티스 클러스터 구축, 아키텍처부터 네트워크까지
 authors: doxxx
-tags: [kubernetes, kubeadm, containerd, cni, calico, devops, infrastructure]
+tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
 image: https://i.imgur.com/2GFF8XI.png
 description: kubeadm을 활용한 쿠버네티스 클러스터 구축 과정을 통해 Control Plane 아키텍처, 네트워크 구성, 필수 사전 작업의 기술적 배경을 설명합니다.
