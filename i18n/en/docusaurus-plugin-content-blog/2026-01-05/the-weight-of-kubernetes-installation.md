@@ -1,16 +1,7 @@
 ---
 title: Building a Kubernetes Cluster, from Architecture to Networking
 authors: doxxx
-tags:
-  [
-    kubernetes,
-    kubeadm,
-    containerd,
-    cni,
-    calico,
-    devops,
-    infrastructure
-  ]
+tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
 image: https://i.imgur.com/2GFF8XI.png
 description: This article explains the technical background of control plane architecture, network configuration, and required prerequisite tasks through the process of building a Kubernetes cluster using kubeadm.

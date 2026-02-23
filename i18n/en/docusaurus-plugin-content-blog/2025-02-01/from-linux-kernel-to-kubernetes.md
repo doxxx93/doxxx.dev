@@ -1,18 +1,7 @@
 ---
 title: Understanding Container Technology, From Kernel to Kubernetes
 authors: doxxx
-tags:
-  [
-    container,
-    kubernetes,
-    docker,
-    containerd,
-    runc,
-    linux-kernel,
-    namespace,
-    cgroups,
-    chroot
-  ]
+tags: [ container, kubernetes, linux-kernel, docker ]
 date: 2025-02-01 23:26:30 +0900
 image: https://i.imgur.com/OmPuTTB.png
 description: From the fundamental concepts of container technology to the runtime architecture, we will explain in detail the core functions of the Linux kernel and how Kubernetes manages containers.
