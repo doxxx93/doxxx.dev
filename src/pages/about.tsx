@@ -27,29 +27,32 @@ export default function About(): React.JSX.Element {
 
           <section style={{ marginBottom: "2rem" }}>
             <p style={{ lineHeight: 1.8 }}>
-              Developing Kubernetes workload optimization solutions in Rust.
+              Developing a Kubernetes workload cost-optimization platform in Rust.
             </p>
             <p style={{ lineHeight: 1.8 }}>
-              At STCLab, I design and implement core features including alerting, autoscaling,
-              and resource optimization for Kubernetes workloads. I also build and manage the
-              team's infrastructure on Amazon EKS.
+              At STCLab, I design and implement core features — alerting, autoscaling,
+              resource optimization, and cost analysis — for Kubernetes workloads.
+              Built the team's cloud infrastructure (EKS, ROSA) from scratch with Terraform.
             </p>
             <p style={{ lineHeight: 1.8 }}>
-              Contributing to <a href="https://github.com/kube-rs/kube">kube-rs</a>,
-              a production-grade open-source Kubernetes client used in production environments.
+              Member of <a href="https://github.com/kube-rs/kube">kube-rs</a>,
+              a production-grade open-source Kubernetes client for Rust.
             </p>
           </section>
 
           <section style={{ marginBottom: "2rem" }}>
             <h2>Skills</h2>
             <p style={{ lineHeight: 1.8, marginBottom: "0.5rem" }}>
-              <strong>Languages:</strong> Rust, TypeScript, Python, Java
+              <strong>Languages:</strong> Rust, TypeScript, Java, Python
             </p>
             <p style={{ lineHeight: 1.8, marginBottom: "0.5rem" }}>
-              <strong>Infrastructure:</strong> Kubernetes (EKS, OpenShift), Terraform, ArgoCD, Helm, Karpenter
+              <strong>Infrastructure:</strong> Kubernetes (EKS, ROSA), Terraform, Docker, ArgoCD, Helm, Karpenter, Istio
+            </p>
+            <p style={{ lineHeight: 1.8, marginBottom: "0.5rem" }}>
+              <strong>Observability:</strong> Prometheus, Grafana, Fluent Bit, Loki, k6
             </p>
             <p style={{ lineHeight: 1.8 }}>
-              <strong>Observability:</strong> Prometheus, Grafana, Istio, Fluent Bit, Loki
+              <strong>Data:</strong> DuckDB, Polars, MySQL
             </p>
           </section>
 
@@ -66,7 +69,7 @@ export default function About(): React.JSX.Element {
             <p style={{ lineHeight: 1.8 }}>
               <strong>Konkuk University</strong>
               <br />
-              Bachelor's Degree, Industrial Engineering
+              Bachelor's Degree, Industrial Engineering (2021)
             </p>
           </section>
 
