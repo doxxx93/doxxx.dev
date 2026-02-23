@@ -48,8 +48,27 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 }
 
-.menu {
-  font-size: 14px;
+// Widen layout container for more breathing room
+.container {
+  max-width: 1400px !important;
+}
+
+// Compact blog sidebar (left)
+aside.col--3 {
+  --ifm-col-width: calc(2 / 12 * 100%) !important;
+  flex: 0 0 var(--ifm-col-width) !important;
+  max-width: var(--ifm-col-width) !important;
+}
+
+// Expand main content area
+main.col--7 {
+  --ifm-col-width: calc(8 / 12 * 100%) !important;
+  flex: 0 0 var(--ifm-col-width) !important;
+  max-width: var(--ifm-col-width) !important;
+}
+
+.table-of-contents {
+  font-size: 12px;
 }
 
 .button {
