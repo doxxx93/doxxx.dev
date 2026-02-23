@@ -599,7 +599,7 @@ Data buffering is a method of making the transmission rates similar by storing d
 
 ### Structure of the device controller
 
-![img_1.png](/img/blog/2023-02-01/img_1.png)
+![img_1.png](/img/blog/2023-02-01/img_1.webp)
 
 Data registers are registers that contain data to be exchanged between the CPU and input/output devices. It acts as a buffer as mentioned above. In input/output devices with a lot of data, RAM is sometimes used instead of registers.
 

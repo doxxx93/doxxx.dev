@@ -599,7 +599,7 @@ RAID(Redundant Array of Independent Disks)는 다수의 하드 디스크나 SSD�
 
 ### 장치 컨트롤러의 구조
 
-![img_1.png](/img/blog/2023-02-01/img_1.png)
+![img_1.png](/img/blog/2023-02-01/img_1.webp)
 
 데이터 레지스터는 CPU와 입출력장치 사이에 주고받을 데이터가 담기는 레지스터이다. 앞서 말한 버퍼 역할을 한다. 데이터가 많은 입출력장치에서는 레지스터 대신 RAM을 사용하기도 한다.
 
