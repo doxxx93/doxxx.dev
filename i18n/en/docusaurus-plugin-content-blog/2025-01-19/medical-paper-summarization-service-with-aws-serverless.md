@@ -1,19 +1,7 @@
 ---
 title: Development of a Paper Summary Service Implemented with AWS Serverless
 authors: doxxx
-tags:
-  [
-    aws,
-    serverless,
-    textract,
-    bedrock,
-    claude,
-    opensearch,
-    dynamodb,
-    lambda,
-    medical-paper,
-    summarization
-  ]
+tags: [ aws, serverless, bedrock, claude ]
 date: 2025-01-19 20:48:30 +0900
 image: https://i.imgur.com/6IkEE2X.png
 description: I share my experience designing and implementing AWS serverless architecture through a three-week medical paper summary service project conducted at the NIPA AWS Developer Bootcamp.
