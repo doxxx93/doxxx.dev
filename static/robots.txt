@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /blog/
+Disallow: /en/search
+
+Sitemap: https://doxxx.dev/sitemap.xml

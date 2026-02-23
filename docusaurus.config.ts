@@ -56,6 +56,24 @@ const config: Config = {
         },
       },
     ],
+    [
+      "@docusaurus/plugin-pwa",
+      {
+        offlineModeActivationStrategies: ['appInstalled', 'standalone', 'queryString'],
+        pwaHead: [
+          {
+            tagName: 'link',
+            rel: 'manifest',
+            href: '/manifest.json',
+          },
+          {
+            tagName: 'meta',
+            name: 'theme-color',
+            content: '#25c2a0',
+          },
+        ],
+      },
+    ],
   ],
   future: {
     experimental_faster: true,
@@ -101,10 +119,11 @@ const config: Config = {
           editLocalizedFiles: true,
           showLastUpdateTime: true,
           showLastUpdateAuthor: false,
-          // feedOptions: {
-          //   type: ['rss', 'atom'],
-          //   xslt: true,
-          // },
+          feedOptions: {
+            type: ['rss', 'atom'],
+            xslt: true,
+            copyright: `Copyright ${new Date().getFullYear()} Doxxx`,
+          },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/doxxx93/doxxx.dev/edit/master/",
@@ -124,13 +143,30 @@ const config: Config = {
     ],
   ],
 
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        url: 'https://doxxx.dev',
+        name: 'Doxxx Dev',
+        author: {
+          '@type': 'Person',
+          name: 'Doyul Kim',
+          url: 'https://doxxx.dev/about',
+          sameAs: ['https://github.com/doxxx93', 'https://linkedin.com/in/doxxx'],
+        },
+      }),
+    },
+  ],
+
   themeConfig: {
     // SEO 글로벌 메타데이터
     metadata: [
       {name: "keywords", content: "cloud, engineer, devops, kubernetes, aws, docker, 클라우드, 데브옵스"},
       {name: "author", content: "Doxxx"},
-      {property: "og:type", content: "website"},
-      {property: "og:locale", content: "ko_KR"},
     ],
     // Replace with your project's social card
     image:
