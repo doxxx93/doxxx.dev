@@ -14,146 +14,159 @@ Reflector는 watcher 스트림을 가로채서 인메모리 캐시(Store)에 기
 pub fn reflector<K, W>(writer: Writer<K>, stream: W) -> impl Stream<Item = W::Item>
 ```
 
-<!--
-- watcher 스트림의 각 Event를 가로챔
-- Writer에 이벤트 적용 (캐시 업데이트)
-- 이벤트를 변경 없이 그대로 다음 스트림으로 전달
-- "투명한 어댑터" — 스트림 소비자는 reflector가 있는지 모름
--->
+watcher 스트림의 각 `Event`를 가로채서 `Writer`에 적용(캐시 업데이트)한 뒤, 이벤트를 변경 없이 다음 스트림으로 그대로 전달합니다. 스트림 소비자는 reflector가 중간에 있는지 모릅니다.
+
+```rust
+use kube::runtime::{reflector, watcher, WatchStreamExt};
+
+let (reader, writer) = reflector::store();
+let stream = reflector(writer, watcher(api, watcher::Config::default()))
+    .default_backoff()
+    .applied_objects();
+
+// reader로 캐시 조회
+// stream으로 이벤트 처리
+```
 
 ## Store 내부 구조
 
-```rust
+```rust title="kube-runtime/src/reflector/store.rs (단순화)"
 type Cache<K> = Arc<RwLock<AHashMap<ObjectRef<K>, Arc<K>>>>;
 
 pub struct Writer<K> {
     store: Cache<K>,
     buffer: AHashMap<ObjectRef<K>, Arc<K>>,
-    // ...
 }
 
 pub struct Store<K> {
     store: Cache<K>,
-    // ...
 }
 ```
 
-<!--
-핵심 자료구조:
-- AHashMap: std HashMap보다 빠름 (내부 캐시라 DoS 방어 불필요)
-- parking_lot::RwLock: 읽기 동시성 최대화 (std RwLock보다 효율적)
-- Arc<K>: 객체를 여러 곳에서 클론 없이 공유 (reconciler에 Arc<K>로 전달)
--->
+내부 자료구조 선택의 이유:
+
+| 구성요소 | 선택 | 이유 |
+|---------|------|------|
+| `AHashMap` | `std::HashMap` 대신 | 내부 캐시라 DoS 방어가 불필요하므로 더 빠른 해시맵 사용 |
+| `parking_lot::RwLock` | `std::RwLock` 대신 | 읽기 동시성이 더 좋고, poisoning이 없음 |
+| `Arc<K>` | `K` 대신 | reconciler에 `Arc<K>`로 전달해 불필요한 클론 방지 |
 
 ## Atomic swap 패턴
 
-<!--
-핵심 메커니즘 — apply_watcher_event():
+reflector의 핵심 메커니즘입니다. `apply_watcher_event()` 메서드가 각 이벤트 타입에 따라 다르게 동작합니다.
 
-Event::Init:
-  → 새 buffer HashMap 생성 (빈 상태)
-  → 이 시점부터 InitDone까지 store는 이전 데이터 유지
+```mermaid
+sequenceDiagram
+    participant W as Watcher
+    participant R as Reflector (Writer)
+    participant B as Buffer
+    participant S as Store
 
-Event::InitApply(obj):
-  → buffer에 insert (store는 건드리지 않음)
-  → re-list 중에도 store 읽기는 이전 데이터를 반환
+    W->>R: Event::Init
+    R->>B: 새 빈 buffer 생성
+    Note over S: 이전 데이터 유지
 
-Event::InitDone:
-  → std::mem::swap(&mut self.buffer, &mut *self.store.write())
-  → 한 번의 atomic swap으로 전체 데이터 교체
-  → 이전 buffer(= 이전 store 데이터)는 drop
+    W->>R: Event::InitApply(obj1)
+    R->>B: buffer에 insert
+    Note over S: 여전히 이전 데이터
 
-Event::Apply(obj):
-  → store에 직접 insert (일반 watch 이벤트)
+    W->>R: Event::InitApply(obj2)
+    R->>B: buffer에 insert
 
-Event::Delete(obj):
-  → store에서 직접 remove
+    W->>R: Event::InitDone
+    R->>R: mem::swap(buffer, store)
+    Note over S: 한 번에 교체 완료
 
-왜 이렇게 하는가:
-- re-list 중 store가 불완전한 상태가 되는 것을 방지
-- swap 전까지 store는 항상 일관된 스냅샷
-- swap은 포인터 교환이라 O(1)
--->
+    W->>R: Event::Apply(obj3)
+    R->>S: store에 직접 insert
+
+    W->>R: Event::Delete(obj1)
+    R->>S: store에서 직접 remove
+```
+
+각 이벤트 처리:
+
+| Event | 동작 | Store 상태 |
+|-------|------|-----------|
+| `Init` | 새 빈 buffer를 생성합니다 | 이전 데이터 유지 (읽기 가능) |
+| `InitApply(obj)` | buffer에 insert합니다 | 이전 데이터 유지 |
+| `InitDone` | `mem::swap(&mut buffer, &mut *store.write())` | **한 번에 교체** |
+| `Apply(obj)` | store에 직접 insert합니다 | 즉시 반영 |
+| `Delete(obj)` | store에서 직접 remove합니다 | 즉시 반영 |
+
+이 패턴의 핵심:
+
+- re-list 중에도 Store는 항상 **일관된 스냅샷**을 유지합니다. `Init`부터 `InitDone`까지 Store에는 이전 데이터가 그대로 남아 있습니다.
+- `InitDone`에서의 swap은 포인터 교환이므로 O(1)입니다. 데이터 복사가 일어나지 않습니다.
+- swap 후 이전 buffer(= 이전 Store 데이터)는 drop됩니다.
 
 ## Store의 비동기 특성
 
-<!--
-⚠️ 가장 흔한 실수:
-
+:::warning[가장 흔한 실수]
+```rust
 let (reader, writer) = reflector::store();
 // ... reflector 설정 ...
 let items = reader.state(); // ← 빈 Vec 반환!
+```
 
-이유:
-- Store는 생성 시 비어있음
-- watcher 스트림이 poll되어야 (= tokio가 실행해야) 채워짐
-- reflector → watcher → API 호출 → 응답 → Store 업데이트
+Store는 생성 시 비어 있습니다. watcher 스트림이 poll되어야(= tokio 런타임이 실행해야) 채워집니다.
+:::
 
-올바른 사용:
-reader.wait_until_ready().await; // 첫 InitDone까지 대기
-let items = reader.state();      // 이제 데이터 있음
+올바른 사용법:
 
-Controller 사용 시:
-- Controller가 내부적으로 wait_until_ready() 호출
-- reconciler가 실행될 때는 Store가 이미 채워져 있음
-- 하지만 별도 Store를 직접 만들면 이 보장 없음
+```rust
+// 첫 InitDone까지 대기 후 조회
+reader.wait_until_ready().await;
+let items = reader.state(); // 이제 데이터가 있습니다
+```
 
-내부: DelayedInit — oneshot channel 기반
-- Writer가 첫 InitDone에서 initializer.init(()) 호출
-- Store의 wait_until_ready()가 이 신호를 기다림
--->
+내부적으로 `wait_until_ready()`는 `DelayedInit`(oneshot channel 기반)을 사용합니다. Writer가 첫 `InitDone` 이벤트를 처리할 때 신호를 보내고, Store의 `wait_until_ready()`가 이 신호를 기다립니다.
+
+Controller를 사용할 때는 이 문제를 신경 쓸 필요가 없습니다. Controller가 내부적으로 `wait_until_ready()`를 호출하므로, reconciler가 실행될 때는 Store가 이미 채워져 있습니다.
 
 ## Writer vs Store — 읽기/쓰기 분리
 
-<!--
-Writer<K>:
-- reflector가 소유
-- 쓰기 담당 (apply_watcher_event)
-- Send + 비-Clone
+| 역할 | 타입 | Clone | 담당 |
+|------|------|-------|------|
+| 쓰기 | `Writer<K>` | 불가 | reflector가 소유, `apply_watcher_event` |
+| 읽기 | `Store<K>` | 가능 | 여러 곳에서 공유 (reconciler, health check 등) |
 
-Store<K>:
-- Clone 가능 (Arc 기반)
-- 읽기 전용: state(), get(), find()
-- 여러 곳에서 공유 가능 (reconciler, health check 등)
-
-Controller가 자동으로 관리:
-Controller::new() → Writer 생성 → Store reader 추출 → reader를 통해 접근
--->
+이 분리 덕분에 하나의 Writer만 캐시를 수정하고, 여러 Store 핸들이 동시에 읽을 수 있습니다. Controller가 이 분리를 자동으로 관리합니다.
 
 ## 주요 Store 메서드
 
-<!--
-reader.state() → Vec<Arc<K>>
-  전체 캐시된 객체 목록
+```rust
+// 전체 캐시된 객체 목록
+let all: Vec<Arc<K>> = reader.state();
 
-reader.get(obj_ref) → Option<Arc<K>>
-  특정 ObjectRef로 조회
+// 특정 ObjectRef로 조회
+let obj: Option<Arc<K>> = reader.get(&obj_ref);
 
-reader.find(predicate) → Vec<Arc<K>>
-  조건에 맞는 객체 검색
+// 준비 여부 확인
+let ready: bool = reader.is_ready();
 
-reader.is_ready() → bool
-  첫 InitDone이 발생했는지
+// 첫 InitDone까지 대기
+reader.wait_until_ready().await;
+```
 
-reader.wait_until_ready() → impl Future
-  첫 InitDone까지 대기
--->
+`state()`가 반환하는 `Vec<Arc<K>>`는 호출 시점의 스냅샷입니다. 이후 Store가 업데이트되어도 이미 반환된 Vec에는 영향이 없습니다.
 
-## Shared/Subscriber 모드 (unstable)
+## Shared/Subscriber 모드
 
-<!--
-기본 모드: 하나의 reflector → 하나의 Store → 하나의 Consumer
+:::tip[unstable-runtime feature 필요]
+이 기능은 `unstable-runtime` feature flag를 활성화해야 사용할 수 있습니다.
+:::
 
-Shared 모드: 하나의 reflector → 여러 Consumer
+기본 모드에서는 하나의 reflector가 하나의 Consumer를 지원합니다. Shared 모드를 사용하면 하나의 reflector로 여러 Consumer에 이벤트를 팬아웃할 수 있습니다.
 
-Writer::new_shared(buf_size):
-- async_broadcast 채널로 ObjectRef 이벤트 팬아웃
-- ReflectHandle로 여러 subscriber 생성
-- 각 subscriber가 독립적으로 이벤트 수신
+```rust
+let writer = Writer::new_shared(1024); // async_broadcast 버퍼 크기
+let reader = writer.as_reader();
+let subscriber = reader.subscribe().unwrap();
+```
 
 사용 사례:
 - 하나의 watcher로 여러 컨트롤러에 이벤트 전달
-- API 호출 횟수 절약
+- API 서버 호출 횟수를 줄여야 할 때
 
-unstable-runtime feature 필요
--->
+내부적으로 `async_broadcast` 채널을 사용해 `ObjectRef` 이벤트를 여러 subscriber에 전달합니다.

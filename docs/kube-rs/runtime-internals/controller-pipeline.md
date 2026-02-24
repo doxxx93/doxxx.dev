@@ -29,24 +29,22 @@ graph TD
     style K fill:#fff3e0
 ```
 
-<!--
-각 단계가 하는 일:
+각 단계:
 
-1. watcher(): API 서버를 watch → Event<K> 스트림
-2. reflector(): Event를 Store에 캐싱하면서 통과
-3. .applied_objects(): Event::Apply(K)와 Event::InitApply(K)에서 K만 추출
-4. trigger_self(): K → ReconcileRequest<K> (ObjectRef + 이유)
-5. owns()/watches(): 관련 리소스 watcher → trigger 스트림 추가
-6. select_all(): 모든 trigger 스트림을 하나로 합침
-7. debounced_scheduler(): 동일 ObjectRef 중복 제거 + 지연
-8. Runner: 동시성 제어, 같은 객체 동시 reconcile 방지
-9. reconciler: 사용자 코드 실행
-10. Action/Error → scheduler로 피드백 (requeue)
--->
+1. **watcher()** — API 서버를 watch하여 `Event<K>` 스트림을 생성합니다
+2. **reflector()** — Event를 Store에 캐싱하면서 그대로 통과시킵니다
+3. **.applied_objects()** — `Event::Apply(K)`와 `Event::InitApply(K)`에서 `K`만 추출합니다
+4. **trigger_self()** — `K` → `ReconcileRequest<K>`로 변환합니다
+5. **owns()/watches()** — 관련 리소스에 대한 추가 trigger 스트림을 생성합니다
+6. **select_all()** — 모든 trigger 스트림을 하나로 합칩니다
+7. **debounced_scheduler()** — 동일 `ObjectRef`에 대한 중복을 제거하고 지연을 적용합니다
+8. **Runner** — 동시성을 제어하고, 같은 객체의 동시 reconcile을 방지합니다
+9. **reconciler** — 사용자 코드를 실행합니다
+10. **Action/Error** — 결과에 따라 scheduler로 피드백합니다
 
 ## Controller 구조체
 
-```rust
+```rust title="kube-runtime/src/controller/mod.rs (단순화)"
 pub struct Controller<K> {
     trigger_selector: SelectAll<BoxStream<'static, Result<ReconcileRequest<K>, watcher::Error>>>,
     trigger_backoff: Box<dyn Backoff + Send>,
@@ -55,142 +53,184 @@ pub struct Controller<K> {
 }
 ```
 
-<!--
-- trigger_selector: 모든 trigger 스트림을 SelectAll로 합침
-- reader: reflector가 관리하는 Store의 읽기 핸들
-- config: debounce duration, concurrency 제한
--->
+- **trigger_selector**: 모든 trigger 스트림(`trigger_self` + `owns` + `watches`)을 `SelectAll`로 합친 것입니다
+- **reader**: reflector가 관리하는 Store의 읽기 핸들입니다. reconciler에서 `Arc<K>`를 꺼낼 때 사용합니다
+- **config**: debounce duration, 동시 실행 수 제한 등을 설정합니다
 
 ## Trigger 시스템
 
 ### trigger_self — 주 리소스 변경
 
-<!--
-주 리소스(Controller::new에 지정한 타입) 변경 시:
-watcher Event → applied_objects → trigger_self → ReconcileRequest
+주 리소스(Controller::new에 지정한 타입)가 변경되면 해당 리소스에 대한 `ReconcileRequest`를 생성합니다.
 
-ReconcileRequest<K> {
-    obj_ref: ObjectRef<K>,
-    reason: ReconcileReason,
+```rust
+// 내부 흐름
+watcher Event → .applied_objects() → trigger_self() → ReconcileRequest<K>
+```
+
+`ReconcileRequest`는 대상 리소스의 `ObjectRef`와 trigger 이유를 담고 있습니다:
+
+```rust title="ReconcileRequest 내부"
+pub struct ReconcileRequest<K: Resource> {
+    pub obj_ref: ObjectRef<K>,
+    pub reason: ReconcileReason,
 }
+```
 
-ReconcileReason: ObjectUpdated, RelatedObjectUpdated, BulkReconcile, ErroredReconcile, ReconcileRequested, Custom { ... }
--->
+`ReconcileReason`에는 `ObjectUpdated`, `RelatedObjectUpdated`, `BulkReconcile`, `ErroredReconcile`, `ReconcileRequested` 등이 있습니다.
 
 ### trigger_owners — 자식 리소스 변경
 
-<!--
-controller.owns::<ConfigMap>(api, wc):
-1. ConfigMap watcher 생성
-2. ConfigMap 변경 시 → ownerReferences 확인
-3. 부모(주 리소스)의 ObjectRef 추출
-4. 부모에 대한 ReconcileRequest 발행
+```rust
+controller.owns::<ConfigMap>(api, wc)
+```
 
-내부:
-- 자식의 metadata.ownerReferences[].uid로 부모 식별
-- 부모의 kind/apiVersion이 Controller의 주 리소스와 일치하는 것만
--->
+1. ConfigMap에 대한 별도 watcher를 생성합니다
+2. ConfigMap이 변경되면 `metadata.ownerReferences`를 확인합니다
+3. 부모(주 리소스)의 `ObjectRef`를 추출합니다
+4. 부모에 대한 `ReconcileRequest`를 발행합니다
+
+ownerReferences에서 부모를 식별할 때, `kind`와 `apiVersion`이 Controller의 주 리소스 타입과 일치하는 항목만 추출합니다.
 
 ### trigger_others — 관련 리소스 변경
 
-<!--
+```rust
 controller.watches::<Secret>(api, wc, |secret| {
     // Secret에서 관련 주 리소스의 ObjectRef 목록 반환
-    vec![ObjectRef::new("my-resource").within("ns")]
-}):
+    let name = secret.labels().get("app")?.clone();
+    let ns = secret.namespace()?;
+    Some(ObjectRef::new(&name).within(&ns))
+})
+```
 
-1. Secret watcher 생성
-2. Secret 변경 시 → 사용자 정의 mapper 함수 호출
-3. mapper가 반환한 ObjectRef들에 대해 ReconcileRequest 발행
+1. Secret에 대한 별도 watcher를 생성합니다
+2. Secret이 변경되면 사용자 정의 mapper 함수를 호출합니다
+3. mapper가 반환한 `ObjectRef`들에 대해 `ReconcileRequest`를 발행합니다
 
-사용 사례:
-- Secret 변경 → 해당 Secret을 참조하는 모든 리소스 재reconcile
-- ConfigMap 변경 → 해당 CM을 마운트하는 모든 리소스 재reconcile
--->
+사용 사례: Secret 변경 → 해당 Secret을 참조하는 모든 리소스를 재reconcile합니다.
 
 ## Scheduler — 중복 제거와 지연
 
-<!--
-debounced_scheduler() 내부:
+`debounced_scheduler()`는 `DelayQueue` + `HashMap`으로 중복 제거와 시간 기반 스케줄링을 수행합니다.
 
-1. DelayQueue: 시간 기반 스케줄링 (tokio_util)
-2. HashMap<ObjectRef, ScheduledEntry>: 중복 제거
-   - 같은 ObjectRef로 여러 trigger → 가장 이른 시간 하나만 유지
-3. debounce: 설정된 기간 내 추가 trigger 무시
-   → status 업데이트 → watch 이벤트 → 불필요한 재reconcile 방지
+```mermaid
+graph LR
+    A["trigger 스트림"] --> B["HashMap<ObjectRef, ScheduledEntry>"]
+    B --> C["DelayQueue"]
+    C --> D["Runner로"]
+```
 
-예: debounce = 1s일 때
-  t=0.0 trigger(A) → 1초 후 실행 예약
-  t=0.3 trigger(A) → 이미 예약됨, 무시
-  t=1.0 A 실행
-  t=1.2 trigger(A) → 다시 1초 후 예약
--->
+동작 방식:
+
+- 같은 `ObjectRef`에 대한 여러 trigger가 들어오면 **가장 이른 시간 하나만** 유지합니다
+- debounce가 설정되면, 설정된 기간 내의 추가 trigger를 무시합니다
+
+```
+debounce = 1초일 때:
+t=0.0  trigger(A) → 1초 후 실행 예약
+t=0.3  trigger(A) → 이미 예약됨, 무시
+t=1.0  A 실행
+t=1.2  trigger(A) → 다시 1초 후 예약
+```
+
+debounce가 필요한 이유: reconciler가 status를 업데이트하면 → 새 `resourceVersion` 생성 → watch 이벤트 발생 → 불필요한 재reconcile이 됩니다. debounce가 이 burst를 흡수합니다. 자세한 내용은 [Reconciler 패턴](../patterns/reconciler.md)에서 다룹니다.
 
 ## Runner — 동시성 제어
 
-<!--
-pub struct Runner<T, R, F, MkF, Ready> {
-    scheduler: Scheduler,
-    slots: FutureHashMap<T, F>,  // 활성 reconcile 추적
-    max_concurrent_executions: u16,
-    is_ready_to_execute: bool,
-}
+Runner는 scheduler에서 나온 항목을 실제로 reconciler에 전달하면서 동시성을 제어합니다.
 
-poll_next 루프:
-1. 활성 작업(slots) 완료 여부 확인
-2. readiness gate 확인 (Store::wait_until_ready())
-3. scheduler에서 다음 항목 가져오기
-   → hold_unless(!slots.contains_key(msg))
-   → 이미 reconcile 중인 객체는 scheduler에 남겨둠
-4. 가져온 항목에 대해 reconciler 실행 (spawn)
+핵심 동작:
 
-핵심: hold_unless
-- 같은 객체에 대한 동시 reconcile 방지
-- A 객체 reconcile 중 → A에 대한 새 trigger → scheduler에서 대기
-- A 완료 후 → scheduler에서 A를 다시 가져와 실행
+1. **readiness gate**: `Store::wait_until_ready()`가 완료될 때까지 reconcile을 시작하지 않습니다
+2. **hold_unless**: 이미 reconcile 중인 `ObjectRef`는 scheduler에 남겨둡니다
+3. **max_concurrent_executions**: 전체 동시 reconcile 수를 제한합니다
 
-max_concurrent_executions:
-- 0 = 무제한
-- N > 0 = 최대 N개 동시 reconcile
--->
+```mermaid
+graph TD
+    A["scheduler에서 ObjectRef 꺼냄"] --> B{"이미 reconcile 중?"}
+    B -->|예| C["scheduler에 남겨둠"]
+    B -->|아니오| D{"동시 실행 한도?"}
+    D -->|초과| C
+    D -->|여유 있음| E["reconciler 실행"]
+    E --> F["완료"]
+    F --> G["scheduler에서 대기 중인 항목 확인"]
+```
+
+**hold_unless 패턴**이 핵심입니다. 같은 객체에 대한 동시 reconcile을 방지합니다:
+
+- A 객체 reconcile 중 → A에 대한 새 trigger 도착 → scheduler에서 대기
+- A 완료 → scheduler에서 A를 다시 꺼내 실행
+
+이렇게 하면 같은 리소스에 대한 reconcile이 순서대로 실행됩니다.
 
 ## Reconcile 결과 처리
 
-<!--
-RescheduleReconciliation:
+reconciler의 결과에 따라 scheduler에 피드백합니다.
 
-성공 시:
-- Action::requeue(Duration) → scheduler에 해당 시간 후 재실행 예약
-- Action::await_change() → 능동적 requeue 없음, 다음 watch 이벤트 대기
+### 성공 시
 
-실패 시:
-- error_policy(Arc<K>, &Error, Arc<Context>) → Action
-- error_policy가 반환한 Action에 따라 scheduler에 예약
-- 보통: Action::requeue(Duration::from_secs(5)) 등
+```rust
+async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Error> {
+    // ... reconcile 로직 ...
 
-piping: reconciler 결과 → Action → scheduler_tx → scheduler → 다시 Runner
-→ 자기 완결적 루프
--->
+    // 5분 후 다시 확인
+    Ok(Action::requeue(Duration::from_secs(300)))
+
+    // 또는: 다음 watch 이벤트까지 대기
+    Ok(Action::await_change())
+}
+```
+
+| Action | 동작 |
+|--------|------|
+| `requeue(Duration)` | 지정된 시간 후 scheduler에 재실행 예약 |
+| `await_change()` | 능동적 requeue 없음, 다음 watch 이벤트 대기 |
+
+### 실패 시
+
+```rust
+fn error_policy(
+    obj: Arc<MyResource>,
+    error: &Error,
+    ctx: Arc<Context>,
+) -> Action {
+    Action::requeue(Duration::from_secs(5))
+}
+```
+
+`error_policy`가 반환한 `Action`에 따라 scheduler에 예약합니다.
 
 ## Config
 
-<!--
-Controller::Config {
-    debounce: Duration,  // 기본: 0 (debounce 없음)
-    concurrency: u16,    // 기본: 0 (무제한)
-}
+```rust
+use kube::runtime::controller::Config;
 
-controller.with_config(Config::default().debounce(Duration::from_secs(1)).concurrency(10))
--->
+controller.with_config(
+    Config::default()
+        .debounce(Duration::from_secs(1))  // trigger 간 최소 간격
+        .concurrency(10)                    // 최대 동시 reconcile 수
+)
+```
+
+| 설정 | 기본값 | 설명 |
+|------|--------|------|
+| `debounce` | 0 (없음) | trigger 간 최소 간격. burst 흡수에 유용합니다 |
+| `concurrency` | 0 (무제한) | 동시 reconcile 수 제한. 0은 무제한입니다 |
 
 ## Shutdown
 
-<!--
-graceful_shutdown_on(future):
-- future가 완료되면 새 reconcile 시작 중단
-- 진행 중인 reconcile은 완료 대기
+```rust
+// SIGTERM/SIGINT에 반응
+controller.shutdown_on_signal()
 
-shutdown_on_signal():
-- SIGTERM/SIGINT에 반응
-- 내부적으로 tokio::signal 사용
--->
+// 커스텀 shutdown trigger
+controller.graceful_shutdown_on(async {
+    // 어떤 조건...
+})
+```
+
+graceful shutdown 동작:
+1. 새 reconcile 시작을 중단합니다
+2. 진행 중인 reconcile은 완료될 때까지 대기합니다
+
+내부적으로 `tokio::signal`을 사용합니다.
