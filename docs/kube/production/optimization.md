@@ -198,13 +198,52 @@ let api = Api::<MyResource>::namespaced(client.clone(), "target-ns");
 
 ### Leader election
 
-HA 배포에서는 여러 인스턴스 중 하나만 active로 동작해야 합니다. kube-rs에는 leader election이 내장되어 있지 않으므로, Lease 객체를 이용해 직접 구현하거나 외부 크레이트를 사용합니다.
+HA 배포에서는 여러 인스턴스 중 하나만 active로 동작해야 합니다. leader election의 메커니즘, 서드파티 크레이트, shutdown 연계에 대한 자세한 내용은 [가용성](./availability.md)에서 다룹니다.
+
+## 스케일링 전략
+
+단일 인스턴스의 처리량이 부족할 때의 확장 전략을 다룹니다.
+
+### 수직 확장
+
+가장 먼저 시도할 방법입니다. reconcile 자체가 병렬이므로 CPU/메모리를 늘리면 throughput이 증가합니다.
+
+| 조절 항목 | 효과 |
+|----------|------|
+| CPU request/limit 증가 | reconciler 동시 실행 수용량 증가 |
+| 메모리 증가 | Store 캐시 + re-list 스파이크 수용 |
+| `Config::concurrency(N)` 증가 | 동시 reconcile 수 확장 |
+
+수직 확장의 한계는 watcher 하나가 처리할 수 있는 이벤트 처리량입니다. watch 연결 하나의 throughput이 병목이면 샤딩으로 전환합니다.
+
+### 명시적 샤딩
+
+리소스를 여러 컨트롤러 인스턴스에 분배합니다. 각 인스턴스는 담당 범위만 watch합니다.
+
+#### 네임스페이스별 샤딩
+
+가장 단순한 방법입니다. 각 인스턴스가 다른 네임스페이스를 담당합니다:
 
 ```rust
-// Lease 기반 leader election 개념
-let lease_api = Api::<Lease>::namespaced(client, "default");
-// Lease를 주기적으로 갱신하며 리더 유지
-// 다른 인스턴스는 Lease가 만료될 때까지 대기
+// 환경변수로 담당 네임스페이스 결정
+let ns = std::env::var("WATCH_NAMESPACE").unwrap_or("default".into());
+let api = Api::<MyResource>::namespaced(client, &ns);
 ```
 
-active 인스턴스만 `Controller::run()`을 실행하고, standby 인스턴스는 Lease를 감시하며 대기합니다.
+#### 라벨 기반 샤딩
+
+FluxCD에서 사용하는 패턴입니다. 리소스에 샤드 라벨을 부여하고, 각 인스턴스가 해당 라벨만 감시합니다:
+
+```rust
+// 샤드별 label selector
+let shard_id = std::env::var("SHARD_ID").unwrap_or("0".into());
+let wc = watcher::Config::default()
+    .labels(&format!("controller.example.com/shard={}", shard_id));
+```
+
+| 전략 | 장점 | 단점 |
+|------|------|------|
+| 네임스페이스별 | 구현이 간단, 격리가 자연스러움 | 네임스페이스 수에 의존 |
+| 라벨 기반 | 유연한 분배 | 라벨 관리 필요, 재분배 시 reconcile 중복 |
+
+각 샤드에 leader election을 조합하면 HA + 수평 확장을 동시에 달성할 수 있습니다. 자세한 내용은 [가용성 — Elected Shards](./availability.md#elected-shards--ha--수평-확장)를 참고합니다.

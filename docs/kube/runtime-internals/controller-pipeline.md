@@ -152,6 +152,47 @@ Controller::for_stream(stream, reader)
     .run(reconcile, error_policy, ctx)
 ```
 
+### 다중 스트림 조합
+
+여러 관련 리소스의 이벤트를 하나의 Controller에 통합하는 고급 패턴입니다. `for_stream()`과 `watches_stream()`을 조합하면 외부에서 구성한 스트림을 Controller에 주입할 수 있습니다.
+
+```rust
+use futures::stream;
+use kube::runtime::{reflector, watcher, Controller, WatchStreamExt};
+
+// 주 리소스 스트림
+let (reader, writer) = reflector::store();
+let main_stream = reflector(writer, watcher(main_api, wc.clone()))
+    .applied_objects()
+    .default_backoff();
+
+// 관련 리소스 스트림들
+let cm_stream = watcher(cm_api, wc.clone())
+    .applied_objects()
+    .default_backoff();
+
+let secret_stream = watcher(secret_api, wc.clone())
+    .applied_objects()
+    .default_backoff();
+
+Controller::for_stream(main_stream, reader)
+    .watches_stream(cm_stream, |cm| {
+        // ConfigMap → 주 리소스 매핑
+        let name = cm.labels().get("app")?.clone();
+        let ns = cm.namespace()?;
+        Some(ObjectRef::new(&name).within(&ns))
+    })
+    .watches_stream(secret_stream, |secret| {
+        // Secret → 주 리소스 매핑
+        let name = secret.labels().get("app")?.clone();
+        let ns = secret.namespace()?;
+        Some(ObjectRef::new(&name).within(&ns))
+    })
+    .run(reconcile, error_policy, ctx)
+```
+
+이 패턴은 `owns()`/`watches()`가 내부에서 생성하는 watcher를 외부에서 직접 구성하는 것입니다. 스트림에 `.modify()`로 필드를 제거하거나, shared reflector로 여러 Controller가 공유하는 등의 세밀한 제어가 가능합니다. [제네릭 컨트롤러](../patterns/generic-controllers.md#공유-reflector)에서 공유 패턴을 다룹니다.
+
 :::warning[Unstable feature flags]
 이 API들은 불안정 기능 플래그 뒤에 있습니다:
 - `reconcile_on()` → `unstable-runtime-reconcile-on`
