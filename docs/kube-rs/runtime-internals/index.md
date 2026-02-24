@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 3
 title: "Runtime Internals"
 description: "kube-runtime의 내부 동작 — watcher 상태 머신, reflector 캐싱, Controller 파이프라인"
 ---
@@ -28,4 +28,4 @@ graph TD
 | [Controller 파이프라인](./controller-pipeline.md) | trigger에서 reconciler까지 데이터가 어떤 경로로 흐르는가? |
 | [CRD와 derive 매크로](./custom-resources.md) | `#[derive(CustomResource)]`가 실제로 무슨 코드를 만드는가? |
 
-[Architecture](../architecture/) 섹션에서 kube의 정적 구조를 이해했다면, 이 섹션에서는 런타임에 실제로 벌어지는 일을 따라갑니다.
+[Architecture](../architecture/index.md) 섹션에서 kube의 정적 구조를 이해했다면, 이 섹션에서는 런타임에 실제로 벌어지는 일을 따라갑니다.
