@@ -444,9 +444,12 @@ article.margin-bottom--xl {
   }
 }
 
-// Thumbnail (first image) — constrained width
+// Thumbnail (first image) — constrained width, fixed height for consistent look
 article .markdown > p:first-child > img {
   max-width: 45%;
+  height: 200px;
+  object-fit: contain;
+  object-position: center;
 }
 
 // =============================================================================
@@ -551,6 +554,10 @@ article .markdown > p:first-child > img {
   article .markdown > p:first-child > img {
     max-width: 100%;
     border-radius: 8px;
+  }
+
+  article.margin-bottom--xl .markdown > p:first-child > img {
+    height: 180px;
   }
 }
 

@@ -1,0 +1,52 @@
+.title {
+  font-size: var(--ifm-h3-font-size);
+  font-weight: var(--ifm-font-weight-bold);
+  margin-bottom: 0.75rem;
+}
+
+.titleLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.titleLink:hover {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+.yearGroupHeading {
+  display: none;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  margin-top: 0.7rem;
+}
+
+.link {
+  color: var(--sidebar-color);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--sidebar-color-hover);
+  text-decoration: none;
+  background: transparent;
+}
+
+.linkActive {
+  color: var(--ifm-color-primary) !important;
+  background: transparent !important;
+}
