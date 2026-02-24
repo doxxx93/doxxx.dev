@@ -29,7 +29,7 @@ While looking into the reflector and watch side of things, checking for unresolv
 
 ## Work Log
 
-**1. First contribution.**
+### First contribution
 
 [Issue #1830](https://github.com/kube-rs/kube/issues/1830) was a predicate filter bug. When a resource was deleted and recreated with the same name, the controller wouldn't recognize the new resource because the cache identified resources by name alone. Looking at the HashMap in the predicate cache, I had a sense of how to fix it.
 
@@ -40,11 +40,11 @@ I opened [PR #1836](#pr-1836). It was a single file change, so there wasn't much
 
 He said it solved the problem in a way he didn't expect. I revised it in the direction he suggested and the code became cleaner. I failed lint twice in a row during this process, but that's how I learned about the project's justfile for managing fmt and clippy, and the overall development workflow. As I was wrapping up, clux created a follow-up issue, which naturally led to [PR #1838](#pr-1838).
 
-**2. Starting with issues.**
+### Starting with issues
 
 I'd submitted my first PR without any prior discussion, but starting from [PR #1838](#pr-1838), I began discussing designs in [issues](https://github.com/kube-rs/kube/issues/1837) first. Sketching a blueprint before writing code turned out to be better. I could get input from someone with deep knowledge of the codebase, and considering tradeoffs at the design stage led to better outcomes.
 
-**3. Aggregated Discovery.**
+### Aggregated Discovery
 
 While thinking about reducing Kubernetes API calls at work, [issue #1813](https://github.com/kube-rs/kube/issues/1813) caught my eye. It was a feature request to reduce API resource discovery from N+2 calls to just 2, filed in August 2025 with no one picking it up.
 
@@ -58,23 +58,23 @@ I didn't expect that much improvement. It was fascinating to see code I wrote ma
 
 I didn't see it coming at all. I think I went around telling everyone. After that, people at work started asking me about kube-rs, things like what this or that feature does, or which approach is better.
 
-**4. Competitiveness.**
+### Competitiveness
 
 [Issue #1844](https://github.com/kube-rs/kube/issues/1844) had its root cause identified by another contributor, but no PR followed. I waited a month, re-verified the analysis, and opened [PR #1882](#pr-1882). Honestly, there was some competitiveness involved. The proposed design felt excessive, and I thought I could write something simpler. I don't think the motivation for contributing needs to be noble. Improving work code, curiosity, competitiveness, whatever it is, the more diverse the motivation, the longer you keep at it.
 
-**5. Releases and versioning.**
+### Releases and versioning
 
 [PR #1884](#pr-1884) was a breaking change to make subresource methods more ergonomic. The timing worked out to land it in the 3.0.0 milestone.
 
 [PR #1936](#pr-1936) picked up a dependabot-initiated rand 0.10 update that had failed CI due to unhandled breaking API changes, and I completed the migration. Then [issue #1938](https://github.com/kube-rs/kube/issues/1938) reported that tower-http's declared lower bound was below the API version actually used, breaking builds. Seeing these issues made me realize that properly managing dependency lower bounds is directly tied to the quality of an open source project.
 
-**6. Open source process.**
+### Open source process
 
 [Issue #1857](https://github.com/kube-rs/kube/issues/1857) had a related [PR #1867](https://github.com/kube-rs/kube/pull/1867) already merged but the issue was still open. When I asked if it could be closed, the judgment was that the work should be split into two stages, something that wasn't apparent when the issue was first filed. After the easy part was done, [issue #1892](https://github.com/kube-rs/kube/issues/1892) was opened for the harder part. I learned that closing an issue is itself a judgment call, and scoping work is part of the process.
 
 I worked on [PR #1894](#pr-1894) based on this issue. clux pointed out my choice of a custom implementation over tower's ExponentialBackoff, but still gave a "Looks good to me." The dynamic was interesting: clux mediating between the issue reporter and the implementer while doing code review.
 
-**7. Bug hunting.**
+### Bug hunting
 
 While implementing RetryPolicy, I was reading the existing watcher code and found a bug.
 
@@ -84,11 +84,11 @@ A builder pattern where the return value was being discarded. Jitter was enabled
 
 Bugs in existing code surfaced while reading surrounding code to build a new feature. Fixed in [PR #1897](#pr-1897).
 
-**8. Mistakes.**
+### Mistakes
 
 I got too eager with [issue #1906](https://github.com/kube-rs/kube/issues/1906). I opened [PR #1908](#pr-1908) without properly reviewing the existing [PR #1907](https://github.com/kube-rs/kube/pull/1907). I thought the scope of that PR was too broad and I could fix it more narrowly, but in retrospect, I was hasty. With [PR #1914](https://github.com/kube-rs/kube/pull/1914), I hit approve after only testing locally, and another reviewer raised a fundamental issue with the API design. An approve means "this code is good to merge," but I'd vouched for parts I hadn't verified.
 
-**9. CI and infrastructure.**
+### CI and infrastructure
 
 After features and bug fixes, my attention shifted to the project's foundation, the kind of things most people overlook or leave untouched.
 
