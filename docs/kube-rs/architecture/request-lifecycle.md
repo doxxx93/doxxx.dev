@@ -6,7 +6,7 @@ description: "pods.list() 한 줄이 어떤 코드 경로를 거치는지 추적
 
 # 요청의 여정
 
-`pods.list()` 한 줄 호출이 내부적으로 어떤 코드를 거쳐 Kubernetes API 서버에 도달하고 응답이 돌아오는지 추적한다.
+`pods.list()` 한 줄 호출이 내부적으로 어떤 코드를 거쳐 Kubernetes API 서버에 도달하고 응답이 돌아오는지 추적합니다.
 
 ## 호출 코드
 

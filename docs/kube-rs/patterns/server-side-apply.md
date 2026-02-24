@@ -6,7 +6,7 @@ description: "SSA 패턴, status patching, 흔한 실수"
 
 # Server-Side Apply
 
-Server-Side Apply(SSA)는 Kubernetes의 필드 소유권 기반 패치 방식이다. Reconciler에서 리소스를 생성/수정할 때 SSA를 사용하면 충돌 없는 안전한 다자 수정이 가능하다.
+Server-Side Apply(SSA)는 Kubernetes의 필드 소유권 기반 패치 방식입니다. Reconciler에서 리소스를 생성/수정할 때 SSA를 사용하면 충돌 없는 안전한 다자 수정이 가능합니다.
 
 ## 왜 SSA인가
 

@@ -6,7 +6,7 @@ description: "trigger에서 reconciler까지 — scheduler, runner, 동시성 �
 
 # Controller 파이프라인
 
-Controller는 watcher, reflector, scheduler, runner를 하나로 엮은 최상위 추상화다. `Controller::new()`부터 reconciler 호출까지 데이터가 어떤 경로로 흐르는지 추적한다.
+Controller는 watcher, reflector, scheduler, runner를 하나로 엮은 최상위 추상화입니다. `Controller::new()`부터 reconciler 호출까지 데이터가 어떤 경로로 흐르는지 추적합니다.
 
 ## 전체 데이터 흐름
 

@@ -6,7 +6,7 @@ description: "watcher 상태 머신, ListWatch vs StreamingList, 에러 복구"
 
 # Watcher
 
-`Api::watch()`는 연결이 끊기면 그대로 종료되고, resourceVersion 만료에도 대응하지 않는다. `watcher()`는 이 위에 **상태 머신**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream이다.
+`Api::watch()`는 연결이 끊기면 그대로 종료되고, resourceVersion 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **상태 머신**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream입니다.
 
 ## watcher의 역할
 

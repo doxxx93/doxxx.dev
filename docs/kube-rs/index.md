@@ -6,7 +6,7 @@ description: "Rust Kubernetes 클라이언트 라이브러리 심층 가이드"
 
 # kube
 
-Rust로 작성된 Kubernetes 클라이언트 라이브러리. Go의 [client-go](https://github.com/kubernetes/client-go)에 대응하며, [CNCF Sandbox](https://www.cncf.io/projects/) 프로젝트로 호스팅되고 있다.
+Rust로 작성된 Kubernetes 클라이언트 라이브러리입니다. Go의 [client-go](https://github.com/kubernetes/client-go)에 대응하며, [CNCF Sandbox](https://www.cncf.io/projects/) 프로젝트로 호스팅되고 있습니다.
 
 ```rust
 use kube::{Api, Client};
@@ -26,7 +26,7 @@ async fn main() -> anyhow::Result<()> {
 
 ## 이 문서에 대해
 
-kube를 쓰고 있지만 내부가 어떻게 돌아가는지 제대로 이해하고 싶은 사람을 위한 문서다. 단순한 사용법이 아니라, 실제 코드 구현을 따라가며 **왜 이렇게 설계되었는지**, **내부에서 어떤 일이 벌어지는지**를 다룬다.
+kube를 쓰고 있지만 내부가 어떻게 돌아가는지 제대로 이해하고 싶은 분을 위한 문서입니다. 단순한 사용법이 아니라, 실제 코드 구현을 따라가며 **왜 이렇게 설계되었는지**, **내부에서 어떤 일이 벌어지는지**를 다룹니다.
 
 ### 전제 조건
 
@@ -46,12 +46,12 @@ kube를 쓰고 있지만 내부가 어떻게 돌아가는지 제대로 이해하
 
 ```toml title="Cargo.toml"
 [dependencies]
-kube = { version = "3.0", features = ["runtime", "derive"] }
-k8s-openapi = { version = "0.24", features = ["latest"] }
+kube = { version = "3.0.1", features = ["runtime", "derive"] }
+k8s-openapi = { version = "0.27.0", features = ["latest", "schemars"] }
+schemars = "1"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-schemars = "0.8"
 anyhow = "1"
 ```
 
