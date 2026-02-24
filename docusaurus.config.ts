@@ -236,7 +236,7 @@ const config: Config = {
       appId: "YFSTKU4HVZ",
       apiKey: "08f8e70633947cfb337e5a3a481ccfff",
       indexName: "doxxxdev",
-      contextualSearch: false,
+      contextualSearch: true,
       searchParameters: {
         attributesToHighlight: ["hierarchy.lvl0", "hierarchy.lvl1", "hierarchy.lvl2", "content"],
         attributesToSnippet: ["content:30"],
