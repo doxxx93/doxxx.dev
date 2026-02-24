@@ -77,7 +77,17 @@ pub struct ReconcileRequest<K: Resource> {
 }
 ```
 
-`ReconcileReason`에는 `ObjectUpdated`, `RelatedObjectUpdated`, `BulkReconcile`, `ErroredReconcile`, `ReconcileRequested` 등이 있습니다.
+`ReconcileReason`에는 다음 variant가 있습니다:
+
+| Variant | 설명 |
+|---------|------|
+| `Unknown` | `reconcile_on()`으로 주입된 외부 trigger |
+| `ObjectUpdated` | 주 리소스가 변경됨 |
+| `RelatedObjectUpdated { obj_ref }` | 관련 리소스가 변경됨 (owns/watches) |
+| `ReconcilerRequestedRetry` | reconciler가 `Action::requeue()`로 재실행 요청 |
+| `ErrorPolicyRequestedRetry` | `error_policy`가 재실행 요청 |
+| `BulkReconcile` | `reconcile_all_on()`으로 전체 재reconcile 요청 |
+| `Custom { reason }` | 사용자 정의 사유 (큐 스트림에 직접 주입 시) |
 
 ### trigger_owners — 자식 리소스 변경
 
@@ -108,6 +118,49 @@ controller.watches::<Secret>(api, wc, |secret| {
 3. mapper가 반환한 `ObjectRef`들에 대해 `ReconcileRequest`를 발행합니다
 
 사용 사례: Secret 변경 → 해당 Secret을 참조하는 모든 리소스를 재reconcile합니다.
+
+## 외부 이벤트 소스 — reconcile_on
+
+`reconcile_on()`으로 watch 이벤트 외의 외부 트리거를 Controller에 연결할 수 있습니다.
+
+```rust
+use tokio::sync::mpsc;
+use futures::stream::ReceiverStream;
+
+let (tx, rx) = mpsc::channel::<ObjectRef<MyResource>>(256);
+
+Controller::new(api, wc)
+    .reconcile_on(ReceiverStream::new(rx))
+    .run(reconcile, error_policy, ctx)
+```
+
+외부 webhook, 메시지 큐, 타이머 등에서 `ObjectRef`를 보내면 해당 리소스의 reconcile이 트리거됩니다. 이때 `ReconcileReason`은 `Unknown`으로 설정됩니다.
+
+### Stream 기반 API
+
+기본 `Controller::new()`는 내부에서 watcher를 생성하지만, `for_stream()`을 사용하면 미리 필터링된 스트림을 직접 주입할 수 있습니다. `owns_stream()`과 `watches_stream()`도 동일한 패턴입니다.
+
+```rust
+// 외부에서 생성한 watcher 스트림을 Controller에 주입
+let (reader, writer) = reflector::store();
+let stream = reflector(writer, watcher(api.clone(), wc))
+    .applied_objects();
+
+Controller::for_stream(stream, reader)
+    .owns_stream::<ConfigMap>(cm_stream)
+    .watches_stream::<Secret, _>(secret_stream, |secret| { /* mapper */ })
+    .run(reconcile, error_policy, ctx)
+```
+
+:::warning[Unstable feature flags]
+이 API들은 불안정 기능 플래그 뒤에 있습니다:
+- `reconcile_on()` → `unstable-runtime-reconcile-on`
+- `for_stream()`, `owns_stream()`, `watches_stream()` → `unstable-runtime-stream-control`
+
+```toml
+kube = { version = "...", features = ["unstable-runtime-reconcile-on", "unstable-runtime-stream-control"] }
+```
+:::
 
 ## Scheduler — 중복 제거와 지연
 

@@ -153,7 +153,7 @@ while let Some(event) = stream.try_next().await? {
 
 ### WatchEvent
 
-API 서버는 네 가지 이벤트를 보냅니다:
+API 서버는 다섯 가지 이벤트를 보냅니다:
 
 ```rust
 pub enum WatchEvent<K> {
@@ -161,6 +161,7 @@ pub enum WatchEvent<K> {
     Modified(K),            // 리소스가 변경됨
     Deleted(K),             // 리소스가 삭제됨
     Bookmark(Bookmark),     // 진행 마커 (resourceVersion 갱신)
+    Error(Box<Status>),     // API 서버가 보낸 에러 (e.g., 410 Gone)
 }
 ```
 

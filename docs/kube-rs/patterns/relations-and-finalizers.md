@@ -155,3 +155,17 @@ controller.with_stream_filter(predicates::generation)
 // ✓ finalizer 변경도 감지
 controller.with_stream_filter(predicates::generation.combine(predicates::finalizers))
 ```
+
+## 정리 전략 매트릭스
+
+관계 유형에 따라 정리 방법이 달라집니다:
+
+| 관계 유형 | 설정 방법 | 정리 방법 | Finalizer 필요? |
+|-----------|----------|----------|----------------|
+| **Owned** (owns) | `ownerReferences` 설정 | Kubernetes 자동 GC | 보통 불필요 |
+| **Watched** (watches) | mapper 함수로 매핑 | reconciler에서 직접 삭제 | 필요 |
+| **External** (클러스터 외부) | — | cleanup에서 외부 API 호출 | 필요 |
+
+- **Owned**: `ownerReferences`가 있으므로 부모 삭제 시 Kubernetes가 자식을 자동 삭제합니다. 외부 리소스를 동시에 관리하지 않는 한 finalizer가 필요 없습니다.
+- **Watched**: 소유 관계가 아니므로 자동 GC가 동작하지 않습니다. finalizer의 `Event::Cleanup`에서 관련 리소스를 직접 삭제해야 합니다.
+- **External**: 클러스터 밖의 리소스(DNS 레코드, 클라우드 로드밸런서 등)는 Kubernetes가 관리하지 않으므로, finalizer로 삭제 전 외부 API를 호출해 정리합니다.

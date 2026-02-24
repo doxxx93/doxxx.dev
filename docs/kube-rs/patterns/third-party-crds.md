@@ -72,6 +72,10 @@ type VirtualService = Object<VirtualServiceSpec, NotUsed>;
 
 ## 방법 3: kopium
 
+:::warning[불안정 프로젝트]
+kopium은 실험적 프로젝트로, API와 생성 결과가 변경될 수 있습니다. 프로덕션에서는 생성된 코드를 리뷰하고 버전 관리에 포함시키는 것을 권장합니다.
+:::
+
 [kopium](https://github.com/kube-rs/kopium)은 CRD YAML에서 Rust struct를 자동으로 생성하는 도구입니다.
 
 ```bash
@@ -124,6 +128,24 @@ let api = Api::<DynamicObject>::all_with(client, &ar);
 - 클러스터에 특정 CRD가 설치되어 있는지 확인
 - GVK에서 `ApiResource`를 얻어 URL path와 scope를 결정
 - `kubectl api-resources` 같은 도구 구현
+
+## Controller::new_with — 동적 타입 Controller
+
+`DynamicObject`로 Controller를 생성하면, 컴파일 시점에 Rust struct를 정의하지 않아도 CRD를 감시할 수 있습니다.
+
+```rust
+use kube::core::{DynamicObject, ApiResource, GroupVersionKind};
+use kube::runtime::Controller;
+
+let gvk = GroupVersionKind::gvk("example.com", "v1", "MyResource");
+let ar = ApiResource::from_gvk(&gvk);
+let api = Api::<DynamicObject>::all_with(client, &ar);
+
+Controller::new_with(api, wc, ar)
+    .run(reconcile, error_policy, ctx)
+```
+
+`new_with()`는 `DynamicType`을 명시적으로 받으므로, `DynamicObject`처럼 `DynamicType`이 `Default`가 아닌 타입에 사용합니다. Discovery API와 조합하면 런타임에 감시 대상을 결정할 수 있습니다.
 
 ## 비교 정리
 
