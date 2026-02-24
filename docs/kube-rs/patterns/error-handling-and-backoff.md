@@ -10,119 +10,138 @@ kube에서 에러는 여러 계층에서 발생합니다. 어디서 어떤 에�
 
 ## 에러 발생 지점 맵
 
-<!--
-Client::send()
-  → 네트워크 에러, TLS 에러, 타임아웃
-  → kube::Error::HyperError, HttpError
+```mermaid
+graph TD
+    A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError\nkube::Error::HttpError"]
+    B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
+    B -->|"역직렬화 실패"| E3["kube::Error::SerializationError"]
+    C["watcher()"] -->|"초기 LIST 실패"| E4["watcher::Error::InitialListFailed"]
+    C -->|"WATCH 연결 실패"| E5["watcher::Error::WatchFailed"]
+    C -->|"WATCH 중 서버 에러"| E6["watcher::Error::WatchError"]
+    D["Controller::run()"] -->|"trigger 스트림"| C
+    D -->|"사용자 코드"| E7["reconciler Error"]
 
-Api::list() / get() / patch()
-  → 4xx/5xx → Status로 파싱 → kube::Error::Api { status }
-  → 역직렬화 실패 → kube::Error::SerializationError
+    style E1 fill:#ffebee
+    style E2 fill:#ffebee
+    style E7 fill:#fff3e0
+```
 
-watcher()
-  → watcher::Error::InitialListFailed — 초기 LIST 실패
-  → watcher::Error::WatchFailed — WATCH 연결 실패
-  → watcher::Error::WatchError — WATCH 중 서버 측 에러 (410 Gone 등)
-
-Controller::run()
-  → watcher 에러 (trigger 스트림에서)
-  → reconciler 에러 (사용자 코드에서)
--->
+| 계층 | 에러 타입 | 원인 |
+|------|----------|------|
+| Client | `HyperError`, `HttpError` | 네트워크, TLS, 타임아웃 |
+| Api | `Error::Api { status }` | Kubernetes 4xx/5xx 응답 |
+| Api | `SerializationError` | JSON 역직렬화 실패 |
+| watcher | `InitialListFailed` | 초기 LIST 실패 |
+| watcher | `WatchFailed` | WATCH 연결 실패 |
+| watcher | `WatchError` | WATCH 중 서버 에러 (410 Gone 등) |
+| Controller | reconciler Error | 사용자 코드에서 발생 |
 
 ## Watcher 에러와 backoff
 
-<!--
-핵심 규칙: 반드시 .default_backoff() 붙이기
+:::warning[반드시 backoff을 붙여야 합니다]
+```rust
+// ✗ 첫 에러에 스트림 종료 → Controller 멈춤
+let stream = watcher(api, wc);
 
-let watcher_stream = watcher(api, wc)
-    .default_backoff();  // ← 이거 없으면 첫 에러에 스트림 종료
+// ✓ 지수 백오프로 자동 재시도
+let stream = watcher(api, wc).default_backoff();
+```
+:::
 
-.default_backoff():
-- ExponentialBackoff { initial: 1s, factor: 2, max: 60s }
-- 성공 이벤트 수신 시 backoff 리셋
+### default_backoff
 
-커스텀:
-.backoff(ExponentialBackoff {
+`ExponentialBackoff`를 적용합니다: 1초 → 2초 → 4초 → ... → 60초(최대). 성공적인 이벤트를 수신하면 backoff가 리셋됩니다.
+
+### 커스텀 backoff
+
+```rust
+use backoff::ExponentialBackoff;
+
+let stream = watcher(api, wc).backoff(ExponentialBackoff {
     initial_interval: Duration::from_millis(500),
     max_interval: Duration::from_secs(30),
     max_elapsed_time: None, // 무한 재시도
     ..Default::default()
-})
-
-⚠️ backoff 없으면:
-- 첫 에러에 스트림 종료
-- Controller 전체 멈춤
-- 실제 사고: tight-loop 재시도 → CPU/메모리 폭주
--->
+});
+```
 
 ## Reconciler 에러와 error_policy
 
-<!--
+```rust
 fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action {
-    // 에러 종류에 따라 다른 requeue 전략
+    tracing::error!(?err, "reconcile failed");
+
     match err {
-        Error::Temporary(_) => Action::requeue(Duration::from_secs(5)),
-        Error::Permanent(_) => Action::await_change(), // 재시도 안 함
+        // 일시적 에러: 재시도
+        Error::KubeApi(_) => Action::requeue(Duration::from_secs(5)),
+        // 영구적 에러: 재시도하지 않음
+        Error::MissingField(_) => Action::await_change(),
     }
 }
+```
 
-Controller::run(reconcile, error_policy, ctx)
-  .for_each(|result| async { /* 로깅 등 */ })
-  .await;
+`Controller::run(reconcile, error_policy, ctx)`:
+- reconciler가 `Err`를 반환하면 `error_policy`가 호출됩니다
+- `error_policy`가 반환한 `Action`에 따라 scheduler에 예약합니다
 
-현재 한계:
-- error_policy는 동기 함수 → async 작업(메트릭 전송 등) 불가
-- 성공 시 reset 콜백 없음 → per-key backoff 직접 구현 필요
-- per-key 지수 backoff: patterns/reconciler.md의 wrapper 패턴 참고
--->
+### 현재 한계
+
+- `error_policy`는 **동기 함수**입니다. async 작업(메트릭 전송, status 업데이트 등)을 할 수 없습니다
+- 성공 시 reset 콜백이 없습니다. per-key backoff를 구현하려면 reconciler를 wrapper로 감싸야 합니다 ([Per-key backoff 패턴](./reconciler.md#per-key-backoff-패턴) 참고)
 
 ## Client 레벨 재시도
 
-<!--
-현재 내장 없음. watcher만 재시도 지원.
+kube-client에는 일반 API 호출에 대한 내장 재시도가 없습니다. `create()`, `patch()`, `get()` 등이 실패하면 그대로 에러를 반환합니다.
 
-일반 API 호출(create, patch, get)은 실패하면 그냥 에러 반환.
+직접 구현하려면 Tower의 retry 미들웨어를 사용합니다:
 
-직접 구현 — tower::retry::Policy:
+```rust
+use tower::retry::Policy;
+
+struct RetryPolicy;
+
 impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
-    fn retry(&self, req, result) -> Option<...> {
-        match result {
-            Err(_) | Ok(res) if res.status().is_server_error() => Some(backoff),
-            _ => None,
-        }
-    }
+    // 5xx, 타임아웃, 네트워크 에러만 재시도
+    // 4xx는 재시도하지 않음 (요청 자체가 잘못됨)
 }
+```
 
-재시도 가능한 에러:
-- 5xx (서버 에러)
-- 타임아웃
-- 네트워크 연결 실패
-- 429 Too Many Requests
+### 재시도 가능 여부
 
-재시도 불가:
-- 4xx (클라이언트 에러) — 요청 자체가 잘못됨
-- 409 Conflict — SSA 충돌 → 로직 수정 필요
--->
+| 에러 | 재시도 | 이유 |
+|------|--------|------|
+| 5xx | 가능 | 서버 일시 장애 |
+| 타임아웃 | 가능 | 일시적 네트워크 문제 |
+| 429 Too Many Requests | 가능 | rate limit → 대기 후 재시도 |
+| 네트워크 에러 | 가능 | 일시적 연결 실패 |
+| 4xx (400, 403, 404 등) | 불가 | 요청이 잘못됨 |
+| 409 Conflict | 불가 | SSA 충돌 → 로직 수정 필요 |
 
-## ⚠️ 타임아웃 전략
+## 타임아웃 전략
 
-<!--
-기본 read_timeout = 295s:
-- watch long-polling 대응으로 설정됨
-- 일반 GET/PUT에도 동일 적용 → 5분 블로킹
+[Client 내부 구조](../architecture/client-and-tower-stack.md)에서 다룬 것처럼, 기본 `read_timeout`이 watch용으로 295초 설정되어 있어 일반 API 호출도 5분 블로킹될 수 있습니다.
 
-대응 1: Client 분리
-let watch_client = Client::try_default().await?;
-let api_client = {
-    let mut config = Config::infer().await?;
-    config.read_timeout = Some(Duration::from_secs(15));
-    Client::try_from(config)?
-};
+### 대응 1: Client 분리
 
-대응 2: 개별 호출 감싸기
-tokio::time::timeout(Duration::from_secs(10), api.get("name")).await??;
+```rust
+// watcher용 Client (기본 295초)
+let watcher_client = Client::try_default().await?;
 
-대응 3: Controller 내부에서는 큰 문제 아님
-- Controller가 관리하는 watcher는 긴 timeout 필요
-- reconciler 안에서의 API 호출만 timeout 감싸면 됨
--->
+// API 호출용 Client (짧은 타임아웃)
+let mut config = Config::infer().await?;
+config.read_timeout = Some(Duration::from_secs(15));
+let api_client = Client::try_from(config)?;
+```
+
+### 대응 2: 개별 호출 감싸기
+
+```rust
+let pod = tokio::time::timeout(
+    Duration::from_secs(10),
+    api.get("my-pod"),
+).await??;
+```
+
+### 대응 3: Controller에서는 큰 문제가 아닙니다
+
+Controller가 관리하는 watcher는 긴 timeout이 필요합니다. reconciler 내부의 API 호출만 timeout으로 감싸면 됩니다.
