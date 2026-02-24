@@ -1,0 +1,15 @@
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+  margin-top: 0;
+}
+
+/* Match blog main.col--7 layout */
+@media (min-width: 997px) {
+  .docItemCol {
+    flex: 1 1 0% !important;
+    max-width: none !important;
+    padding-left: 7rem !important;
+    padding-right: 7rem !important;
+    padding-top: 1rem !important; /* align with blog margin-vert--lg */
+  }
+}

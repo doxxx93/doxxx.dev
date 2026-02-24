@@ -172,10 +172,16 @@ const config: Config = {
       },
       items: [
         {
-          type: "docSidebar",
-          sidebarId: "docSidebar",
+          type: "dropdown",
           label: "Docs",
           position: "left",
+          items: [
+            {
+              type: "docSidebar",
+              sidebarId: "kubeRsSidebar",
+              label: "kube",
+            },
+          ],
         },
         {to: "/archive", label: "Archive", position: "left"},
         {to: "/about", label: "About", position: "left"},

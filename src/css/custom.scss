@@ -50,6 +50,25 @@
 
 .navbar {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+
+  // Docs dropdown — clean minimal style
+  .dropdown__menu {
+    min-width: 160px;
+    padding: 6px;
+    border: 1px solid var(--ifm-color-emphasis-200);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .dropdown__link {
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 8px 12px;
+
+    &:hover {
+      background: var(--ifm-color-emphasis-100);
+    }
+  }
 }
 
 // Widen layout container for more breathing room
@@ -125,35 +144,43 @@ aside.col--3 {
   }
 }
 
-// Docs sidebar — match blog sidebar flat-list style
+// ==========================================
+// Docs — unified with blog layout & style
+// ==========================================
+
+// Hide breadcrumb
+.theme-doc-breadcrumbs {
+  display: none;
+}
+
+// Sidebar title (match Blog's "All Posts")
+.sidebar-doc-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--sidebar-color);
+  padding: 4px 12px;
+  margin-bottom: 0.5rem;
+}
+
+// Sidebar — flat-list style matching blog
 .theme-doc-sidebar-container {
   border-right: none !important;
-
 
   .menu {
     font-size: $sidebar-font-size;
     line-height: $sidebar-line-height;
     font-weight: 400;
-    padding-left: 12px; // align with blog sidebar (12 + link 12 = 24px = blog 1.5rem)
+    padding-left: 12px;
+    padding-top: 2rem;
   }
 
-  // Remove category hover/active background highlight
   .menu__list-item-collapsible {
     background: transparent !important;
-
-    &:hover {
-      background: transparent !important;
-    }
+    &:hover { background: transparent !important; }
   }
 
-  // Hide chevron (caret) icons
-  .menu__link--sublist-caret::after {
-    display: none;
-  }
-
-  .menu__caret {
-    display: none;
-  }
+  .menu__link--sublist-caret::after { display: none; }
+  .menu__caret { display: none; }
 
   .menu__link {
     color: var(--sidebar-color);
@@ -161,28 +188,46 @@ aside.col--3 {
     font-size: $sidebar-font-size;
     line-height: $sidebar-line-height;
     background: transparent !important;
-
-    &:hover {
-      color: var(--sidebar-color-hover);
-      background: transparent !important;
-    }
-
-    &--active {
-      color: var(--sidebar-color-hover);
-      background: transparent !important;
-    }
+    &:hover { color: var(--sidebar-color-hover); background: transparent !important; }
+    &--active { color: var(--sidebar-color-hover); background: transparent !important; }
   }
 
-  // Item spacing similar to blog sidebar
-  .menu__list-item {
-    margin-top: 2px;
+  .menu__list-item { margin-top: 2px; }
+}
+
+// Layout — match blog 3-column proportions
+@media (min-width: 997px) {
+  // Full-width container (same as blog)
+  [class*='docMainContainer'] > .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 1rem !important;
+  }
+
+  // TOC column — match blog col--2 absolute width
+  // Blog TOC = 2/12 of full row (which includes sidebar).
+  // Docs row excludes the 300px sidebar, so compensate: 2/12*(100%+300px)
+  [class*='docMainContainer'] .col.col--3 {
+    flex: 0 0 calc(2 / 12 * 100% + 50px) !important;
+    max-width: calc(2 / 12 * 100% + 50px) !important;
   }
 }
 
-// Right TOC — OpenAI-style left border indicator
-.col.col--3:has(.theme-doc-toc-desktop) {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+// Page title — match blog post title (30px centered)
+.theme-doc-markdown > header > h1 {
+  font-size: 30px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.6px;
+  line-height: 42px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+// Body headings — same as blog (set after blog rules via load order)
+.theme-doc-markdown {
+  h2 { font-size: 20px; }
+  h3 { font-size: 18px; }
+  h4 { font-size: 16px; }
 }
 
 // TOC sticky — match natural position (navbar + container margin 2rem)
