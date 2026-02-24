@@ -50,7 +50,7 @@ let stream = watcher(api, wc).default_backoff();
 
 ### default_backoff
 
-`ExponentialBackoff`를 적용합니다: 1초 → 2초 → 4초 → ... → 60초(최대). 성공적인 이벤트를 수신하면 backoff가 리셋됩니다.
+`ExponentialBackoff`를 적용합니다: 800ms → 1.6초 → 3.2초 → ... → 30초(최대). 성공적인 이벤트를 수신하면 backoff가 리셋됩니다. 120초 동안 에러가 없으면 타이머도 리셋됩니다.
 
 ### 커스텀 backoff
 

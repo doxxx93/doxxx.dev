@@ -100,13 +100,23 @@ jemalloc과 `MALLOC_CONF="prof:true"`로 힙 프로파일링을 하면 실제 �
 [Reconciler 패턴](../patterns/reconciler.md)에서 다룬 것처럼, status 변경으로 인한 자기 trigger를 방지합니다.
 
 ```rust
-use kube::runtime::{predicates, WatchStreamExt};
+use kube::runtime::{predicates, watcher, WatchStreamExt};
+use kube::runtime::utils::predicate::PredicateConfig;
 
-Controller::new(api, wc)
-    .with_stream_filter(predicates::generation)
+// watcher 스트림에 predicate_filter를 적용한 후 Controller에 주입
+let (reader, writer) = reflector::store();
+let stream = reflector(writer, watcher(api.clone(), wc))
+    .applied_objects()
+    .predicate_filter(predicates::generation, PredicateConfig::default());
+
+Controller::for_stream(stream, reader)
 ```
 
-status만 변경된 이벤트는 `generation`이 바뀌지 않으므로 필터링됩니다. finalizer를 사용한다면 `predicates::finalizers`도 조합합니다.
+status만 변경된 이벤트는 `generation`이 바뀌지 않으므로 필터링됩니다. finalizer를 사용한다면 `predicates::generation.combine(predicates::finalizers)`로 조합합니다.
+
+:::warning[predicate_filter는 스트림 메서드입니다]
+`predicate_filter()`는 `Controller`의 메서드가 아니라 `WatchStreamExt` trait의 메서드입니다. `for_stream()`과 함께 사용해야 합니다.
+:::
 
 ### debounce
 

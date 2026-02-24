@@ -160,7 +160,7 @@ reader.wait_until_ready().await;
 기본 모드에서는 하나의 reflector가 하나의 Consumer를 지원합니다. Shared 모드를 사용하면 하나의 reflector로 여러 Consumer에 이벤트를 팬아웃할 수 있습니다.
 
 ```rust
-let writer = Writer::new_shared(1024); // async_broadcast 버퍼 크기
+let writer = Writer::<MyResource>::new_shared(1024, ()); // (버퍼 크기, DynamicType)
 let reader = writer.as_reader();
 let subscriber = reader.subscribe().unwrap();
 ```
