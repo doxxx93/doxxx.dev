@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0
+sidebar_position: 2
 title: "Architecture"
 description: "kube의 내부 설계 — 크레이트 계층, 타입 시스템, 클라이언트 아키텍처"
 ---
