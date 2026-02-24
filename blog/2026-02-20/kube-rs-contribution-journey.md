@@ -286,9 +286,7 @@ semver와 API 안정성에 대해 고민하게 됐고, 코드를 쓸 때 tradeof
 
 그래도 코드에 내 흔적이 남아가는 것, 내가 만드는 것들이 프로젝트를 지탱하는 느낌. 차근차근 해내는 게 즐거운 것 같다.
 
-## 기여 전체 목록
-
-20개 PR — bug fix 7개, feature 4개, improvement 2개, infra 7개
+## 본문에서 언급하지 않은 나머지 PR
 
 <div data-search-exclude>
 

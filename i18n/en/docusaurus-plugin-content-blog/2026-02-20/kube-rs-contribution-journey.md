@@ -236,9 +236,7 @@ Is it really okay for someone as lacking as me to keep contributing to a library
 
 Still, watching my traces accumulate in the code, feeling like what I build helps sustain the project. Steadily getting things done has been enjoyable.
 
-## Full Contribution List
-
-20 PRs — 7 bug fixes, 4 features, 2 improvements, 7 infra
+## Remaining PRs not covered above
 
 <div data-search-exclude>
 
