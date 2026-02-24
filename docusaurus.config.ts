@@ -56,31 +56,6 @@ const config: Config = {
         },
       },
     ],
-    [
-      "@docusaurus/plugin-pwa",
-      {
-        offlineModeActivationStrategies: ['appInstalled', 'standalone', 'queryString'],
-        pwaHead: [
-          {
-            tagName: 'link',
-            rel: 'manifest',
-            href: '/manifest.json',
-          },
-          {
-            tagName: 'meta',
-            name: 'theme-color',
-            media: '(prefers-color-scheme: light)',
-            content: '#ffffff',
-          },
-          {
-            tagName: 'meta',
-            name: 'theme-color',
-            media: '(prefers-color-scheme: dark)',
-            content: '#000000',
-          },
-        ],
-      },
-    ],
   ],
   future: {
     experimental_faster: true,
@@ -114,6 +89,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
+          showLastUpdateTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/doxxx93/doxxx.dev/edit/master/",
@@ -195,6 +171,12 @@ const config: Config = {
         src: "img/logo.png",
       },
       items: [
+        {
+          type: "docSidebar",
+          sidebarId: "docSidebar",
+          label: "Docs",
+          position: "left",
+        },
         {to: "/archive", label: "Archive", position: "left"},
         {to: "/about", label: "About", position: "left"},
         {
@@ -222,6 +204,7 @@ const config: Config = {
         "toml",
         "yaml",
         "swift",
+        "rust",
       ],
     },
     algolia: {
