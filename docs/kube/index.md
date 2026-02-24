@@ -40,7 +40,7 @@ kube를 쓰고 있지만 내부가 어떻게 돌아가는지 제대로 이해하
 | [Architecture](./architecture/index.md) | 크레이트 구조, 타입 시스템, Client 내부, 요청 흐름 |
 | [Runtime Internals](./runtime-internals/index.md) | watcher/reflector/Controller 동작 원리 |
 | [Patterns](./patterns/index.md) | 올바른 사용 패턴과 흔한 실수 |
-| [Production](./production/index.md) | 모니터링, 테스트, 최적화 |
+| [Production](./production/index.md) | 모니터링, 테스트, 최적화, 보안, 가용성, 검증 |
 
 ## 기본 셋업
 

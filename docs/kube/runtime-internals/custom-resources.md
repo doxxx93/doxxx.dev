@@ -250,4 +250,108 @@ struct MyConfigMap {
 
 ### #[derive(KubeSchema)]
 
-CEL 검증 룰이 포함된 `JsonSchema` 구현을 생성합니다. `CustomResource`와 함께 쓰거나 단독으로 사용할 수 있습니다.
+CEL 검증 룰이 포함된 `JsonSchema` 구현을 생성합니다. `CustomResource`와 함께 쓰거나 단독으로 사용할 수 있습니다. CEL 검증의 상세한 사용법은 [Admission 검증 — CEL 검증](../production/admission.md#cel-검증)에서 다룹니다.
+
+## 스키마 오버라이드
+
+schemars가 생성하는 기본 스키마가 Kubernetes의 structural schema 요구사항과 맞지 않을 때, 필드 단위로 스키마를 오버라이드합니다.
+
+### schemars(schema_with)
+
+`#[schemars(schema_with = "함수명")]`으로 특정 필드의 스키마를 완전히 대체합니다:
+
+```rust
+use schemars::schema::{Schema, SchemaObject, InstanceType};
+
+fn quantity_schema(_gen: &mut schemars::SchemaGenerator) -> Schema {
+    Schema::Object(SchemaObject {
+        instance_type: Some(InstanceType::String.into()),
+        format: Some("quantity".to_string()),
+        ..Default::default()
+    })
+}
+
+#[derive(CustomResource, KubeSchema, Serialize, Deserialize, Clone, Debug)]
+#[kube(group = "example.com", version = "v1", kind = "MyApp")]
+pub struct MyAppSpec {
+    #[schemars(schema_with = "quantity_schema")]
+    pub memory_limit: String,
+}
+```
+
+[스키마 관련 함정들](#스키마-관련-함정들)에서 다룬 `untagged enum`이나 `flatten HashMap` 문제를 이 방법으로 해결합니다.
+
+### x-kubernetes-validations
+
+`#[x_kube(validation)]`이 생성하는 `x-kubernetes-validations` 확장은 OpenAPI 스키마의 확장 필드입니다:
+
+```yaml title="생성되는 스키마"
+properties:
+  title:
+    type: string
+    x-kubernetes-validations:
+      - rule: "self != ''"
+        message: "title은 비어있을 수 없습니다"
+```
+
+이 확장 필드는 API 서버가 CEL 엔진으로 평가합니다. 스키마 자체의 `type`, `format` 등과는 독립적으로 동작합니다.
+
+## CRD 버전 관리
+
+### 버전별 모듈
+
+CRD를 여러 버전으로 제공할 때, 버전별로 별도 모듈을 만들고 각각 `#[derive(CustomResource)]`를 적용합니다:
+
+```rust
+mod v1 {
+    #[derive(CustomResource, KubeSchema, Serialize, Deserialize, Clone, Debug)]
+    #[kube(group = "example.com", version = "v1", kind = "Document")]
+    #[kube(namespaced, status = "DocumentStatus")]
+    pub struct DocumentSpec {
+        pub title: String,
+    }
+}
+
+mod v2 {
+    #[derive(CustomResource, KubeSchema, Serialize, Deserialize, Clone, Debug)]
+    #[kube(group = "example.com", version = "v2", kind = "Document")]
+    #[kube(namespaced, status = "DocumentStatus")]
+    pub struct DocumentSpec {
+        pub title: String,
+        pub category: String,  // v2에서 추가
+    }
+}
+```
+
+### merge_crds()
+
+`merge_crds()`로 여러 단일 버전 CRD를 하나의 멀티 버전 CRD로 합칩니다:
+
+```rust title="kube-core/src/crd.rs"
+pub fn merge_crds(crds: Vec<CustomResourceDefinition>, stored_apiversion: &str)
+    -> Result<CustomResourceDefinition, MergeError>
+```
+
+```rust
+use kube::core::crd::merge_crds;
+
+let merged = merge_crds(
+    vec![v1::Document::crd(), v2::Document::crd()],
+    "v2",  // etcd에 저장할 버전
+)?;
+
+// merged CRD를 API 서버에 등록
+crd_api.patch("documents.example.com", &pp, &Patch::Apply(merged)).await?;
+```
+
+`merge_crds()`는 다음을 검증합니다:
+- 모든 CRD의 `spec.group`이 동일한지
+- 모든 CRD의 `spec.names.kind`가 동일한지
+- 모든 CRD의 `spec.scope`가 동일한지
+- 각 입력 CRD가 단일 버전인지
+
+`stored_apiversion`으로 지정한 버전만 `storage: true`로, 나머지는 `storage: false`로 설정됩니다.
+
+:::warning[버전 간 변환]
+Kubernetes는 저장된 버전과 다른 버전으로 요청이 올 때 변환(conversion)을 수행합니다. 단순한 필드 추가/제거는 API 서버가 자동 처리하지만, 복잡한 변환은 conversion webhook이 필요합니다.
+:::

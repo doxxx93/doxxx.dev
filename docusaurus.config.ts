@@ -197,7 +197,7 @@ const config: Config = {
           items: [
             {
               type: "docSidebar",
-              sidebarId: "kubeRsSidebar",
+              sidebarId: "kubeSidebar",
               label: "kube",
             },
           ],
