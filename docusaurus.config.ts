@@ -120,10 +120,12 @@ const config: Config = {
           // onInlineAuthors: 'warn',
           // onUntruncatedBlogPosts: 'warn',
         },
-        gtag: {
-          trackingID: "G-S7SC61596T",
-          anonymizeIP: true,
-        },
+        ...(process.env.NODE_ENV === "production" && {
+          gtag: {
+            trackingID: "G-S7SC61596T",
+            anonymizeIP: true,
+          },
+        }),
         theme: {
           customCss: "./src/css/custom.scss",
         },
