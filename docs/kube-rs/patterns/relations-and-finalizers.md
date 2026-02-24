@@ -10,52 +10,67 @@ Controller가 여러 리소스의 변경을 감지하는 방법(owns, watches)�
 
 ## 소유 관계 — owns
 
-<!--
-controller.owns::<ConfigMap>(api, wc):
+```rust
+controller.owns::<ConfigMap>(api, wc)
+```
 
-내부:
-1. ConfigMap에 대한 watcher 생성
-2. 각 ConfigMap 변경 시 trigger_owners() 호출
-3. ConfigMap의 metadata.ownerReferences[] 순회
-4. 부모의 kind/apiVersion이 Controller 주 리소스와 일치하면
-   → 부모의 ObjectRef로 ReconcileRequest 생성
+내부 동작:
 
-ownerReference 설정:
+1. ConfigMap에 대한 별도 watcher를 생성합니다
+2. ConfigMap이 변경되면 `metadata.ownerReferences`를 순회합니다
+3. 부모의 `kind`/`apiVersion`이 Controller 주 리소스와 일치하면
+4. 부모의 `ObjectRef`로 `ReconcileRequest`를 생성합니다
+
+### ownerReference 설정
+
+reconciler에서 자식 리소스를 생성할 때 ownerReference를 설정합니다:
+
+```rust
 let owner_ref = obj.controller_owner_ref(&()).unwrap();
-child.metadata.owner_references = Some(vec![owner_ref]);
+let cm = ConfigMap {
+    metadata: ObjectMeta {
+        name: Some("my-config".into()),
+        namespace: obj.namespace(),
+        owner_references: Some(vec![owner_ref]),
+        ..Default::default()
+    },
+    data: Some(BTreeMap::from([("key".into(), "value".into())])),
+    ..Default::default()
+};
+```
 
-controller_owner_ref vs owner_ref:
-- controller_owner_ref: controller: true 설정 → 하나의 컨트롤러만 소유
-- owner_ref: controller 미설정 → 여러 소유자 가능
+| 메서드 | `controller` 필드 | 용도 |
+|--------|-------------------|------|
+| `controller_owner_ref()` | `true` | 하나의 컨트롤러만 소유. Controller에서 사용 |
+| `owner_ref()` | 미설정 | 여러 소유자 가능 |
 
-자동 가비지 컬렉션:
-- ownerReference가 있으면 부모 삭제 시 Kubernetes가 자식 자동 삭제
-- propagationPolicy에 따라 Foreground/Background/Orphan 선택
--->
+### 자동 가비지 컬렉션
+
+ownerReference가 설정된 리소스는 부모 삭제 시 Kubernetes가 자동으로 삭제합니다. `propagationPolicy`에 따라 Foreground, Background, Orphan 중 선택할 수 있습니다.
 
 ## 감시 관계 — watches
 
-<!--
-controller.watches::<Secret>(api, wc, mapper_fn):
+ownerReference로 관계를 표현할 수 없을 때 `watches`를 사용합니다.
 
-mapper_fn: |secret: Arc<Secret>| -> Vec<ObjectRef<MyResource>>
-→ 이 Secret 변경 시 어떤 주 리소스를 reconcile할지 매핑
+```rust
+controller.watches::<Secret>(api, wc, |secret| {
+    // Secret에서 관련 주 리소스의 ObjectRef 목록 반환
+    let name = secret.labels().get("app")?.clone();
+    let ns = secret.namespace()?;
+    Some(ObjectRef::new(&name).within(&ns))
+})
+```
 
-내부:
-1. Secret에 대한 watcher 생성
-2. Secret 변경 시 trigger_others(mapper) 호출
-3. mapper가 반환한 ObjectRef마다 ReconcileRequest 생성
-
-owns와 차이:
-- owns: ownerReferences로 자동 매핑 (관계가 리소스에 기록됨)
-- watches: 사용자 정의 매핑 함수 (관계가 코드에 정의됨)
-
-사용 사례:
-- Secret 변경 → 해당 Secret을 참조하는 모든 리소스 재reconcile
-- Namespace 라벨 변경 → 해당 NS의 모든 리소스 재reconcile
--->
+| | owns | watches |
+|---|------|---------|
+| 관계 정의 | 리소스의 `ownerReferences`에 기록 | 코드의 mapper 함수에 정의 |
+| 매핑 | 자동 (`ownerReferences` 순회) | 수동 (mapper 함수 작성) |
+| 가비지 컬렉션 | Kubernetes가 자동 처리 | 직접 처리 |
+| 사용 사례 | 부모-자식 관계 | 참조 관계 (Secret → 리소스) |
 
 ## Finalizer 상태 머신
+
+finalizer는 리소스 삭제 전 정리 작업을 **보장**합니다. watch 이벤트의 `Delete`는 네트워크 단절로 유실될 수 있지만, finalizer가 있으면 Kubernetes가 삭제를 지연시키므로 정리 작업을 확실히 실행할 수 있습니다.
 
 ```mermaid
 stateDiagram-v2
@@ -71,24 +86,16 @@ stateDiagram-v2
     S4 --> [*] : Kubernetes가 실제 삭제
 ```
 
-<!--
 네 가지 상태:
 
-(None, false) — finalizer 없고 삭제 아님:
-  → JSON Patch로 finalizer 추가
-  → 이후 Event::Apply로 정상 reconcile
+| finalizer | 삭제 중? | 동작 |
+|-----------|---------|------|
+| 없음 | 아님 | JSON Patch로 finalizer를 추가합니다 |
+| 있음 | 아님 | `Event::Apply` → 정상 reconcile |
+| 있음 | 삭제 중 | `Event::Cleanup` → 정리 후 finalizer 제거 |
+| 없음 | 삭제 중 | 아무것도 하지 않습니다 (이미 정리됨) |
 
-(Some(i), false) — finalizer 있고 삭제 아님:
-  → Event::Apply 발행 → 정상 reconcile 로직
-
-(Some(i), true) — finalizer 있고 삭제 중:
-  → Event::Cleanup 발행 → 정리 작업 실행
-  → 성공하면 JSON Patch로 finalizer 제거
-  → ⚠️ Patch에 Test operation 포함 → 동시성 안전 (다른 프로세스가 먼저 제거했으면 실패)
-
-(None, true) — finalizer 없고 삭제 중:
-  → 아무것도 안 함 (이미 정리됨 또는 우리 finalizer가 아님)
--->
+finalizer 제거 시 JSON Patch에 `Test` operation이 포함됩니다. 다른 프로세스가 이미 finalizer를 제거했다면 Patch가 실패해 동시성 문제를 방지합니다.
 
 ## 사용 패턴
 
@@ -98,7 +105,10 @@ use kube::runtime::finalizer::{finalizer, Event};
 const FINALIZER_NAME: &str = "myapp.example.com/cleanup";
 
 async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Error> {
-    let api = Api::<MyResource>::namespaced(ctx.client.clone(), &obj.namespace().unwrap());
+    let api = Api::<MyResource>::namespaced(
+        ctx.client.clone(),
+        &obj.namespace().unwrap(),
+    );
 
     finalizer(&api, FINALIZER_NAME, obj, |event| async {
         match event {
@@ -107,29 +117,41 @@ async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Er
         }
     }).await
 }
+
+async fn apply(obj: Arc<MyResource>, ctx: &Context) -> Result<Action, Error> {
+    // 정상 reconcile 로직
+    Ok(Action::requeue(Duration::from_secs(300)))
+}
+
+async fn cleanup(obj: Arc<MyResource>, ctx: &Context) -> Result<Action, Error> {
+    // 외부 리소스 정리
+    // 이 함수가 성공하면 finalizer가 제거됩니다
+    Ok(Action::await_change())
+}
 ```
 
-<!--
-finalizer 이름 규칙:
-- 도메인 형식 필수: "myapp.example.com/cleanup"
-- 고유해야 함 (다른 컨트롤러와 충돌 방지)
--->
+## 주의사항
 
-## ⚠️ 주의사항
+### cleanup 실패 시 객체가 삭제되지 않습니다
 
-<!--
-1. cleanup 실패 시 객체가 영원히 삭제 안 됨
-   - deletionTimestamp은 찍혔지만 finalizer가 남아있음
-   - kubectl delete --force로 강제 삭제 가능하지만 정리 작업 건너뜀
-   - cleanup은 반드시 성공하도록 (또는 최종적으로 성공하도록) 설계
+`deletionTimestamp`는 설정되었지만 finalizer가 남아있으므로 Kubernetes가 실제 삭제를 수행하지 않습니다. cleanup은 **반드시 최종적으로 성공하도록** 설계해야 합니다. 영구적으로 실패하면 `kubectl delete --force`로 강제 삭제할 수 있지만, 정리 작업은 건너뛰게 됩니다.
 
-2. 클러스터 스코프 CR → 네임스페이스 스코프 자식:
-   - 부모의 namespace가 None, 자식의 namespace가 Some("ns")
-   - ObjectRef 매칭 시 namespace 불일치 문제
-   - ownerReferences는 같은 namespace 또는 클러스터 스코프만 참조 가능
+### finalizer 이름은 도메인 형식이어야 합니다
 
-3. finalizer + predicate_filter 상호작용:
-   - finalizer 추가/제거는 generation 변경 안 함
-   - predicates::generation만 쓰면 finalizer 관련 이벤트 놓침
-   - predicates::generation.fallback(predicates::finalizers) 사용
--->
+`"myapp.example.com/cleanup"` 형식입니다. 다른 컨트롤러의 finalizer와 충돌하지 않도록 고유한 이름을 사용합니다.
+
+### 클러스터 스코프 부모 + 네임스페이스 스코프 자식
+
+클러스터 스코프 CR이 네임스페이스 스코프 자식을 owns할 때, 부모의 namespace가 `None`이고 자식의 namespace가 `Some("ns")`이므로 ObjectRef 매칭에 문제가 생길 수 있습니다. ownerReferences는 같은 namespace 또는 클러스터 스코프 리소스만 참조할 수 있습니다.
+
+### finalizer + predicate_filter 상호작용
+
+finalizer 추가/제거는 `generation`을 변경하지 않습니다. `predicates::generation`만 사용하면 finalizer 관련 이벤트를 놓칩니다.
+
+```rust
+// ✗ finalizer 이벤트를 놓칠 수 있음
+controller.with_stream_filter(predicates::generation)
+
+// ✓ finalizer 변경도 감지
+controller.with_stream_filter(predicates::generation.combine(predicates::finalizers))
+```
