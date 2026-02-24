@@ -55,14 +55,13 @@ let stream = watcher(api, wc).default_backoff();
 ### 커스텀 backoff
 
 ```rust
-use backoff::ExponentialBackoff;
+use backon::ExponentialBuilder;
 
-let stream = watcher(api, wc).backoff(ExponentialBackoff {
-    initial_interval: Duration::from_millis(500),
-    max_interval: Duration::from_secs(30),
-    max_elapsed_time: None, // 무한 재시도
-    ..Default::default()
-});
+let stream = watcher(api, wc).backoff(
+    ExponentialBuilder::default()
+        .with_min_delay(Duration::from_millis(500))
+        .with_max_delay(Duration::from_secs(30)),
+);
 ```
 
 ## Reconciler 에러와 error_policy

@@ -150,10 +150,10 @@ finalizer 추가/제거는 `generation`을 변경하지 않습니다. `predicate
 
 ```rust
 // ✗ finalizer 이벤트를 놓칠 수 있음
-controller.with_stream_filter(predicates::generation)
+.predicate_filter(predicates::generation)
 
 // ✓ finalizer 변경도 감지
-controller.with_stream_filter(predicates::generation.combine(predicates::finalizers))
+.predicate_filter(predicates::generation.combine(predicates::finalizers))
 ```
 
 ## 정리 전략 매트릭스
