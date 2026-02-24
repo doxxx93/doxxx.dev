@@ -56,6 +56,7 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
   --ifm-font-family-monospace: 'Cascadia Code', 'JetBrains Mono', 'SF Mono',
     SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --docusaurus-highlighted-code-line-bg: rgb(80, 80, 80);
+  --ifm-code-background: #f0f0f0;
 
   // Custom tokens
   --sidebar-color: #5d5d5d;
@@ -84,6 +85,7 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
   --ifm-font-color-base: #bcbec4;
   --ifm-footer-background-color: #2b2b2b;
   --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
+  --ifm-code-background: #2d2e33;
 
   --sidebar-color: #8a8a8a;
   --sidebar-color-hover: #e0e0e0;
@@ -559,4 +561,99 @@ article .markdown > p:first-child > img {
 html[data-theme='dark'] .navbar--github-link::before {
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
     no-repeat;
+}
+
+// =============================================================================
+// 12. PR CARDS — collapsible contribution summary cards
+//     Docusaurus renders <details> as alert--info with its own variables,
+//     so we reset those and override with !important where needed.
+// =============================================================================
+
+details.pr-card {
+  --ifm-alert-background-color: transparent;
+  --ifm-alert-border-color: transparent;
+  --ifm-code-background: #f0f0f0 !important;
+
+  border: 1px solid var(--ifm-color-emphasis-200) !important;
+  border-radius: 6px !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--ifm-font-color-base) !important;
+
+  > summary {
+    padding: 10px 14px !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    font-size: 14px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+
+    &::-webkit-details-marker { display: none; }
+
+    // Custom arrow (replaces Docusaurus default)
+    &::before {
+      content: '▸' !important;
+      font-size: 11px !important;
+      color: var(--ifm-color-emphasis-500) !important;
+      transition: transform 0.15s ease !important;
+      flex-shrink: 0;
+      // Reset Docusaurus arrow positioning
+      position: static !important;
+      border: none !important;
+      width: auto !important;
+      height: auto !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+    }
+
+    &:hover {
+      background: var(--ifm-color-emphasis-100) !important;
+      border-radius: 6px;
+    }
+  }
+
+  &[open] > summary::before { transform: rotate(90deg) !important; }
+  &:target { border-color: var(--ifm-color-primary) !important; box-shadow: 0 0 0 1px var(--ifm-color-primary) !important; }
+
+  [class*='collapsibleContent'] { padding-top: 0 !important; margin-top: 0 !important; }
+
+  ul {
+    padding: 6px 14px 10px 40px !important;
+    margin: 0 !important;
+    font-size: 13.5px;
+    line-height: 1.7;
+    border-top: 1px solid var(--ifm-color-emphasis-100);
+    li { margin-top: 3px; }
+  }
+
+  .pr-number { font-weight: 600; font-family: var(--ifm-font-family-monospace); font-size: 13px; flex-shrink: 0; }
+  .pr-badge { font-size: 12px; flex-shrink: 0; color: var(--ifm-color-emphasis-700); }
+
+  .pr-back-link {
+    display: block;
+    padding: 4px 14px 10px 40px;
+    font-size: 12.5px;
+    color: var(--ifm-color-emphasis-500) !important;
+    text-decoration: none !important;
+    &:hover { color: var(--ifm-color-primary) !important; text-decoration: underline !important; }
+  }
+}
+
+[data-theme='dark'] details.pr-card {
+  --ifm-code-background: #2d2e33 !important;
+}
+
+@media (max-width: 768px) {
+  details.pr-card {
+    > summary { font-size: 13px; gap: 4px; }
+    ul { padding-left: 24px !important; font-size: 13px; }
+    .pr-back-link { padding-left: 24px; }
+  }
 }
