@@ -6,7 +6,7 @@ description: "내가 만들지 않은 CRD와 상호작용하는 방법 — Dynam
 
 # 서드파티 CRD
 
-Istio VirtualService, Cert-Manager Certificate 같이 내가 만들지 않은 CRD를 kube에서 다루는 방법은 여러 가지다. 각 방법의 트레이드오프를 이해하고 상황에 맞게 선택한다.
+Istio VirtualService, Cert-Manager Certificate 같이 직접 만들지 않은 CRD를 kube에서 다루는 방법은 여러 가지입니다. 각 방법의 트레이드오프를 이해하고 상황에 맞게 선택합니다.
 
 ## ⚠️ 흔한 혼동
 

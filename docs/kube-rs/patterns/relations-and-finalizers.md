@@ -6,7 +6,7 @@ description: "ownerReferences, watches, finalizer 상태 머신의 동작 원리
 
 # 관계와 Finalizer
 
-Controller가 여러 리소스의 변경을 감지하는 방법(owns, watches)과, 리소스 삭제 전 정리 작업을 보장하는 finalizer의 동작 원리를 다룬다.
+Controller가 여러 리소스의 변경을 감지하는 방법(owns, watches)과, 리소스 삭제 전 정리 작업을 보장하는 finalizer의 동작 원리를 다룹니다.
 
 ## 소유 관계 — owns
 

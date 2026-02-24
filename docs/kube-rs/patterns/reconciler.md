@@ -6,7 +6,7 @@ description: "idempotent reconciler 작성법, 무한루프 방지, Action 전�
 
 # Reconciler 패턴
 
-Reconciler는 Controller의 핵심이다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룬다.
+Reconciler는 Controller의 핵심입니다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룹니다.
 
 ## 함수 시그니처
 

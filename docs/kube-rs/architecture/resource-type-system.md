@@ -6,7 +6,7 @@ description: "kube의 타입 안전성이 어떻게 작동하는지 — DynamicT
 
 # Resource trait과 타입 시스템
 
-kube의 핵심은 `Resource` trait이다. 이 trait 하나로 정적 타입(k8s-openapi)과 동적 타입(DynamicObject)을 동일한 인터페이스로 다루면서, Scope를 통해 컴파일 타임에 잘못된 API 호출을 방지한다.
+kube의 핵심은 `Resource` trait입니다. 이 trait 하나로 정적 타입(k8s-openapi)과 동적 타입(DynamicObject)을 동일한 인터페이스로 다루면서, Scope를 통해 컴파일 타임에 잘못된 API 호출을 방지합니다.
 
 ## Resource trait 해부
 
