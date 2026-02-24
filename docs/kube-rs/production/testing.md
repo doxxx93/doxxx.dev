@@ -73,7 +73,9 @@ async fn test_reconcile_creates_configmap() {
         send_response.send_response(
             Response::builder()
                 .status(404)
-                .body(Body::from(serde_json::to_vec(&not_found_status()).unwrap()))
+                .body(Body::from(serde_json::to_vec(
+                    &not_found_status() // 테스트 헬퍼 — 404 Status 객체 생성
+                ).unwrap()))
                 .unwrap()
         );
 
@@ -81,12 +83,14 @@ async fn test_reconcile_creates_configmap() {
         let (request, send_response) = handle.next_request().await.unwrap();
         assert_eq!(request.method(), http::Method::PATCH);
         send_response.send_response(
-            Response::new(Body::from(serde_json::to_vec(&configmap()).unwrap()))
+            Response::new(Body::from(serde_json::to_vec(
+                &configmap() // 테스트 헬퍼 — 예상 ConfigMap 객체 생성
+            ).unwrap()))
         );
     });
 
     let ctx = Arc::new(Context { client: mock_client });
-    let obj = Arc::new(test_resource());
+    let obj = Arc::new(test_resource()); // 테스트 헬퍼 — MyResource 테스트 객체 생성
     let result = reconcile(obj, ctx).await;
     assert!(result.is_ok());
 
@@ -121,6 +125,8 @@ kubectl apply -f manifests/crd.yaml
 ### 테스트 코드
 
 ```rust
+use kube::runtime::wait::await_condition;
+
 #[tokio::test]
 #[ignore] // CI에서만 실행
 async fn test_reconcile_creates_resources() {
