@@ -201,14 +201,13 @@ aside.col--3 {
     padding-left: 0;
   }
 
-  // Flatten nested lists — no indentation, active bar stays fixed
+  // Indent nested headings by depth
   ul {
-    padding-left: 0;
+    padding-left: 0.75rem;
   }
 
   li {
     position: relative;
-    margin-left: 0 !important;
   }
 
   a {
