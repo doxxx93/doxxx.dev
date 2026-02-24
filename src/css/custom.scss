@@ -446,8 +446,8 @@ article.margin-bottom--xl {
 
 // Thumbnail (first image) — constrained width, fixed height for consistent look
 article .markdown > p:first-child > img {
-  max-width: 45%;
-  height: 200px;
+  max-width: 80%;
+  height: 340px;
   object-fit: contain;
   object-position: center;
 }
@@ -557,7 +557,7 @@ article .markdown > p:first-child > img {
   }
 
   article.margin-bottom--xl .markdown > p:first-child > img {
-    height: 180px;
+    height: 260px;
   }
 }
 
@@ -627,7 +627,6 @@ details.pr-card {
   }
 
   &[open] > summary::before { transform: rotate(90deg) !important; }
-  &:target { border-color: var(--ifm-color-primary) !important; box-shadow: 0 0 0 1px var(--ifm-color-primary) !important; }
 
   [class*='collapsibleContent'] { padding-top: 0 !important; margin-top: 0 !important; }
 
@@ -643,14 +642,6 @@ details.pr-card {
   .pr-number { font-weight: 600; font-family: var(--ifm-font-family-monospace); font-size: 13px; flex-shrink: 0; }
   .pr-badge { font-size: 12px; flex-shrink: 0; color: var(--ifm-color-emphasis-700); }
 
-  .pr-back-link {
-    display: block;
-    padding: 4px 14px 10px 40px;
-    font-size: 12.5px;
-    color: var(--ifm-color-emphasis-500) !important;
-    text-decoration: none !important;
-    &:hover { color: var(--ifm-color-primary) !important; text-decoration: underline !important; }
-  }
 }
 
 [data-theme='dark'] details.pr-card {
@@ -661,6 +652,5 @@ details.pr-card {
   details.pr-card {
     > summary { font-size: 13px; gap: 4px; }
     ul { padding-left: 24px !important; font-size: 13px; }
-    .pr-back-link { padding-left: 24px; }
   }
 }
