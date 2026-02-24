@@ -1,3 +1,7 @@
+// =============================================================================
+// 1. FONTS
+// =============================================================================
+
 @font-face {
   font-family: 'Cascadia Code';
   src: url('/fonts/CascadiaCode.woff2') format('woff2');
@@ -14,7 +18,27 @@
   font-display: swap;
 }
 
+// =============================================================================
+// 2. SCSS VARIABLES — compile-time constants shared across rules
+// =============================================================================
+
+$sidebar-font-size: 14px;
+$sidebar-line-height: 20px;
+$sidebar-padding-left: 12px;
+
+$title-font-size: 30px;
+$title-font-weight: 600;
+$title-letter-spacing: -0.6px;
+$title-line-height: 42px;
+
+$heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
+
+// =============================================================================
+// 3. THEME TOKENS — CSS custom properties for light / dark mode
+// =============================================================================
+
 :root {
+  // Infima overrides
   --ifm-color-primary: #282828;
   --ifm-color-primary-dark: #1a1a1a;
   --ifm-color-primary-darker: #111111;
@@ -25,16 +49,21 @@
   --ifm-background-color: #ffffff;
   --ifm-font-color-base: #080808;
   --ifm-footer-background-color: #f9f9f9;
-  --ifm-font-family-base: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --ifm-font-family-monospace: 'Cascadia Code', 'JetBrains Mono', 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --ifm-font-family-base: 'Pretendard Variable', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --ifm-font-family-monospace: 'Cascadia Code', 'JetBrains Mono', 'SF Mono',
+    SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --docusaurus-highlighted-code-line-bg: rgb(80, 80, 80);
+
+  // Custom tokens
   --sidebar-color: #5d5d5d;
   --sidebar-color-hover: #181818;
 
-  // DocSearch — remove blue tint, use neutral greys
+  // DocSearch — neutral greys (remove default blue tint)
   --docsearch-muted-color: #8a8a8a;
   --docsearch-key-gradient: linear-gradient(-225deg, #e8e8e8, #f8f8f8);
-  --docsearch-key-shadow: inset 0 -2px 0 0 #d0d0d0, inset 0 0 1px 1px #fff, 0 1px 2px 1px rgba(0, 0, 0, 0.15);
+  --docsearch-key-shadow: inset 0 -2px 0 0 #d0d0d0, inset 0 0 1px 1px #fff,
+    0 1px 2px 1px rgba(0, 0, 0, 0.15);
   --docsearch-container-background: rgba(0, 0, 0, 0.5);
   --docsearch-highlight-color: var(--ifm-color-primary);
   --docsearch-logo-color: #8a8a8a;
@@ -53,44 +82,65 @@
   --ifm-font-color-base: #bcbec4;
   --ifm-footer-background-color: #2b2b2b;
   --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
+
   --sidebar-color: #8a8a8a;
   --sidebar-color-hover: #e0e0e0;
 
-  // DocSearch — neutral greys for dark mode
   --docsearch-muted-color: #8a8a8a;
   --docsearch-key-gradient: linear-gradient(-225deg, #3a3a3a, #2e2e2e);
-  --docsearch-key-shadow: inset 0 -2px 0 0 #1a1a1a, inset 0 0 1px 1px #444, 0 1px 2px 1px rgba(0, 0, 0, 0.3);
+  --docsearch-key-shadow: inset 0 -2px 0 0 #1a1a1a, inset 0 0 1px 1px #444,
+    0 1px 2px 1px rgba(0, 0, 0, 0.3);
   --docsearch-container-background: rgba(0, 0, 0, 0.6);
   --docsearch-highlight-color: var(--ifm-color-primary);
   --docsearch-logo-color: #8a8a8a;
   --docsearch-footer-shadow: 0 -1px 0 0 #3a3a3a, 0 -3px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
-// DocSearch button — remove blue tint
-.DocSearch-Button {
-  color: var(--sidebar-color) !important;
-  border-color: var(--ifm-color-emphasis-300) !important;
+// =============================================================================
+// 4. BASE / GLOBAL — broad selectors, element resets
+// =============================================================================
+
+.container {
+  max-width: 1400px !important;
 }
 
-.DocSearch-Button-Key {
-  color: var(--sidebar-color) !important;
-  background: var(--ifm-color-emphasis-100) !important;
-  border: 1px solid var(--ifm-color-emphasis-200) !important;
-  box-shadow: inset 0 -1px 0 0 var(--ifm-color-emphasis-200) !important;
+.button {
+  border-radius: 3px;
 }
 
-.DocSearch-Search-Icon {
-  color: var(--sidebar-color) !important;
+// Hide archive hero banner
+.hero {
+  display: none;
 }
 
-.DocSearch-Button-Placeholder {
-  color: var(--sidebar-color) !important;
+// Links — underline for visibility (primary color is black)
+.markdown a,
+.about-content a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
 }
+
+// Center images and diagrams
+.docusaurus-mermaid-container {
+  display: flex;
+  justify-content: center;
+}
+
+.markdown p > img {
+  display: block;
+  margin: 0 auto;
+}
+
+// =============================================================================
+// 5. NAVBAR — shadow, dropdown, DocSearch, GitHub link
+// =============================================================================
 
 .navbar {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 
-  // Docs dropdown — clean minimal style
   .dropdown__menu {
     min-width: 160px;
     padding: 6px;
@@ -103,39 +153,130 @@
     border-radius: 6px;
     font-size: 14px;
     padding: 8px 12px;
-
     &:hover {
       background: var(--ifm-color-emphasis-100);
     }
   }
 }
 
-// Widen layout container for more breathing room
-.container {
-  max-width: 1400px !important;
+// DocSearch button — override blue tint with neutral greys
+.DocSearch-Button {
+  color: var(--sidebar-color) !important;
+  border-color: var(--ifm-color-emphasis-300) !important;
+}
+.DocSearch-Button-Key {
+  color: var(--sidebar-color) !important;
+  background: var(--ifm-color-emphasis-100) !important;
+  border: 1px solid var(--ifm-color-emphasis-200) !important;
+  box-shadow: inset 0 -1px 0 0 var(--ifm-color-emphasis-200) !important;
+}
+.DocSearch-Search-Icon,
+.DocSearch-Button-Placeholder {
+  color: var(--sidebar-color) !important;
 }
 
-// Shared sidebar styles — blog & docs unified
-$sidebar-font-size: 14px;
-$sidebar-line-height: 20px;
+// GitHub icon
+.navbar--github-link {
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  margin-right: 20px;
+  margin-left: 6px;
+  border-radius: 50%;
+  transition: background var(--ifm-transition-fast);
 
-// Blog layout — match docs sidebar position
+  &:hover {
+    background: var(--ifm-color-emphasis-200);
+  }
+
+  &::before {
+    content: '';
+    height: 100%;
+    display: block;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+      no-repeat;
+  }
+}
+
+// =============================================================================
+// 6. SHARED — sidebar & TOC styles used by both Blog and Docs
+// =============================================================================
+
+// Heading sizes — shared between blog body and docs body
+@mixin body-headings {
+  h2 { font-size: map-get($heading-sizes, h2); }
+  h3 { font-size: map-get($heading-sizes, h3); }
+  h4 { font-size: map-get($heading-sizes, h4); }
+}
+
+// Title style — shared between blog post title and docs page title
+@mixin page-title {
+  font-size: $title-font-size;
+  font-weight: $title-font-weight;
+  letter-spacing: $title-letter-spacing;
+  line-height: $title-line-height;
+}
+
+// TOC — shared between blog and docs right-side table of contents
+[class*='tableOfContents'] {
+  top: calc(var(--ifm-navbar-height) + 2rem) !important;
+  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem) !important;
+}
+
+.table-of-contents {
+  font-size: 13px;
+  color: var(--sidebar-color);
+
+  &.table-of-contents__left-border {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  ul {
+    padding-left: 0.75rem;
+  }
+
+  li {
+    position: relative;
+  }
+
+  a {
+    color: var(--sidebar-color);
+    font-weight: 400;
+    transition: color 0.15s;
+    display: block;
+    padding: 4px 0 4px $sidebar-padding-left;
+    &:hover {
+      color: var(--sidebar-color-hover);
+    }
+  }
+
+  .table-of-contents__link--active {
+    color: var(--ifm-font-color-base);
+  }
+}
+
+// =============================================================================
+// 7. LAYOUT — desktop 3-column structure (sidebar / content / TOC)
+// =============================================================================
+
 @media (min-width: 997px) {
-  // Blog container → full-width so sidebar aligns with docs sidebar
+  // --- Blog ---
+
+  // Full-width container so sidebar aligns with docs sidebar
   .container.margin-vert--lg:has(> .row > aside.col--3) {
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 1rem !important;
   }
 
-  // Blog sidebar → fixed 300px matching docs
+  // Blog sidebar — fixed 300px (matches docs --doc-sidebar-width)
   aside.col--3 {
     flex: 0 0 300px !important;
     max-width: 300px !important;
     padding-left: 1.5rem;
   }
 
-  // Blog sidebar — sticky (top = navbar + container margin-vert--lg 2rem)
   aside.col--3 nav {
     position: sticky;
     top: calc(var(--ifm-navbar-height) + 2rem);
@@ -143,7 +284,7 @@ $sidebar-line-height: 20px;
     overflow-y: auto;
   }
 
-  // Blog main content — fill space, generous padding for readability
+  // Blog main content — fill remaining space with generous padding
   main.col--7 {
     flex: 1 1 0% !important;
     max-width: none !important;
@@ -151,13 +292,34 @@ $sidebar-line-height: 20px;
     padding-right: 7rem !important;
   }
 
-  // Blog list page (no TOC sibling) — reserve right space matching col--2
+  // Blog list page (no TOC sibling) — reserve right margin matching col--2
   main.col--7:last-child {
     margin-right: calc(2 / 12 * 100%) !important;
   }
+
+  // --- Docs ---
+
+  // Full-width container (same as blog)
+  [class*='docMainContainer'] > .container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 1rem !important;
+  }
+
+  // TOC column — match blog col--2 absolute width.
+  // Blog TOC = 2/12 of full row (includes sidebar in the row).
+  // Docs row excludes the 300px sidebar, so compensate: 2/12*(100%+300px).
+  [class*='docMainContainer'] .col.col--3 {
+    flex: 0 0 calc(2 / 12 * 100% + 50px) !important;
+    max-width: calc(2 / 12 * 100% + 50px) !important;
+  }
 }
 
-// Blog sidebar styling
+// =============================================================================
+// 8. BLOG — article styles, tags, list page
+// =============================================================================
+
+// Blog sidebar text
 aside.col--3 {
   font-size: $sidebar-font-size;
   line-height: $sidebar-line-height;
@@ -183,21 +345,120 @@ aside.col--3 {
   }
 }
 
-// ==========================================
-// Docs — unified with blog layout & style
-// ==========================================
+// Blog post header — centered title and metadata
+article header {
+  text-align: center;
+  margin-bottom: 1.5rem;
 
-// Hide breadcrumb
+  h1[class*='title'],
+  h2[class*='title'] {
+    @include page-title;
+
+    a {
+      color: var(--ifm-font-color-base);
+      text-decoration: none;
+      &:hover {
+        color: var(--ifm-font-color-base);
+        text-decoration: none;
+      }
+    }
+  }
+
+  div[class*='container'] {
+    justify-content: center;
+  }
+
+  .avatar {
+    display: none;
+  }
+}
+
+// Blog body headings
+article .markdown {
+  h1 { font-size: 24px; }
+  @include body-headings;
+}
+
+// Blog tags — neutral colors, centered, hide label
+article footer {
+  display: flex;
+  justify-content: center;
+
+  .col--9 {
+    flex: none;
+    max-width: none;
+    text-align: center;
+    b { display: none; }
+    ul {
+      justify-content: center;
+      margin: 0;
+    }
+  }
+
+  .tag {
+    color: var(--sidebar-color);
+    border-color: var(--ifm-color-emphasis-300);
+    &:hover {
+      color: var(--sidebar-color-hover);
+      border-color: var(--ifm-color-emphasis-500);
+    }
+  }
+}
+
+// Hide "자세히 보기" (Read more) — title is already a link
+article footer .col.text--right {
+  display: none;
+}
+
+// Blog list — clickable article card with separator
+article.margin-bottom--xl {
+  position: relative;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  margin-bottom: 2.5rem !important;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  // Stretch title link over entire card
+  header h2[class*='title'] a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  // Tags stay above overlay
+  footer {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+// Thumbnail (first image) — constrained width
+article .markdown > p:first-child > img {
+  max-width: 45%;
+}
+
+// =============================================================================
+// 9. DOCS — sidebar, breadcrumb, page title, headings
+// =============================================================================
+
 .theme-doc-breadcrumbs {
   display: none;
 }
 
-// Sidebar title (match Blog's "All Posts")
+// Sidebar title — match Blog's "All Posts" style
 .sidebar-doc-title {
   font-size: 20px;
   font-weight: 400;
   color: var(--sidebar-color);
-  padding: 4px 12px;
+  padding: 4px $sidebar-padding-left;
   margin-bottom: 0.5rem;
 }
 
@@ -209,7 +470,7 @@ aside.col--3 {
     font-size: $sidebar-font-size;
     line-height: $sidebar-line-height;
     font-weight: 400;
-    padding-left: 12px;
+    padding-left: $sidebar-padding-left;
     padding-top: 2rem;
   }
 
@@ -234,252 +495,25 @@ aside.col--3 {
   .menu__list-item { margin-top: 2px; }
 }
 
-// Layout — match blog 3-column proportions
-@media (min-width: 997px) {
-  // Full-width container (same as blog)
-  [class*='docMainContainer'] > .container {
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 1rem !important;
-  }
-
-  // TOC column — match blog col--2 absolute width
-  // Blog TOC = 2/12 of full row (which includes sidebar).
-  // Docs row excludes the 300px sidebar, so compensate: 2/12*(100%+300px)
-  [class*='docMainContainer'] .col.col--3 {
-    flex: 0 0 calc(2 / 12 * 100% + 50px) !important;
-    max-width: calc(2 / 12 * 100% + 50px) !important;
-  }
-}
-
-// Page title — match blog post title (30px centered)
+// Docs page title — match blog post title
 .theme-doc-markdown > header > h1 {
-  font-size: 30px !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.6px;
-  line-height: 42px;
+  @include page-title;
+  // !important needed: layered Docusaurus styles override unlayered rules for these
+  font-size: $title-font-size !important;
+  font-weight: $title-font-weight !important;
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-// Body headings — same as blog (set after blog rules via load order)
+// Docs body headings — match blog
 .theme-doc-markdown {
-  h2 { font-size: 20px; }
-  h3 { font-size: 18px; }
-  h4 { font-size: 16px; }
+  @include body-headings;
 }
 
-// TOC sticky — match natural position (navbar + container margin 2rem)
-[class*='tableOfContents'] {
-  top: calc(var(--ifm-navbar-height) + 2rem) !important;
-  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem) !important;
-}
+// =============================================================================
+// 10. RESPONSIVE
+// =============================================================================
 
-.table-of-contents {
-  font-size: 13px;
-  color: var(--sidebar-color);
-
-  // Remove default left border — active bar is enough
-  &.table-of-contents__left-border {
-    border-left: none;
-    padding-left: 0;
-  }
-
-  // Indent nested headings by depth
-  ul {
-    padding-left: 0.75rem;
-  }
-
-  li {
-    position: relative;
-  }
-
-  a {
-    color: var(--sidebar-color);
-    font-weight: 400;
-    transition: color 0.15s;
-    display: block;
-    padding: 4px 0 4px 12px;
-
-    &:hover {
-      color: var(--sidebar-color-hover);
-    }
-  }
-
-  // Active section — color only (animated bar handled by JS indicator)
-  .table-of-contents__link--active {
-    color: var(--ifm-font-color-base);
-  }
-}
-
-
-// Blog post title styling (OpenAI-like)
-article header {
-  text-align: center;
-  margin-bottom: 1.5rem;
-
-  // Title (h1 on post page, h2 on list page)
-  h1[class*='title'],
-  h2[class*='title'] {
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: -0.6px;
-    line-height: 42px;
-
-    a {
-      color: var(--ifm-font-color-base);
-      text-decoration: none;
-      &:hover {
-        color: var(--ifm-font-color-base);
-        text-decoration: none;
-      }
-    }
-  }
-
-  // Date, reading time
-  div[class*='container'] {
-    justify-content: center;
-  }
-
-  // Hide author on blog posts (single-author blog)
-  .avatar {
-    display: none;
-  }
-}
-
-// Blog post body headings - smaller than title (30px)
-article .markdown {
-  h1 { font-size: 24px; }
-  h2 { font-size: 20px; }
-  h3 { font-size: 18px; }
-  h4 { font-size: 16px; }
-}
-
-// Blog tags - neutral colors, centered, hide "태그:" label
-article footer {
-  display: flex;
-  justify-content: center;
-
-  .col--9 {
-    flex: none;
-    max-width: none;
-    text-align: center;
-
-    b {
-      display: none;
-    }
-
-    ul {
-      justify-content: center;
-      margin: 0;
-    }
-  }
-
-  .tag {
-    color: var(--sidebar-color);
-    border-color: var(--ifm-color-emphasis-300);
-    &:hover {
-      color: var(--sidebar-color-hover);
-      border-color: var(--ifm-color-emphasis-500);
-    }
-  }
-}
-
-// Hide "자세히 보기" (Read more) - title is already a link
-article footer .col.text--right {
-  display: none;
-}
-
-// Make article clickable from title to content (not tags/separator)
-article.margin-bottom--xl {
-  position: relative;
-
-  header h2[class*='title'] a::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    cursor: pointer;
-  }
-
-  // Tags stay above overlay and clickable
-  footer {
-    position: relative;
-    z-index: 2;
-  }
-}
-
-// Separate blog posts on list page
-article.margin-bottom--xl {
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-  margin-bottom: 2.5rem !important;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.button {
-  border-radius: 3px;
-}
-.navbar--github-link {
-  width: 32px;
-  height: 32px;
-  padding: 6px;
-  margin-right: 20px;
-  margin-left: 6px;
-  border-radius: 50%;
-  transition: background var(--ifm-transition-fast);
-}
-
-.navbar--github-link:hover {
-  background: var(--ifm-color-emphasis-200);
-}
-
-.navbar--github-link:before {
-  content: "";
-  height: 100%;
-  display: block;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
-}
-
-// Clean up archive page - hide hero banner
-.hero {
-  display: none;
-}
-
-// Make links distinguishable with underline (since primary is black)
-.markdown a,
-.about-content a {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  &:hover {
-    text-decoration-thickness: 2px;
-  }
-}
-
-// Center mermaid diagrams and blog images
-.docusaurus-mermaid-container {
-  display: flex;
-  justify-content: center;
-}
-
-.markdown p > img {
-  display: block;
-  margin: 0 auto;
-}
-
-// Thumbnail (first image) only
-article .markdown > p:first-child > img {
-  max-width: 45%;
-}
-
-
-// Mobile responsive
 @media (max-width: 768px) {
   article header {
     text-align: left;
@@ -501,10 +535,7 @@ article .markdown > p:first-child > img {
 
     .col--9 {
       text-align: left;
-
-      ul {
-        justify-content: flex-start;
-      }
+      ul { justify-content: flex-start; }
     }
   }
 
@@ -519,6 +550,11 @@ article .markdown > p:first-child > img {
   }
 }
 
-html[data-theme=dark] .navbar--github-link:before {
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
+// =============================================================================
+// 11. DARK MODE — non-variable overrides (selectors that can't use tokens)
+// =============================================================================
+
+html[data-theme='dark'] .navbar--github-link::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='white' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E")
+    no-repeat;
 }
