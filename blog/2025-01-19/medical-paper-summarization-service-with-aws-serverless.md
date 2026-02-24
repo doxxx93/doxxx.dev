@@ -4,7 +4,7 @@ authors: doxxx
 tags: [ aws, serverless, bedrock, claude ]
 date: 2025-01-19 20:48:30 +0900
 image: https://i.imgur.com/6IkEE2X.png
-description: NIPA AWS Developer 부트캠프에서 3주간 진행한 의학 논문 요약 서비스 프로젝트를 통해 AWS 서버리스 아키텍처 설계와 구현 경험을 공유합니다.
+description: 의학 논문 요약 서비스를 AWS 서버리스로 설계하고 구현한 경험을 공유합니다.
 ---
 
 ![0.png](https://i.imgur.com/6IkEE2X.png)
@@ -283,7 +283,7 @@ def get_newsletters(query_params):
 
 알림 시스템은 DynamoDB Streams를 시작점으로 하는 이벤트 체인으로 구현되어 있습니다:
 
-![6.png](/img/blog/2025-01-19/6.png)
+![6.png](/img/blog/2025-01-19/6.webp)
 
 ```python
 def lambda_handler(event, context):
@@ -380,7 +380,7 @@ def lambda_handler(event, context):
 
 ### Step Functions 도입 검토와 한계
 
-![7.png](/img/blog/2025-01-19/7.png)
+![7.png](/img/blog/2025-01-19/7.webp)
 
 서버리스 컴포넌트들이 늘어나면서 전체 워크플로우 관리의 필요성을 느꼈고, 이를 위해 Step Functions를 도입을 검토했습니다.
 

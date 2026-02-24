@@ -3,7 +3,7 @@ title: A Review of the Usu Korean History App
 authors: doxxx
 tags: [ Project, retrospect ]
 date: 2024-10-13 00:27:57 +0900
-description: This is a retrospective on the "Usu Korean History" app project, which ran from February to October 2024.
+description: Usu Korean History app — 8 months of development in review.
 ---
 
 # A Look Back at the Usu Korean History App
@@ -26,7 +26,7 @@ When I wrote a retrospective on another project, after the project was over, the
 
 In addition to the two articles above, I also referred to various articles on retrospectives, and the KPT at that time was as follows.
 
-![kpt.png](/img/blog/2024-10-13/kpt.png)
+![kpt.png](/img/blog/2024-10-13/kpt.webp)
 
 There were a few things I regret.
 

@@ -1,13 +1,13 @@
 ---
 title: macOS Sequoia가 키보드 단축키를 막아버렸다.
-description: macOS Sequoia가 보안을 이유로 옵션(⌥)과 시프트(⇧) 키만을 사용하는 키보드 단축키 조합을 막은 이슈와 해결 방법을 정리합니다.
+description: macOS Sequoia에서 키보드 단축키가 막힌 이슈와 해결 방법을 정리합니다.
 authors: doxxx
 tags: [ macOS, Sequoia, keyboard shortcuts ]
 date: 2024-10-29 09:47:57 +0900
-image: ./macos-sequoia.png
+image: ./macos-sequoia.webp
 ---
 
-![macOS Sequoia](./macos-sequoia.png)
+![macOS Sequoia](./macos-sequoia.webp)
 
 macOS Sequoia가 보안을 이유로 개발자들이 자주 사용하던 키보드 단축키 조합을 막아버렸습니다. 옵션(⌥)과 시프트(⇧) 키만을 사용하는 단축키가 이제 `RegisterEventHotkey` API에서
 작동하지 않게 된 것입니다.

@@ -4,7 +4,7 @@ authors: doxxx
 tags: [ aws, serverless, bedrock, claude ]
 date: 2025-01-19 20:48:30 +0900
 image: https://i.imgur.com/6IkEE2X.png
-description: I share my experience designing and implementing AWS serverless architecture through a three-week medical paper summary service project conducted at the NIPA AWS Developer Bootcamp.
+description: Building a medical paper summary service with AWS serverless architecture.
 ---
 
 ![0.png](https://i.imgur.com/6IkEE2X.png)
@@ -283,7 +283,7 @@ The notification system is a function that notifies subscribers of new papers re
 
 The notification system is implemented as a chain of events starting with DynamoDB Streams:
 
-![6.png](/img/blog/2025-01-19/6.png)
+![6.png](/img/blog/2025-01-19/6.webp)
 
 ```python
 def lambda_handler(event, context):
@@ -380,7 +380,7 @@ Third, the system is easy to expand. When adding a new notification type, you ju
 
 ### Step Functions Introduction Review and Limitations
 
-![7.png](/img/blog/2025-01-19/7.png)
+![7.png](/img/blog/2025-01-19/7.webp)
 
 As the number of serverless components increased, we felt the need to manage the entire workflow, and for this purpose, we considered introducing Step Functions.
 

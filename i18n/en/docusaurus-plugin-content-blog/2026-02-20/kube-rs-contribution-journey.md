@@ -4,7 +4,7 @@ authors: doxxx
 tags: [open-source, rust, kubernetes, kube-rs]
 date: 2026-02-20 12:00:00 +0900
 image: https://i.imgur.com/u6lj9tj.png
-description: A record of trial, error, and lessons learned from contributing 20 PRs to the kube-rs project over 4 months.
+description: Lessons from contributing 20 PRs to kube-rs over 4 months.
 ---
 
 ![](https://i.imgur.com/u6lj9tj.png)
@@ -31,8 +31,8 @@ While looking into the reflector and watch side of things, checking for unresolv
 
 I opened [PR #1836](https://github.com/kube-rs/kube/pull/1836). It was a single file change, so there wasn't much pressure. The first review from maintainer clux:
 
-![first-review-1.png](/img/blog/2026-02-20/first-review-1.png)
-![first-review-2.png](/img/blog/2026-02-20/first-review-2.png)
+![first-review-1.png](/img/blog/2026-02-20/first-review-1.webp)
+![first-review-2.png](/img/blog/2026-02-20/first-review-2.webp)
 
 He said it solved the problem in a way he didn't expect. I revised it in the direction he suggested and the code became cleaner. I failed lint twice in a row during this process, but that's how I learned about the project's justfile for managing fmt and clippy, and the overall development workflow. As I was wrapping up, clux created a follow-up issue, which naturally led to [PR #1838](https://github.com/kube-rs/kube/pull/1838).
 
@@ -46,11 +46,11 @@ While thinking about reducing Kubernetes API calls at work, [issue #1813](https:
 
 I posted my research in the issue first, then split the work into two stages: [PR #1873](https://github.com/kube-rs/kube/pull/1873) and [PR #1876](https://github.com/kube-rs/kube/pull/1876). clux tested it against a slower cluster:
 
-![28s-to-2s.png](/img/blog/2026-02-20/28s-to-2s.png)
+![28s-to-2s.png](/img/blog/2026-02-20/28s-to-2s.webp)
 
 I didn't expect that much improvement. It was fascinating to see code I wrote make a measurable difference, and this was when I first thought about doing systematic performance benchmarking. Right after this PR was merged, a comment appeared.
 
-![member-invite.png](/img/blog/2026-02-20/member-invite.png)
+![member-invite.png](/img/blog/2026-02-20/member-invite.webp)
 
 I didn't see it coming at all. I think I went around telling everyone. After that, people at work started asking me about kube-rs, things like what this or that feature does, or which approach is better.
 
@@ -74,7 +74,7 @@ I worked on [PR #1894](https://github.com/kube-rs/kube/pull/1894) based on this 
 
 While implementing RetryPolicy, I was reading the existing watcher code and found a bug.
 
-![bug.png](/img/blog/2026-02-20/bug.png)
+![bug.png](/img/blog/2026-02-20/bug.webp)
 
 A builder pattern where the return value was being discarded. Jitter was enabled in name but never actually applied.
 
@@ -94,7 +94,7 @@ The trigger was improving CI at work. While sorting out rustfmt, clippy, and car
 
 I'd honestly been afraid of merging other people's PRs. I had the permissions but kept putting it off.
 
-![merge.png](/img/blog/2026-02-20/merge.png)
+![merge.png](/img/blog/2026-02-20/merge.webp)
 
 For clux, merging wasn't a matter of judgment but of flow. If CI passes and the change is trivial, there's no reason to wait. What I was treating as weighty, clux saw as obvious. Once I accepted that perspective, I started merging approved PRs.
 

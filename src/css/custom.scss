@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 // =============================================================================
 // 1. FONTS
 // =============================================================================
@@ -204,9 +206,9 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
 
 // Heading sizes — shared between blog body and docs body
 @mixin body-headings {
-  h2 { font-size: map-get($heading-sizes, h2); }
-  h3 { font-size: map-get($heading-sizes, h3); }
-  h4 { font-size: map-get($heading-sizes, h4); }
+  h2 { font-size: map.get($heading-sizes, h2); }
+  h3 { font-size: map.get($heading-sizes, h3); }
+  h4 { font-size: map.get($heading-sizes, h4); }
 }
 
 // Title style — shared between blog post title and docs page title

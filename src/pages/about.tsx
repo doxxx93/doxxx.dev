@@ -4,7 +4,7 @@ import styles from "./about.module.scss";
 
 export default function About(): React.JSX.Element {
   return (
-    <Layout title="About">
+    <Layout title="About" description="Software Engineer working with Kubernetes and Rust at STCLab, Seoul">
       <main style={{ padding: "2rem 0" }}>
         <div className={`about-content ${styles.container}`}>
           <h1 className={styles.title}>About</h1>
