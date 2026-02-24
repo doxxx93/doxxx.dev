@@ -57,29 +57,52 @@
   max-width: 1400px !important;
 }
 
-// Sidebar & main column widths - desktop only
+// Shared sidebar styles — blog & docs unified
+$sidebar-font-size: 14px;
+$sidebar-line-height: 20px;
+
+// Blog layout — match docs sidebar position
 @media (min-width: 997px) {
-  // Compact blog sidebar (left)
-  aside.col--3 {
-    --ifm-col-width: calc(2 / 12 * 100%) !important;
-    flex: 0 0 var(--ifm-col-width) !important;
-    max-width: var(--ifm-col-width) !important;
+  // Blog container → full-width so sidebar aligns with docs sidebar
+  .container.margin-vert--lg:has(> .row > aside.col--3) {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 1rem !important;
   }
 
-  // Expand main content area with breathing room
+  // Blog sidebar → fixed 300px matching docs
+  aside.col--3 {
+    flex: 0 0 300px !important;
+    max-width: 300px !important;
+    padding-left: 1.5rem;
+  }
+
+  // Blog sidebar — sticky (top = navbar + container margin-vert--lg 2rem)
+  aside.col--3 nav {
+    position: sticky;
+    top: calc(var(--ifm-navbar-height) + 2rem);
+    max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+    overflow-y: auto;
+  }
+
+  // Blog main content — fill space, generous padding for readability
   main.col--7 {
-    --ifm-col-width: calc(8 / 12 * 100%) !important;
-    flex: 0 0 var(--ifm-col-width) !important;
-    max-width: var(--ifm-col-width) !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    flex: 1 1 0% !important;
+    max-width: none !important;
+    padding-left: 7rem !important;
+    padding-right: 7rem !important;
+  }
+
+  // Blog list page (no TOC sibling) — reserve right space matching col--2
+  main.col--7:last-child {
+    margin-right: calc(2 / 12 * 100%) !important;
   }
 }
 
-// Sidebar styling (all sizes)
+// Blog sidebar styling
 aside.col--3 {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: $sidebar-font-size;
+  line-height: $sidebar-line-height;
   color: var(--sidebar-color);
   font-weight: 400;
 
@@ -92,28 +115,117 @@ aside.col--3 {
   }
 
   nav {
-    scrollbar-width: none; // Firefox
+    scrollbar-width: none;
     &::-webkit-scrollbar {
-      display: none; // Chrome, Safari
+      display: none;
     }
-    // Hide year group headings in sidebar
     h3[class*='yearGroupHeading'] {
       display: none;
     }
   }
 }
 
-// Right TOC
+// Docs sidebar — match blog sidebar flat-list style
+.theme-doc-sidebar-container {
+  border-right: none !important;
+
+
+  .menu {
+    font-size: $sidebar-font-size;
+    line-height: $sidebar-line-height;
+    font-weight: 400;
+    padding-left: 12px; // align with blog sidebar (12 + link 12 = 24px = blog 1.5rem)
+  }
+
+  // Remove category hover/active background highlight
+  .menu__list-item-collapsible {
+    background: transparent !important;
+
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  // Hide chevron (caret) icons
+  .menu__link--sublist-caret::after {
+    display: none;
+  }
+
+  .menu__caret {
+    display: none;
+  }
+
+  .menu__link {
+    color: var(--sidebar-color);
+    font-weight: 400;
+    font-size: $sidebar-font-size;
+    line-height: $sidebar-line-height;
+    background: transparent !important;
+
+    &:hover {
+      color: var(--sidebar-color-hover);
+      background: transparent !important;
+    }
+
+    &--active {
+      color: var(--sidebar-color-hover);
+      background: transparent !important;
+    }
+  }
+
+  // Item spacing similar to blog sidebar
+  .menu__list-item {
+    margin-top: 2px;
+  }
+}
+
+// Right TOC — OpenAI-style left border indicator
+.col.col--3:has(.theme-doc-toc-desktop) {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+// TOC sticky — match natural position (navbar + container margin 2rem)
+[class*='tableOfContents'] {
+  top: calc(var(--ifm-navbar-height) + 2rem) !important;
+  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem) !important;
+}
+
 .table-of-contents {
   font-size: 13px;
   color: var(--sidebar-color);
 
+  // Remove default left border — active bar is enough
+  &.table-of-contents__left-border {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  // Flatten nested lists — no indentation, active bar stays fixed
+  ul {
+    padding-left: 0;
+  }
+
+  li {
+    position: relative;
+    margin-left: 0 !important;
+  }
+
   a {
     color: var(--sidebar-color);
     font-weight: 400;
+    transition: color 0.15s;
+    display: block;
+    padding: 4px 0 4px 12px;
+
     &:hover {
       color: var(--sidebar-color-hover);
     }
+  }
+
+  // Active section — color only (animated bar handled by JS indicator)
+  .table-of-contents__link--active {
+    color: var(--ifm-font-color-base);
   }
 }
 
