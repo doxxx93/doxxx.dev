@@ -235,6 +235,65 @@ fn validate(req: &AdmissionRequest<Document>) -> Result<(), String> {
 }
 ```
 
+### End-to-End 서버 구성
+
+위의 handler를 실제로 서비스하려면 TLS를 지원하는 HTTP 서버와 Kubernetes 매니페스트가 필요합니다.
+
+#### axum + rustls 서버
+
+```rust
+use axum::{routing::post, Router};
+use axum_server::tls_rustls::RustlsConfig;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let tls_config = RustlsConfig::from_pem_file(
+        "/certs/tls.crt",
+        "/certs/tls.key",
+    ).await?;
+
+    let app = Router::new()
+        .route("/validate", post(validate_handler));
+
+    axum_server::bind_rustls("0.0.0.0:8443".parse()?, tls_config)
+        .serve(app.into_make_service())
+        .await?;
+    Ok(())
+}
+```
+
+인증서 파일은 cert-manager `Certificate` 리소스 또는 init container에서 `/certs/` 에 마운트합니다.
+
+#### ValidatingWebhookConfiguration 매니페스트
+
+```yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: document-validator
+  annotations:
+    cert-manager.io/inject-ca-from: default/webhook-cert  # cert-manager 자동 주입
+webhooks:
+  - name: validate.example.com
+    admissionReviewVersions: ["v1"]
+    clientConfig:
+      service:
+        name: webhook-server
+        namespace: default
+        path: /validate
+        port: 443
+    rules:
+      - apiGroups: ["example.com"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["documents"]
+    failurePolicy: Fail
+    sideEffects: None
+    timeoutSeconds: 5
+```
+
+`clientConfig.service`는 webhook Pod를 가리키는 Service를 참조합니다. `caBundle`은 cert-manager의 CA Injector가 annotation 기반으로 자동 주입합니다.
+
 ### 인증서 관리
 
 API 서버는 webhook에 HTTPS로만 통신합니다. TLS 인증서가 반드시 필요합니다.

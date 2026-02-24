@@ -99,15 +99,22 @@ if current_status != desired_status {
 use kube::runtime::{predicates, WatchStreamExt};
 
 // status 변경은 generation이 바뀌지 않으므로 필터링됩니다
-controller.with_stream_filter(predicates::generation)
+let stream = watcher(api, wc)
+    .default_backoff()
+    .applied_objects()
+    .predicate_filter(predicates::generation);
+
+Controller::for_stream(stream, reader)
 ```
+
+`predicate_filter()`는 `WatchStreamExt` trait의 메서드입니다. `Controller`의 메서드가 아니므로, 스트림에 적용한 후 `Controller::for_stream()`으로 주입합니다.
 
 :::warning[finalizer + generation predicate]
 finalizer 추가/제거도 generation을 변경하지 않습니다. `predicates::generation`만 사용하면 finalizer 관련 이벤트를 놓칩니다.
 
 ```rust
 // 두 predicate를 조합합니다
-controller.with_stream_filter(predicates::generation.combine(predicates::finalizers))
+.predicate_filter(predicates::generation.combine(predicates::finalizers))
 ```
 :::
 

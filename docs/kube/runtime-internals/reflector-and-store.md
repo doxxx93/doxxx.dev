@@ -154,19 +154,46 @@ reader.wait_until_ready().await;
 ## Shared/Subscriber 모드
 
 :::tip[unstable-runtime feature 필요]
-이 기능은 `unstable-runtime` feature flag를 활성화해야 사용할 수 있습니다.
+이 기능은 `unstable-runtime-stream-control` feature flag를 활성화해야 사용할 수 있습니다.
 :::
 
 기본 모드에서는 하나의 reflector가 하나의 Consumer를 지원합니다. Shared 모드를 사용하면 하나의 reflector로 여러 Consumer에 이벤트를 팬아웃할 수 있습니다.
 
+### store_shared와 reflect_shared
+
+v3.x에서는 `reflector::store_shared()`로 shared store를 생성하고, 스트림에 `.reflect_shared()`를 적용합니다.
+
 ```rust
-let writer = Writer::<MyResource>::new_shared(1024, ()); // (버퍼 크기, DynamicType)
-let reader = writer.as_reader();
-let subscriber = reader.subscribe().unwrap();
+use kube::runtime::{reflector, watcher, WatchStreamExt};
+
+// shared store 생성 (버퍼 크기 지정)
+let (reader, writer) = reflector::store_shared(1024);
+
+// 스트림에 shared reflector 적용
+let stream = watcher(api, wc)
+    .default_backoff()
+    .reflect_shared(writer)
+    .applied_objects();
+
+// 여러 subscriber가 이벤트를 수신
+let subscriber1 = reader.subscribe().unwrap();
+let subscriber2 = reader.subscribe().unwrap();
 ```
+
+### Controller와 조합
+
+`Controller::for_shared_stream()`으로 shared 스트림을 Controller에 주입합니다.
+
+```rust
+// 공유 스트림으로 Controller 생성
+Controller::for_shared_stream(stream, reader.clone())
+    .run(reconcile, error_policy, ctx)
+```
+
+여러 Controller가 같은 리소스를 감시할 때 watch 연결을 하나로 줄일 수 있습니다. 구체적인 다중 Controller 패턴은 [제네릭 컨트롤러 — 공유 Reflector](../patterns/generic-controllers.md#공유-reflector)를 참고합니다.
 
 사용 사례:
 - 하나의 watcher로 여러 컨트롤러에 이벤트 전달
-- API 서버 호출 횟수를 줄여야 할 때
+- API 서버 watch 연결 수를 줄여야 할 때
 
 내부적으로 `async_broadcast` 채널을 사용해 `ObjectRef` 이벤트를 여러 subscriber에 전달합니다.

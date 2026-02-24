@@ -8,6 +8,22 @@ description: "watcher, reflector, reconciler 각 단계에서의 성능 최적�
 
 대규모 클러스터에서 컨트롤러가 효율적으로 동작하도록 각 레이어별 최적화 방법을 다룹니다.
 
+## 최적화 순서
+
+성능 문제가 발생했을 때 어디서부터 시작해야 하는지 우선순위입니다. 위에서 아래로, 효과가 크고 부작용이 적은 순서입니다.
+
+| 순서 | 작업 | 효과 | 위험도 |
+|------|------|------|--------|
+| 1 | **진단** — 실제 병목 확인 | 방향 설정 | 없음 |
+| 2 | **selector 축소** — label/field selector 추가 | API 서버 부하, 네트워크, 메모리 동시 감소 | 낮음 |
+| 3 | **predicate_filter** — 불필요한 reconcile 제거 | reconcile 호출 횟수 감소 | 낮음 (predicate 조합 주의) |
+| 4 | **metadata_watcher** — spec/status 수신 생략 | 메모리 사용량 감소 | 중간 (reconciler에서 전체 객체 필요 시 get 필요) |
+| 5 | **reflector 정리** — `.modify()`로 불필요한 필드 제거 | Store 메모리 감소 | 낮음 |
+| 6 | **reconciler 튜닝** — debounce, concurrency, 캐시 활용 | API 호출 감소, 처리량 조절 | 낮음 |
+| 7 | **샤딩** — 네임스페이스/라벨 기반 분배 | 수평 확장 | 높음 (운영 복잡도 증가) |
+
+**1단계 진단이 가장 중요합니다.** 메모리가 문제인지, reconcile 지연이 문제인지, API 서버 throttling이 문제인지에 따라 접근이 달라집니다. `RUST_LOG=kube=debug`로 로그를 확인하고, [모니터링](./observability.md)의 메트릭으로 reconcile 횟수와 소요 시간을 측정합니다. 메모리가 의심되면 jemalloc 프로파일링으로 Store 크기를 확인합니다. 증상별 진단은 [트러블슈팅](../patterns/troubleshooting.md)을 참고합니다.
+
 ## Watcher 최적화
 
 ### 감시 범위 축소

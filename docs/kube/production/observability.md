@@ -209,7 +209,7 @@ struct Context {
 async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Error> {
     // reconcile 로직...
     ctx.last_reconcile.store(
-        chrono::Utc::now().timestamp(),
+        jiff::Timestamp::now().as_second(),
         Ordering::Relaxed,
     );
     Ok(Action::requeue(Duration::from_secs(300)))

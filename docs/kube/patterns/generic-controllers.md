@@ -217,19 +217,34 @@ let api_b = Api::<ResourceB>::all(client.clone());
 
 ### 공유 Reflector
 
-여러 Controller가 같은 리소스를 감시하면 watch 연결이 중복됩니다. `unstable-runtime` feature의 shared reflector로 하나의 watch를 여러 Controller가 공유할 수 있습니다:
+여러 Controller가 같은 리소스를 감시하면 watch 연결이 중복됩니다. shared reflector로 하나의 watch를 여러 Controller가 공유할 수 있습니다:
 
 ```rust
-// 하나의 reflector를 여러 Controller가 공유
-let (reader, writer) = reflector::store();
-let shared_stream = reflector(writer, watcher(api, wc))
-    .applied_objects()
-    .default_backoff();
+use kube::runtime::{reflector, watcher, WatchStreamExt, Controller};
 
-// 스트림을 분기하여 각 Controller에 전달
-Controller::for_stream(shared_stream.clone(), reader.clone())
-    .run(reconcile_a, error_policy, ctx.clone());
+// shared store 생성
+let (reader, writer) = reflector::store_shared(1024);
+let stream = watcher(api, wc)
+    .default_backoff()
+    .reflect_shared(writer);
+
+// subscriber로 각 Controller에 분기
+let sub_a = reader.subscribe().unwrap();
+let sub_b = reader.subscribe().unwrap();
+
+let ctrl_a = Controller::for_shared_stream(sub_a, reader.clone())
+    .run(reconcile_a, error_policy, ctx.clone())
+    .for_each(|_| async {});
+
+let ctrl_b = Controller::for_shared_stream(sub_b, reader.clone())
+    .run(reconcile_b, error_policy, ctx.clone())
+    .for_each(|_| async {});
+
+// 원본 스트림 소비 + 두 Controller 동시 실행
+tokio::join!(stream.for_each(|_| async {}), ctrl_a, ctrl_b);
 ```
+
+`owns`/`watches`도 shared 스트림을 지원합니다. `owns_shared_stream()`으로 자식 리소스의 watch도 공유할 수 있습니다.
 
 :::warning[Unstable feature]
 shared reflector API는 `unstable-runtime-stream-control` feature 뒤에 있습니다:
