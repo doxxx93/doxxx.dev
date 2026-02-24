@@ -184,10 +184,9 @@ let health_reader = reader.clone();
 tokio::spawn(async move {
     let app = Router::new()
         .route("/readyz", get(move || async move {
-            if health_reader.is_ready() {
-                (StatusCode::OK, "ready")
-            } else {
-                (StatusCode::SERVICE_UNAVAILABLE, "not ready")
+            match health_reader.wait_until_ready().await {
+                Ok(()) => (StatusCode::OK, "ready"),
+                Err(_) => (StatusCode::SERVICE_UNAVAILABLE, "not ready"),
             }
         }));
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();

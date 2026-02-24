@@ -12,14 +12,16 @@ description: "Tower 미들웨어 아키텍처, 인증, TLS, Config 추론 체인
 
 ```rust title="kube-client/src/client/mod.rs (단순화)"
 pub struct Client {
-    inner: Buffer<BoxService<Request<Body>, Response<Body>, BoxError>>,
+    inner: Buffer<Request<Body>, BoxFuture<'static, Result<Response<Body>, BoxError>>>,
     default_ns: String,
+    valid_until: Option<Timestamp>,
 }
 ```
 
-- **`tower::Buffer`**: type-erased `Service`를 `Arc`로 감쌉니다. `Client::clone()`은 참조 카운트 증가에 불과하므로, 여러 `Api<K>` 핸들에서 같은 Client를 자유롭게 공유할 수 있습니다.
+- **`tower::Buffer`**: `Service`를 `Arc`로 감쌉니다. `Client::clone()`은 참조 카운트 증가에 불과하므로, 여러 `Api<K>` 핸들에서 같은 Client를 자유롭게 공유할 수 있습니다.
 - **capacity 1024**: `Buffer`의 in-flight 요청 용량입니다. 동시에 1024개까지 요청을 큐에 넣을 수 있습니다.
-- **`BoxService`**: 타입이 지워져 있어서 내부 미들웨어 스택의 구체 타입이 외부에 노출되지 않습니다.
+- **`BoxFuture`**: 응답 future의 구체 타입이 지워져 있어서 내부 미들웨어 스택의 구체 타입이 외부에 노출되지 않습니다.
+- **`valid_until`**: credential 만료 시간입니다. 만료 후 Client를 재생성해야 합니다.
 
 ## Tower 미들웨어 스택
 

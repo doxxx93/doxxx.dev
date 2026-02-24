@@ -149,8 +149,8 @@ let wc = watcher::Config::default()
     .timeout(300)                     // watch timeout (서버 측)
     .page_size(100)                   // ListWatch 페이지 크기
     .streaming_lists()                // StreamingList 전략
-    .any()                            // ListSemantic::Any
-    .bookmarks(true);                 // bookmark 활성화 (기본 on)
+    .any_semantic()                   // ListSemantic::Any
+    .disable_bookmarks();             // bookmark 비활성화 (기본 on)
 ```
 
 | 옵션 | 기본값 | 설명 |
@@ -160,8 +160,8 @@ let wc = watcher::Config::default()
 | `timeout` | 295초 | 서버 측 watch timeout |
 | `page_size` | 500 | ListWatch 페이지 크기 |
 | `streaming_lists()` | off | StreamingList 전략 활성화 |
-| `any()` | off | `ListSemantic::Any` — 캐시된 데이터 허용 (더 빠르지만 stale 가능) |
-| `bookmarks` | true | Bookmark 이벤트 수신 |
+| `any_semantic()` | off | `ListSemantic::Any` — 캐시된 데이터 허용 (더 빠르지만 stale 가능) |
+| `disable_bookmarks()` | — | Bookmark 이벤트 비활성화 (기본은 on, 끄면 410 빈도 증가) |
 
 ## 알아야 할 것들
 
