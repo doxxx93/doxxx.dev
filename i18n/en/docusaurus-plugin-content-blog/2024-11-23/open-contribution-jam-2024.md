@@ -46,7 +46,7 @@ While helping another participant implement Delete Mode related functionality (c
 - [e] Revised the command description to be more accurate
 - Improve documentation to match vim's standard behavior
 
-![img_2.png](/img/blog/2024-11-23/img_2.png)
+![img_2.png](/img/blog/2024-11-23/img_2.webp)
 
 Everyone who worked with us submitted at least one PR and it was successfully merged.
 

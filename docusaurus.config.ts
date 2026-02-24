@@ -98,7 +98,7 @@ const config: Config = {
           routeBasePath: "/", // 블로그를 메인 페이지로
           blogTitle: "Doxxx Dev",
           blogDescription:
-            "I am a cloud engineer.",
+            "Writing about Kubernetes, Cloud, and Rust",
           blogSidebarTitle: "All Posts",
           blogSidebarCount: "ALL",
           remarkPlugins: [remarkMath],
@@ -137,6 +137,23 @@ const config: Config = {
       attributes: {
         rel: 'preconnect',
         href: 'https://cdn.jsdelivr.net',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'dns-prefetch',
+        href: 'https://cdn.jsdelivr.net',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preload',
+        href: '/fonts/CascadiaCode.woff2',
+        as: 'font',
+        type: 'font/woff2',
         crossorigin: 'anonymous',
       },
     },

@@ -816,7 +816,7 @@ A child process overwrites its memory space with another program via the exec sy
 
 1. Below is a process state diagram showing the process states.
 
-![img_2.png](/img/blog/2023-02-01/img_2.png)
+![img_2.png](/img/blog/2023-02-01/img_2.webp)
 
 ## 10.3 Thread
 

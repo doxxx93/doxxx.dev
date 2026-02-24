@@ -4,7 +4,7 @@ authors: doxxx
 tags: [open-source, rust, kubernetes, kube-rs]
 date: 2026-02-20 12:00:00 +0900
 image: https://i.imgur.com/u6lj9tj.png
-description: kube-rs 프로젝트에 4개월간 20개의 PR을 기여하면서 겪은 시행착오와 배운 점들을 기록합니다.
+description: 4개월간 kube-rs에 20개 PR을 기여하며 배운 점들을 기록합니다.
 ---
 
 ![](https://i.imgur.com/u6lj9tj.png)
@@ -34,8 +34,8 @@ reflector나 watch 쪽을 살펴보면서 해결이 안 된 이슈나 안정성 
 
 [PR #1836](https://github.com/kube-rs/kube/pull/1836)을 올렸다. 파일 체인지가 1개라 부담이 없었다. 메인테이너 clux의 첫 리뷰:
 
-![first-review-1.png](/img/blog/2026-02-20/first-review-1.png)
-![first-review-2.png](/img/blog/2026-02-20/first-review-2.png)
+![first-review-1.png](/img/blog/2026-02-20/first-review-1.webp)
+![first-review-2.png](/img/blog/2026-02-20/first-review-2.webp)
 
 > 예상과 다른 방식으로 풀었는데, 어차피 내부 구현이니 최대한 단순하게 가고 싶다
 >
@@ -59,13 +59,13 @@ reflector나 watch 쪽을 살펴보면서 해결이 안 된 이슈나 안정성 
 이슈에 먼저 리서치 결과를 남기고, 2단계로 나눠 [PR #1873](https://github.com/kube-rs/kube/pull/1873)
 과 [PR #1876](https://github.com/kube-rs/kube/pull/1876)을 올렸다. clux가 느린 클러스터에서 직접 테스트한 결과:
 
-![28s-to-2s.png](/img/blog/2026-02-20/28s-to-2s.png)
+![28s-to-2s.png](/img/blog/2026-02-20/28s-to-2s.webp)
 
 > 다른 대륙 클러스터에서 돌려봤는데 28초가 2초로 줄었다. 캐싱도 없이 이 정도면 꽤 좋다
 
 그 정도로 개선될 줄은 몰랐다. 내가 짠 코드가 숫자로 차이를 만들었다는 게 신기했고, 이때 성능 벤치마킹을 체계적으로 해야겠다는 생각이 처음 들었다. 이 PR이 머지된 직후, 코멘트 하나가 달렸다.
 
-![member-invite.png](/img/blog/2026-02-20/member-invite.png)
+![member-invite.png](/img/blog/2026-02-20/member-invite.webp)
 
 > 팀에 초대했다. 부담 가질 필요 없고, 상징적인 거지만 좋은 작업을 하고 있으니
 
@@ -101,7 +101,7 @@ ExponentialBackoff 대신 커스텀 구현을 택한 부분을 짚으면서도 "
 
 이 RetryPolicy를 구현하면서 기존 watcher 코드를 읽다가 버그를 발견했다.
 
-![bug.png](/img/blog/2026-02-20/bug.png)
+![bug.png](/img/blog/2026-02-20/bug.webp)
 
 > "아 뭐야. mutable builder인 줄 알았는데 move chain이었네. 좋은 발견이다"
 >
@@ -133,7 +133,7 @@ approve는 "이 코드가 머지되어도 좋다"는 뜻인데, 확인하지 않
 
 다른 사람의 PR을 merge한다는 게 솔직히 겁이 있었고, 권한은 있지만 계속 미루고 있었다.
 
-![merge.png](/img/blog/2026-02-20/merge.png)
+![merge.png](/img/blog/2026-02-20/merge.webp)
 
 > merge 권한은 있지만 지금까지 쓰지 않고 있었다. 예를 들어 #1939도 approve만 하고 merge는 남겨뒀다. 이런 PR을 직접 merge해도 괜찮을까?
 >

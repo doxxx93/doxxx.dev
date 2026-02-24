@@ -3,7 +3,7 @@ title: 우쑤한국사 앱 회고
 authors: doxxx
 tags: [ 프로젝트, 회고 ]
 date: 2024-10-13 00:27:57 +0900
-description: 2024년 2월부터 10월까지 진행한 `우쑤한국사` 앱 프로젝트를 회고한 글입니다.
+description: 우쑤한국사 앱 8개월 개발 회고. 프로젝트를 되돌아봅니다.
 image: ./woossu-app-icon.jpg
 ---
 
@@ -27,7 +27,7 @@ image: ./woossu-app-icon.jpg
 
 위 두 글외에도 회고에 대한 다양한 글을 참고하였고 그 때 당시의 KPT는 다음과 같습니다.
 
-![kpt.png](/img/blog/2024-10-13/kpt.png)
+![kpt.png](/img/blog/2024-10-13/kpt.webp)
 
 몇 가지 아쉬운 점이 있었습니다.
 

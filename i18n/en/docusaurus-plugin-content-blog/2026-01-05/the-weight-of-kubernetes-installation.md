@@ -4,7 +4,7 @@ authors: doxxx
 tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
 image: https://i.imgur.com/2GFF8XI.png
-description: This article explains the technical background of control plane architecture, network configuration, and required prerequisite tasks through the process of building a Kubernetes cluster using kubeadm.
+description: Building a cluster with kubeadm — Control Plane architecture and network configuration explained.
 ---
 
 ![](https://i.imgur.com/2GFF8XI.png)

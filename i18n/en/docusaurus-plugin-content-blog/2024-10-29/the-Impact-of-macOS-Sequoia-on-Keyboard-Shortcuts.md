@@ -1,6 +1,6 @@
 ---
 title: macOS Sequoia has blocked keyboard shortcuts.
-description: A look at how macOS Sequoia blocked Option+Shift keyboard shortcuts for security reasons and how to work around it.
+description: macOS Sequoia broke keyboard shortcuts — the issue and workaround.
 authors: doxxx
 tags: [ macOS, Sequoia, keyboard shortcuts ]
 date: 2024-10-29 09:47:57 +0900
