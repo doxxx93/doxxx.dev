@@ -79,7 +79,7 @@ span에 포함되는 정보:
 
 reconciler span 하위에 이 HTTP span들이 연결되므로, 하나의 reconcile 호출에서 어떤 API 요청이 발생했는지 트레이싱 UI에서 직접 확인할 수 있습니다.
 
-### #[instrument] 매크로 활용
+### #[instrument] 매크로 사용
 
 reconciler에 `#[instrument]`를 적용하면 함수 인자와 커스텀 필드를 span에 자동으로 추가할 수 있습니다:
 

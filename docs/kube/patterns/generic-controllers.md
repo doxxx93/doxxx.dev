@@ -54,7 +54,7 @@ async fn reconcile_metadata(
 ```
 
 :::tip[메모리 절약]
-`PartialObjectMeta`는 spec과 status를 역직렬화하지 않으므로, 대규모 리소스를 감시할 때 메모리를 크게 절약합니다. [최적화 — metadata_watcher](../production/optimization.md#metadata_watcher)에서 자세히 다룹니다.
+`PartialObjectMeta`는 spec과 status를 deserialization하지 않으므로, 대규모 리소스를 watch할 때 메모리를 크게 절약합니다. [최적화 — metadata_watcher](../production/optimization.md#metadata_watcher)에서 자세히 다룹니다.
 :::
 
 ## DynamicObject 기반 제네릭
@@ -217,7 +217,7 @@ let api_b = Api::<ResourceB>::all(client.clone());
 
 ### 공유 Reflector
 
-여러 Controller가 같은 리소스를 감시하면 watch 연결이 중복됩니다. shared reflector로 하나의 watch를 여러 Controller가 공유할 수 있습니다:
+여러 Controller가 같은 리소스를 watch하면 watch 연결이 중복됩니다. shared reflector로 하나의 watch를 여러 Controller가 공유할 수 있습니다:
 
 ```rust
 use kube::runtime::{reflector, watcher, WatchStreamExt, Controller};

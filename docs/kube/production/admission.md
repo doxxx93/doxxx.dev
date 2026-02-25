@@ -65,9 +65,9 @@ pub struct DocumentSpec {
 
 ### x_kube validation 규칙
 
-`#[x_kube(validation)]` 어트리뷰트로 CEL 검증 규칙을 추가합니다. 구조체 수준과 필드 수준 모두에 적용할 수 있습니다.
+`#[x_kube(validation)]` 어트리뷰트로 CEL 검증 규칙을 추가합니다. struct 수준과 필드 수준 모두에 적용할 수 있습니다.
 
-#### 구조체 수준 검증
+#### Struct 수준 검증
 
 ```rust
 #[derive(CustomResource, KubeSchema, Serialize, Deserialize, Clone, Debug)]
@@ -302,7 +302,7 @@ API 서버는 webhook에 HTTPS로만 통신합니다. TLS 인증서가 반드시
 |------|------|--------|
 | cert-manager | 자동 발급/갱신, CA Injector 지원 | 낮음 |
 | 자체 서명 | init container에서 인증서 생성 | 중간 |
-| kube 클라이언트 인증서 | API 서버의 CA 활용 | 높음 |
+| kube 클라이언트 인증서 | API 서버의 CA 사용 | 높음 |
 
 cert-manager를 사용하면 `Certificate` 리소스로 인증서를 자동 관리하고, `caBundle` 주입도 자동화됩니다.
 

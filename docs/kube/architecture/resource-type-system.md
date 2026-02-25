@@ -203,7 +203,7 @@ let rv = pod.resource_version();  // Option<String>
 
 ## ObjectRef — 리소스 참조
 
-`ObjectRef<K>`는 리소스를 식별하는 경량 참조입니다. Controller 내부에서 reconcile 대상을 추적하는 데 핵심적인 역할을 합니다.
+`ObjectRef<K>`는 리소스를 식별하는 경량 참조입니다. Controller 내부에서 reconcile 대상을 추적하는 키로 사용됩니다.
 
 ```rust title="kube-runtime/src/reflector/object_ref.rs (단순화)"
 #[non_exhaustive]

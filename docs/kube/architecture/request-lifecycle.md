@@ -102,9 +102,9 @@ graph TD
 
 1. **`send(req)`**: [Tower 미들웨어 스택](./client-and-tower-stack.md)을 통과해 HTTP 요청을 보냅니다.
 2. **에러 처리 (`handle_api_errors`)**: 상태 코드를 확인합니다.
-   - 4xx/5xx: 응답 body를 `Status` 구조체로 파싱하고 `Error::Api`를 반환합니다.
+   - 4xx/5xx: 응답 body를 `Status` struct로 파싱하고 `Error::Api`를 반환합니다.
    - 2xx: 정상 처리를 계속합니다.
-3. **역직렬화**: 응답 body를 bytes로 수집한 뒤 `serde_json::from_slice::<T>()`로 변환합니다.
+3. **Deserialization**: 응답 body를 bytes로 수집한 뒤 `serde_json::from_slice::<T>()`로 변환합니다.
 
 ### 에러 분기
 
@@ -113,7 +113,7 @@ graph TD
 | 네트워크 에러 | `Error::HyperError` | TCP 연결 실패, DNS 해석 실패 등 |
 | HTTP 에러 | `Error::HttpError` | HTTP 프로토콜 레벨 에러 |
 | API 에러 | `Error::Api { status }` | Kubernetes가 반환한 4xx/5xx |
-| 역직렬화 에러 | `Error::SerializationError` | JSON 파싱 실패 |
+| Deserialization 에러 | `Error::SerializationError` | JSON 파싱 실패 |
 
 `Error::Api`의 `status` 필드는 Kubernetes API 서버가 보낸 구조화된 에러입니다:
 
@@ -148,7 +148,7 @@ while let Some(event) = stream.try_next().await? {
 1. `send(req)` → `Response<Body>` (chunked transfer encoding)
 2. Body를 `AsyncBufRead`로 변환
 3. 줄 단위로 분리 (각 줄이 하나의 JSON 객체)
-4. 각 줄을 `WatchEvent<T>`로 역직렬화
+4. 각 줄을 `WatchEvent<T>`로 deserialize
 5. `TryStream<Item = Result<WatchEvent<T>>>`를 반환
 
 ### WatchEvent
@@ -170,5 +170,5 @@ pub enum WatchEvent<K> {
 :::tip[raw watch vs watcher()]
 `Api::watch()`는 raw watch 스트림입니다. 연결이 끊기면 끝나고, `resourceVersion` 만료 대응도 없습니다. 실전에서는 이 위에 자동 재연결과 에러 복구를 올린 `kube_runtime::watcher()`를 사용합니다.
 
-watcher의 내부 동작은 [Watcher 상태 머신](../runtime-internals/watcher.md)에서 다룹니다.
+watcher의 내부 동작은 [Watcher state machine](../runtime-internals/watcher.md)에서 다룹니다.
 :::

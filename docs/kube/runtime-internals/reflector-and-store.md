@@ -48,7 +48,7 @@ pub struct Store<K> {
 | 구성요소 | 선택 | 이유 |
 |---------|------|------|
 | `AHashMap` | `std::HashMap` 대신 | 내부 캐시라 DoS 방어가 불필요하므로 더 빠른 해시맵 사용 |
-| `parking_lot::RwLock` | `std::RwLock` 대신 | 읽기 동시성이 더 좋고, poisoning이 없음 |
+| `parking_lot::RwLock` | `std::RwLock` 대신 | 읽기 concurrency가 더 좋고, poisoning이 없음 |
 | `Arc<K>` | `K` 대신 | reconciler에 `Arc<K>`로 전달해 불필요한 클론 방지 |
 
 ## Atomic swap 패턴
@@ -190,7 +190,7 @@ Controller::for_shared_stream(stream, reader.clone())
     .run(reconcile, error_policy, ctx)
 ```
 
-여러 Controller가 같은 리소스를 감시할 때 watch 연결을 하나로 줄일 수 있습니다. 구체적인 다중 Controller 패턴은 [제네릭 컨트롤러 — 공유 Reflector](../patterns/generic-controllers.md#공유-reflector)를 참고합니다.
+여러 Controller가 같은 리소스를 watch할 때 연결을 하나로 줄일 수 있습니다. 구체적인 다중 Controller 패턴은 [제네릭 컨트롤러 — 공유 Reflector](../patterns/generic-controllers.md#공유-reflector)를 참고합니다.
 
 사용 사례:
 - 하나의 watcher로 여러 컨트롤러에 이벤트 전달

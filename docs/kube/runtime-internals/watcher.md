@@ -1,12 +1,12 @@
 ---
 sidebar_position: 1
 title: "Watcher"
-description: "watcher 상태 머신, ListWatch vs StreamingList, 에러 복구"
+description: "watcher state machine, ListWatch vs StreamingList, 에러 복구"
 ---
 
 # Watcher
 
-`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **상태 머신**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream입니다.
+`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **state machine**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream입니다.
 
 ## watcher의 역할
 
@@ -29,9 +29,9 @@ let stream = watcher(api, wc)
     .applied_objects();   // Event<K> → K 스트림으로 변환
 ```
 
-## 상태 머신
+## State machine
 
-watcher 내부는 다섯 가지 상태를 거치는 상태 머신입니다.
+watcher 내부는 다섯 가지 상태를 거치는 state machine입니다.
 
 ```mermaid
 stateDiagram-v2
@@ -155,7 +155,7 @@ let wc = watcher::Config::default()
 
 | 옵션 | 기본값 | 설명 |
 |------|--------|------|
-| `labels` | 없음 | label selector로 감시 범위 축소 |
+| `labels` | 없음 | label selector로 watch 범위 축소 |
 | `fields` | 없음 | field selector |
 | `timeout` | 295초 | 서버 측 watch timeout |
 | `page_size` | 500 | ListWatch 페이지 크기 |
@@ -171,7 +171,7 @@ let wc = watcher::Config::default()
 
 ### re-list 시 메모리 스파이크
 
-대규모 클러스터에서 re-list가 발생하면 이전 데이터 + JSON buffer + 역직렬화된 객체가 동시에 메모리에 존재합니다. 일시적으로 평소의 2~3배 메모리를 사용할 수 있습니다. StreamingList를 사용하면 이를 완화할 수 있습니다.
+대규모 클러스터에서 re-list가 발생하면 이전 데이터 + JSON buffer + deserialization된 객체가 동시에 메모리에 존재합니다. 일시적으로 평소의 2~3배 메모리를 사용할 수 있습니다. StreamingList를 사용하면 이를 완화할 수 있습니다.
 
 ### bookmarks 없으면 410이 빨라집니다
 

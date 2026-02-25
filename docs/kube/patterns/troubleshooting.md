@@ -30,7 +30,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 |------|----------|--------|
 | re-list 스파이크 | 메모리 그래프에서 주기적 급등 패턴 확인 | `streaming_lists()` 사용, `page_size` 축소 |
 | Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, `metadata_watcher()` |
-| 감시 범위가 너무 넓음 | Store의 `state().len()`으로 캐시 객체 수 확인 | label/field selector로 범위 축소 |
+| watch 범위가 너무 넓음 | Store의 `state().len()`으로 캐시 객체 수 확인 | label/field selector로 범위 축소 |
 
 자세한 내용: [최적화 — Reflector 최적화](../production/optimization.md#reflector-최적화), [최적화 — re-list 메모리 스파이크](../production/optimization.md#re-list-메모리-스파이크)
 
@@ -44,7 +44,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 | credential 만료 | 로그에서 401/403 에러 확인 | `Config::infer()`로 자동 갱신되는지 확인, exec plugin 설정 점검 |
 | backoff 미설정 | 첫 에러에 스트림 종료 | `.default_backoff()` 반드시 사용 |
 
-자세한 내용: [Watcher 상태 머신](../runtime-internals/watcher.md), [에러 처리와 Backoff — Watcher 에러](./error-handling-and-backoff.md#watcher-에러와-backoff)
+자세한 내용: [Watcher state machine](../runtime-internals/watcher.md), [에러 처리와 Backoff — Watcher 에러](./error-handling-and-backoff.md#watcher-에러와-backoff)
 
 ### API 서버 Throttling (429)
 
@@ -68,7 +68,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 | predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)` |
 | 컨트롤러가 다운 | Pod 상태 확인 | 컨트롤러 복구 후 자동 처리됨 |
 
-긴급 해제: `kubectl patch <resource> -p '{"metadata":{"finalizers":null}}' --type=merge` (정리 작업 건너뜀)
+긴급 해제: `kubectl patch <resource> -p '{"metadata":{"finalizers":null}}' --type=merge` (cleanup 건너뜀)
 
 자세한 내용: [관계와 Finalizer — 주의사항](./relations-and-finalizers.md#주의사항)
 

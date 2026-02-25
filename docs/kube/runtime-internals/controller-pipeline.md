@@ -1,7 +1,7 @@
 ---
 sidebar_position: 3
 title: "Controller 파이프라인"
-description: "trigger에서 reconciler까지 — scheduler, runner, 동시성 제어의 전체 데이터 흐름"
+description: "trigger에서 reconciler까지 — scheduler, runner, concurrency 제어의 전체 데이터 흐름"
 ---
 
 # Controller 파이프라인
@@ -38,11 +38,11 @@ graph TD
 5. **owns()/watches()** — 관련 리소스에 대한 추가 trigger 스트림을 생성합니다
 6. **select_all()** — 모든 trigger 스트림을 하나로 합칩니다
 7. **debounced_scheduler()** — 동일 `ObjectRef`에 대한 중복을 제거하고 지연을 적용합니다
-8. **Runner** — 동시성을 제어하고, 같은 객체의 동시 reconcile을 방지합니다
+8. **Runner** — concurrency를 제어하고, 같은 객체의 동시 reconcile을 방지합니다
 9. **reconciler** — 사용자 코드를 실행합니다
 10. **Action/Error** — 결과에 따라 scheduler로 피드백합니다
 
-## Controller 구조체
+## Controller struct
 
 ```rust title="kube-runtime/src/controller/mod.rs (단순화)"
 pub struct Controller<K> {
@@ -55,7 +55,7 @@ pub struct Controller<K> {
 
 - **trigger_selector**: 모든 trigger 스트림(`trigger_self` + `owns` + `watches`)을 `SelectAll`로 합친 것입니다
 - **reader**: reflector가 관리하는 Store의 읽기 핸들입니다. reconciler에서 `Arc<K>`를 꺼낼 때 사용합니다
-- **config**: debounce duration, 동시 실행 수 제한 등을 설정합니다
+- **config**: debounce duration, concurrency 제한 등을 설정합니다
 
 ## Trigger 시스템
 
@@ -229,9 +229,9 @@ t=1.2  trigger(A) → 다시 1초 후 예약
 
 debounce가 필요한 이유: reconciler가 status를 업데이트하면 → 새 `resourceVersion` 생성 → watch 이벤트 발생 → 불필요한 재reconcile이 됩니다. debounce가 이 burst를 흡수합니다. 자세한 내용은 [Reconciler 패턴](../patterns/reconciler.md)에서 다룹니다.
 
-## Runner — 동시성 제어
+## Runner — concurrency 제어
 
-Runner는 scheduler에서 나온 항목을 실제로 reconciler에 전달하면서 동시성을 제어합니다.
+Runner는 scheduler에서 나온 항목을 실제로 reconciler에 전달하면서 concurrency를 제어합니다.
 
 핵심 동작:
 

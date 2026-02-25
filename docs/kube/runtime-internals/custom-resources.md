@@ -31,7 +31,7 @@ pub struct DocumentStatus {
 
 `#[derive(CustomResource)]`가 만들어내는 것을 `cargo expand`로 확인할 수 있습니다.
 
-### 1. Document 구조체
+### 1. Document struct
 
 ```rust title="생성된 코드 (단순화)"
 pub struct Document {

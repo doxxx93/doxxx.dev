@@ -19,14 +19,14 @@ description: "watcher, reflector, reconciler 각 단계에서의 성능 최적�
 | 3 | **predicate_filter** — 불필요한 reconcile 제거 | reconcile 호출 횟수 감소 | 낮음 (predicate 조합 주의) |
 | 4 | **metadata_watcher** — spec/status 수신 생략 | 메모리 사용량 감소 | 중간 (reconciler에서 전체 객체 필요 시 get 필요) |
 | 5 | **reflector 정리** — `.modify()`로 불필요한 필드 제거 | Store 메모리 감소 | 낮음 |
-| 6 | **reconciler 튜닝** — debounce, concurrency, 캐시 활용 | API 호출 감소, 처리량 조절 | 낮음 |
+| 6 | **reconciler 튜닝** — debounce, concurrency, 캐시 사용 | API 호출 감소, 처리량 조절 | 낮음 |
 | 7 | **샤딩** — 네임스페이스/라벨 기반 분배 | 수평 확장 | 높음 (운영 복잡도 증가) |
 
 **1단계 진단이 가장 중요합니다.** 메모리가 문제인지, reconcile 지연이 문제인지, API 서버 throttling이 문제인지에 따라 접근이 달라집니다. `RUST_LOG=kube=debug`로 로그를 확인하고, [모니터링](./observability.md)의 메트릭으로 reconcile 횟수와 소요 시간을 측정합니다. 메모리가 의심되면 jemalloc 프로파일링으로 Store 크기를 확인합니다. 증상별 진단은 [트러블슈팅](../patterns/troubleshooting.md)을 참고합니다.
 
 ## Watcher 최적화
 
-### 감시 범위 축소
+### Watch 범위 축소
 
 label selector와 field selector로 API 서버가 필터링하게 합니다. 네트워크 트래픽과 메모리를 모두 절약합니다.
 
@@ -49,11 +49,11 @@ use kube::core::PartialObjectMeta;
 let stream = metadata_watcher(api, wc).default_backoff();
 ```
 
-큰 spec을 가진 리소스(Secret, ConfigMap 등)에서 효과적입니다. 단, reconciler에서 전체 객체가 필요하면 별도 `get()` 호출이 필요합니다.
+큰 spec을 가진 리소스(Secret, ConfigMap 등)에서 메모리 절감이 큽니다. 단, reconciler에서 전체 객체가 필요하면 별도 `get()` 호출이 필요합니다.
 
 ### StreamingList
 
-[Watcher 상태 머신](../runtime-internals/watcher.md)에서 다룬 StreamingList 전략을 사용하면 초기 목록 로드 시 메모리 피크를 낮출 수 있습니다.
+[Watcher state machine](../runtime-internals/watcher.md)에서 다룬 StreamingList 전략을 사용하면 초기 목록 로드 시 메모리 피크를 낮출 수 있습니다.
 
 ```rust
 let wc = watcher::Config::default().streaming_lists();
@@ -145,7 +145,7 @@ Controller::new(api, wc)
     .with_config(Config::default().debounce(Duration::from_secs(1)))
 ```
 
-Deployment 업데이트 시 여러 ReplicaSet 이벤트가 연쇄적으로 발생하는 경우 등에서 효과적입니다.
+Deployment 업데이트 시 여러 ReplicaSet 이벤트가 연쇄적으로 발생하는 경우에 유용합니다.
 
 ### concurrency 제한
 
@@ -190,7 +190,7 @@ async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Er
 
 ### 네임스페이스 분리
 
-클러스터 전체 대신 특정 네임스페이스만 감시하면 부하를 크게 줄일 수 있습니다.
+클러스터 전체 대신 특정 네임스페이스만 watch하면 부하를 크게 줄일 수 있습니다.
 
 ```rust
 // 클러스터 전체 (부하 높음)
@@ -258,7 +258,7 @@ let api = Api::<MyResource>::namespaced(client, &ns);
 
 #### 라벨 기반 샤딩
 
-FluxCD에서 사용하는 패턴입니다. 리소스에 샤드 라벨을 부여하고, 각 인스턴스가 해당 라벨만 감시합니다:
+FluxCD에서 사용하는 패턴입니다. 리소스에 샤드 라벨을 부여하고, 각 인스턴스가 해당 라벨만 watch합니다:
 
 ```rust
 // 샤드별 label selector
