@@ -5,7 +5,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 
 const config: Config = {
-  title: "Doxxx Dev",
+  title: "doxxx.dev",
   tagline: "Hi I'm Doxxx, a Cloud Engineer",
   favicon: "img/favicon.ico",
 
@@ -96,7 +96,7 @@ const config: Config = {
         },
         blog: {
           routeBasePath: "/", // 블로그를 메인 페이지로
-          blogTitle: "Doxxx Dev",
+          blogTitle: "doxxx.dev",
           blogDescription:
             "Writing about Kubernetes, Cloud, and Rust",
           blogSidebarTitle: "All Posts",
@@ -166,7 +166,7 @@ const config: Config = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         url: 'https://doxxx.dev',
-        name: 'Doxxx Dev',
+        name: 'doxxx.dev',
         author: {
           '@type': 'Person',
           name: 'Doyul Kim',
@@ -184,7 +184,7 @@ const config: Config = {
     ],
     image: "img/og-image.jpg",
     navbar: {
-      title: "Doxxx Dev",
+      title: "doxxx.dev",
       logo: {
         alt: "Doxxx profile logo",
         src: "img/logo.png",
