@@ -30,7 +30,7 @@ graph TD
 |------|----------|------|
 | Client | `HyperError`, `HttpError` | 네트워크, TLS, 타임아웃 |
 | Api | `Error::Api { status }` | Kubernetes 4xx/5xx 응답 |
-| Api | `SerializationError` | JSON 역직렬화 실패 |
+| Api | `SerializationError` | JSON deserialization 실패 |
 | watcher | `InitialListFailed` | 초기 LIST 실패 |
 | watcher | `WatchFailed` | WATCH 연결 실패 |
 | watcher | `WatchError` | WATCH 중 서버 에러 (410 Gone 등) |

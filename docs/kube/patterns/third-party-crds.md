@@ -150,7 +150,7 @@ let api = Api::<DynamicObject>::all_with(client, &ar);
 
 ## Controller::new_with — 동적 타입 Controller
 
-`DynamicObject`로 Controller를 생성하면, 컴파일 시점에 Rust struct를 정의하지 않아도 CRD를 감시할 수 있습니다.
+`DynamicObject`로 Controller를 생성하면, 컴파일 시점에 Rust struct를 정의하지 않아도 CRD를 watch할 수 있습니다.
 
 ```rust
 use kube::core::{DynamicObject, ApiResource, GroupVersionKind};
@@ -164,7 +164,7 @@ Controller::new_with(api, wc, ar)
     .run(reconcile, error_policy, ctx)
 ```
 
-`new_with()`는 `DynamicType`을 명시적으로 받으므로, `DynamicObject`처럼 `DynamicType`이 `Default`가 아닌 타입에 사용합니다. Discovery API와 조합하면 런타임에 감시 대상을 결정할 수 있습니다.
+`new_with()`는 `DynamicType`을 명시적으로 받으므로, `DynamicObject`처럼 `DynamicType`이 `Default`가 아닌 타입에 사용합니다. Discovery API와 조합하면 런타임에 watch 대상을 결정할 수 있습니다.
 
 ## 비교 정리
 

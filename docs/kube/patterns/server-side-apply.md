@@ -84,7 +84,7 @@ let pp = PatchParams::apply("my-controller").force();
 
 ### 불필요한 필드 포함
 
-Rust struct를 통째로 직렬화하면 `Default` 값 필드도 포함됩니다. SSA가 해당 필드의 소유권을 가져가서, 다른 컨트롤러가 그 필드를 수정하면 충돌이 발생합니다.
+Rust struct를 통째로 serialization하면 `Default` 값 필드도 포함됩니다. SSA가 해당 필드의 소유권을 가져가서, 다른 컨트롤러가 그 필드를 수정하면 충돌이 발생합니다.
 
 ## Status patching
 
@@ -140,7 +140,7 @@ let pp = PatchParams::apply("my-controller");
 api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 ```
 
-k8s-openapi 타입은 `#[serde(skip_serializing_if = "Option::is_none")]`이 이미 적용되어 있어 `None` 필드는 직렬화되지 않습니다. 커스텀 타입에서는 직접 설정해야 합니다.
+k8s-openapi 타입은 `#[serde(skip_serializing_if = "Option::is_none")]`이 이미 적용되어 있어 `None` 필드는 serialization되지 않습니다. 커스텀 타입에서는 직접 설정해야 합니다.
 
 ```rust
 #[derive(Serialize)]

@@ -62,7 +62,7 @@ HTTP 의존성 없이 Kubernetes API와 상호작용하는 데 필요한 타입�
 | `response` | 응답 타입 | `Status`, `WatchEvent` |
 | `labels` | 레이블 셀렉터 | `Selector`, `Expression` |
 | `crd` | CRD 확장 | `CustomResourceExt` |
-| `error_boundary` | 역직렬화 보호 | `DeserializeGuard` |
+| `error_boundary` | deserialization 보호 | `DeserializeGuard` |
 
 `request` 모듈이 핵심입니다. HTTP 요청의 URL path와 query parameter를 조립하지만, 실제로 요청을 보내지는 않습니다. 이 분리 덕분에 kube-core는 네트워크 의존성 없이 순수한 타입 크레이트로 유지됩니다.
 
@@ -98,8 +98,8 @@ let nodes: Api<Node> = Api::all(client.clone());
 |------|------|
 | `watcher` | 자동 재연결 + 에러 복구가 포함된 watch 스트림 |
 | `reflector` | watcher 스트림을 가로채 인메모리 캐시(Store)에 기록 |
-| `controller` | reflector + 스케줄링 + 동시성 제어를 조합한 컨트롤러 루프 |
-| `finalizer` | 삭제 전 정리 작업 헬퍼 |
+| `controller` | reflector + 스케줄링 + concurrency 제어를 조합한 컨트롤러 루프 |
+| `finalizer` | 삭제 전 cleanup 헬퍼 |
 | `scheduler` | 스트림 항목의 지연 + 중복 제거 |
 | `events` | Kubernetes Event 리소스 발행 |
 | `wait` | 조건 대기 (`await_condition`) |

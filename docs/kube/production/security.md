@@ -105,7 +105,7 @@ spec:
 
 ### 최소 이미지
 
-Rust의 정적 링킹을 활용하면 극도로 작은 이미지를 만들 수 있습니다.
+Rust의 정적 링킹을 사용하면 극도로 작은 이미지를 만들 수 있습니다.
 
 ```dockerfile title="Dockerfile (musl 정적 링킹)"
 FROM rust:1.88 AS builder
