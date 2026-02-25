@@ -528,7 +528,7 @@ let rv = pod.resource_version();  // Option<String>
 
 ## ObjectRef — Resource Reference
 
-`ObjectRef<K>` is a lightweight reference that identifies a resource. It plays a central role in tracking reconcile targets within the Controller.
+`ObjectRef<K>` is a lightweight reference that identifies a resource. The Controller uses it as the key for tracking reconcile targets.
 
 ```rust title="kube-runtime/src/reflector/object_ref.rs (simplified)"
 #[non_exhaustive]
@@ -746,7 +746,7 @@ sequenceDiagram
 
 ## Inside Api&lt;K&gt;
 
-`Api<K>` is a thin handle that connects kube-core's URL builder with the Client.
+`Api<K>` is a thin wrapper that connects kube-core's URL builder with the Client.
 
 ```rust title="kube-client/src/api/mod.rs (simplified)"
 pub struct Api<K> {
@@ -1089,7 +1089,7 @@ For quiet resources with infrequent changes, the `resourceVersion` doesn't get u
 
 # Reflector and Store
 
-The Reflector is a transparent adapter that intercepts the watcher stream and writes to an in-memory cache (Store). It passes events through unchanged while updating the cache as a side effect.
+The Reflector is a passthrough adapter on the watcher stream. It forwards events unchanged while updating an in-memory cache (Store) as a side effect.
 
 ## The reflector Function
 
@@ -1530,7 +1530,7 @@ graph TD
     F --> G["Check for pending items in scheduler"]
 ```
 
-The **hold_unless pattern** is the key. It prevents concurrent reconciles of the same object:
+Concurrent reconciles of the same object are prevented by the **hold_unless pattern**:
 
 - Object A is reconciling, a new trigger for A arrives, held in scheduler
 - A completes, A is dequeued from scheduler and runs again
@@ -1990,7 +1990,7 @@ If you have already understood the internals from the **Runtime Internals** sect
 
 # Reconciler Patterns
 
-The reconciler is the core of the **Controller pipeline**. This section covers how to correctly write a function that "observes the current state and converges toward the desired state," and what common mistakes to avoid.
+The reconciler is where your business logic runs in the **Controller pipeline**. This section covers how to correctly write a function that "observes the current state and converges toward the desired state," and what common mistakes to avoid.
 
 ## Function Signature
 
@@ -2282,9 +2282,9 @@ stateDiagram-v2
     state "No finalizer<br/>Deleting" as S4
 
     S1 --> S2 : Add finalizer via JSON Patch
-    S2 --> S2 : Event::Apply - normal reconcile
+    S2 --> S2 : Apply event, normal reconcile
     S2 --> S3 : deletionTimestamp set
-    S3 --> S4 : Event::Cleanup succeeds, remove finalizer
+    S3 --> S4 : Cleanup succeeds, remove finalizer
     S4 --> [*] : Kubernetes performs actual deletion
 ```
 
@@ -4840,7 +4840,7 @@ Use dedicated frameworks when organization-level policy management is needed.
 | Kubewarden | Wasm (Rust, Go, etc.) | Write policies in Rust, OCI-based deployment |
 | OPA/Gatekeeper | Rego | General-purpose policy engine, broad ecosystem |
 
-**Kubewarden** is particularly interesting for Rust developers. You write policies in Rust, compile them to Wasm, and deploy them.
+**Kubewarden** lets you write policies in Rust, compile them to Wasm, and deploy them.
 
 When using alongside kube-rs controllers:
 - Policies also apply to child resources created by the controller

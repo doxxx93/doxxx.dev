@@ -156,7 +156,7 @@ HTTP 의존성 없이 Kubernetes API와 상호작용하는 데 필요한 타입�
 | `crd` | CRD 확장 | `CustomResourceExt` |
 | `error_boundary` | deserialization 보호 | `DeserializeGuard` |
 
-`request` 모듈이 핵심입니다. HTTP 요청의 URL path와 query parameter를 조립하지만, 실제로 요청을 보내지는 않습니다. 이 분리 덕분에 kube-core는 네트워크 의존성 없이 순수한 타입 크레이트로 유지됩니다.
+`request` 모듈이 중심인데, HTTP 요청의 URL path와 query parameter를 조립하되 실제로 보내지는 않습니다. 이 분리 덕분에 kube-core는 네트워크 의존성 없이 순수 타입 크레이트로 유지됩니다.
 
 ### kube-client — 네트워크 계층
 
@@ -356,7 +356,7 @@ pub trait Resource {
 }
 ```
 
-두 가지 연관 타입이 이 trait의 핵심입니다.
+이 trait에서 중요한 건 두 가지 associated type입니다.
 
 ### DynamicType — 메타데이터의 위치
 
@@ -746,7 +746,7 @@ sequenceDiagram
 
 ## Api&lt;K&gt; 내부
 
-`Api<K>`는 kube-core의 URL 빌더와 Client를 연결하는 얇은 핸들입니다.
+`Api<K>`는 kube-core의 URL 빌더와 Client를 연결하는 thin wrapper입니다.
 
 ```rust title="kube-client/src/api/mod.rs (단순화)"
 pub struct Api<K> {
@@ -913,7 +913,7 @@ graph TD
 
 # Watcher
 
-`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **state machine**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream입니다.
+`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **state machine**을 올려서 자동 재연결, initial list 로드, 에러 복구를 제공하는 Stream입니다.
 
 ## watcher의 역할
 
@@ -923,7 +923,7 @@ graph TD
 |------|------|
 | 연결 끊기면 종료 | 수동으로 재시작해야 합니다 |
 | `resourceVersion` 만료 대응 없음 | 410 Gone 응답을 받으면 그대로 에러 |
-| 초기 목록 없음 | watch는 "지금부터"의 변경만 봅니다 |
+| initial list 없음 | watch는 "지금부터"의 변경만 봅니다 |
 
 `watcher()`는 이 모든 것을 자동으로 처리합니다:
 
@@ -947,7 +947,7 @@ stateDiagram-v2
     Empty --> InitialWatch : StreamingList 전략
     InitPage --> InitPage : 다음 페이지
     InitPage --> InitListed : 모든 페이지 완료
-    InitialWatch --> InitListed : 초기 목록 완료
+    InitialWatch --> InitListed : initial list 완료
     InitListed --> Watching : WATCH 시작
     Watching --> Watching : 정상 이벤트
     Watching --> Empty : 410 Gone / 치명적 에러
@@ -960,10 +960,10 @@ stateDiagram-v2
 | **Empty** | 초기 상태 또는 에러 후 리셋. 설정된 전략에 따라 분기합니다. | — |
 | **InitPage** | paginated LIST 호출 (`page_size=500`). 각 페이지마다 `Event::InitApply(obj)`를 발행합니다. `continue_token`으로 다음 페이지를 가져옵니다. | `LIST ?limit=500&continue=...` |
 | **InitialWatch** | `sendInitialEvents=true`로 WATCH를 시작합니다. 서버가 기존 객체를 하나씩 보내고 Bookmark으로 완료를 알립니다. | `WATCH ?sendInitialEvents=true` |
-| **InitListed** | 초기 목록 완료. `Event::InitDone`을 발행하고, 마지막 `resourceVersion`으로 WATCH를 시작합니다. | `WATCH ?resourceVersion=...` |
+| **InitListed** | initial list 완료. `Event::InitDone`을 발행하고, 마지막 `resourceVersion`으로 WATCH를 시작합니다. | `WATCH ?resourceVersion=...` |
 | **Watching** | 정상 watch 상태. Added/Modified → `Event::Apply`, Deleted → `Event::Delete`. 410 Gone이나 연결 끊김 시 Empty로 복귀합니다. | — (기존 연결 유지) |
 
-## 두 가지 초기 목록 전략
+## 두 가지 initial list 전략
 
 ### ListWatch (기본)
 
@@ -988,7 +988,7 @@ Kubernetes 1.27부터 사용 가능한 효율적인 전략입니다.
 
 1. `WATCH` + `sendInitialEvents=true` + `resourceVersionMatch=NotOlderThan`
 2. 서버가 기존 객체를 하나씩 Added로 전송
-3. Bookmark으로 초기 목록 완료 신호
+3. Bookmark으로 initial list 완료 신호
 
 ```rust
 // StreamingList 전략 사용
@@ -1004,8 +1004,8 @@ watcher는 Kubernetes의 `WatchEvent`를 더 높은 수준의 `Event`로 변환�
 ```rust
 pub enum Event<K> {
     Init,          // re-list 시작
-    InitApply(K),  // 초기 목록의 각 객체
-    InitDone,      // 초기 목록 완료
+    InitApply(K),  // initial list의 각 객체
+    InitDone,      // initial list 완료
     Apply(K),      // watch 중 Added/Modified
     Delete(K),     // watch 중 Deleted
 }
@@ -1013,7 +1013,7 @@ pub enum Event<K> {
 
 Kubernetes의 `WatchEvent`와 매핑:
 
-| WatchEvent | 초기 목록 중 | watch 중 |
+| WatchEvent | initial list 중 | watch 중 |
 |-----------|-------------|---------|
 | Added | `InitApply(K)` | `Apply(K)` |
 | Modified | — | `Apply(K)` |
@@ -1089,7 +1089,7 @@ let wc = watcher::Config::default()
 
 # Reflector와 Store
 
-Reflector는 watcher 스트림을 가로채서 인메모리 캐시(Store)에 기록하는 투명한 어댑터입니다. 스트림을 그대로 통과시키면서 사이드이펙트로 캐시를 업데이트합니다.
+Reflector는 watcher 스트림을 그대로 통과시키면서, 사이드이펙트로 인메모리 캐시(Store)를 업데이트하는 passthrough 어댑터입니다.
 
 ## reflector 함수
 
@@ -1311,16 +1311,16 @@ graph TD
 
 각 단계:
 
-1. **watcher()** — API 서버를 watch하여 `Event<K>` 스트림을 생성합니다
-2. **reflector()** — Event를 Store에 캐싱하면서 그대로 통과시킵니다
-3. **.applied_objects()** — `Event::Apply(K)`와 `Event::InitApply(K)`에서 `K`만 추출합니다
-4. **trigger_self()** — `K` → `ReconcileRequest<K>`로 변환합니다
-5. **owns()/watches()** — 관련 리소스에 대한 추가 trigger 스트림을 생성합니다
-6. **select_all()** — 모든 trigger 스트림을 하나로 합칩니다
-7. **debounced_scheduler()** — 동일 `ObjectRef`에 대한 중복을 제거하고 지연을 적용합니다
-8. **Runner** — concurrency를 제어하고, 같은 객체의 동시 reconcile을 방지합니다
-9. **reconciler** — 사용자 코드를 실행합니다
-10. **Action/Error** — 결과에 따라 scheduler로 피드백합니다
+1. **watcher()** — API 서버에 watch 연결을 열어 `Event<K>` 스트림을 만듦
+2. **reflector()** — 스트림을 통과시키면서, 각 Event를 인메모리 Store에 기록
+3. **.applied_objects()** — `Event::Apply(K)`, `Event::InitApply(K)`에서 객체 `K`만 꺼냄
+4. **trigger_self()** — 꺼낸 `K`를 `ReconcileRequest<K>`로 변환
+5. **owns()/watches()** — 관련 리소스(자식, 참조 대상)의 변경도 trigger 스트림으로 추가
+6. **select_all()** — 위 trigger 스트림들을 하나로 merge
+7. **debounced_scheduler()** — 같은 `ObjectRef`가 여러 번 들어오면 하나로 합치고, debounce 지연 적용
+8. **Runner** — concurrency 제한. 같은 객체는 동시에 reconcile하지 않음
+9. **reconciler** — 사용자 코드 실행
+10. **Action/Error** — 결과(재시도 시간, 에러)를 scheduler로 피드백
 
 ## Controller struct
 
@@ -1474,7 +1474,7 @@ Controller::for_stream(main_stream, reader)
 이 패턴은 `owns()`/`watches()`가 내부에서 생성하는 watcher를 외부에서 직접 구성하는 것입니다. 스트림에 `.modify()`로 필드를 제거하거나, shared reflector로 여러 Controller가 공유하는 등의 세밀한 제어가 가능합니다. **제네릭 컨트롤러**에서 공유 패턴을 다룹니다.
 
 :::warning[Unstable feature flags]
-이 API들은 불안정 기능 플래그 뒤에 있습니다:
+아래 API는 unstable feature flag를 활성화해야 사용할 수 있습니다:
 - `reconcile_on()` → `unstable-runtime-reconcile-on`
 - `for_stream()`, `owns_stream()`, `watches_stream()` → `unstable-runtime-stream-control`
 
@@ -1496,7 +1496,7 @@ graph LR
 
 동작 방식:
 
-- 같은 `ObjectRef`에 대한 여러 trigger가 들어오면 **가장 이른 시간 하나만** 유지합니다
+- 같은 `ObjectRef`에 trigger가 여러 번 들어오면, 가장 빠른 예약 시간 하나만 남기고 나머지는 버립니다
 - debounce가 설정되면, 설정된 기간 내의 추가 trigger를 무시합니다
 
 ```
@@ -1530,7 +1530,7 @@ graph TD
     F --> G["scheduler에서 대기 중인 항목 확인"]
 ```
 
-**hold_unless 패턴**이 핵심입니다. 같은 객체에 대한 동시 reconcile을 방지합니다:
+같은 객체의 동시 reconcile을 방지하는 건 **hold_unless 패턴**입니다:
 
 - A 객체 reconcile 중 → A에 대한 새 trigger 도착 → scheduler에서 대기
 - A 완료 → scheduler에서 A를 다시 꺼내 실행
@@ -1633,7 +1633,7 @@ pub struct DocumentStatus {
 }
 ```
 
-사용자가 정의하는 것은 `DocumentSpec`(과 선택적 `DocumentStatus`)뿐입니다. 나머지는 매크로가 생성합니다.
+직접 작성하는 건 `DocumentSpec`(+ `DocumentStatus`는 optional)뿐이고, 나머지는 매크로가 생성합니다.
 
 ## 생성되는 코드
 
@@ -1990,7 +1990,7 @@ kube를 올바르게 사용하는 패턴과, 실제 사용자들이 반복적으
 
 # Reconciler 패턴
 
-Reconciler는 **Controller 파이프라인**의 핵심입니다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룹니다.
+Reconciler는 **Controller 파이프라인**에서 실제 비즈니스 로직이 실행되는 부분입니다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룹니다.
 
 ## 함수 시그니처
 
@@ -2010,7 +2010,7 @@ async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Er
 
 ### Context 패턴
 
-reconciler를 순수 함수에 가깝게 유지하려면 모든 외부 의존성을 Context에 담습니다.
+reconciler의 외부 의존성(Client, 설정 등)은 전부 Context에 넣어서 관리합니다.
 
 ```rust
 struct Context {
@@ -2282,9 +2282,9 @@ stateDiagram-v2
     state "finalizer 없음<br/>삭제 중" as S4
 
     S1 --> S2 : JSON Patch로 finalizer 추가
-    S2 --> S2 : Event::Apply - 정상 reconcile
+    S2 --> S2 : Apply 이벤트, 정상 reconcile
     S2 --> S3 : deletionTimestamp 설정됨
-    S3 --> S4 : Event::Cleanup 성공, finalizer 제거
+    S3 --> S4 : Cleanup 성공, finalizer 제거
     S4 --> [*] : Kubernetes가 실제 삭제
 ```
 
@@ -2377,7 +2377,7 @@ finalizer 추가/제거는 `generation`을 변경하지 않습니다. `predicate
 
 # Server-Side Apply
 
-Server-Side Apply(SSA)는 Kubernetes의 필드 소유권 기반 패치 방식입니다. Reconciler에서 리소스를 생성/수정할 때 SSA를 사용하면 충돌 없는 안전한 다자 수정이 가능합니다.
+Server-Side Apply(SSA)는 Kubernetes의 필드 소유권 기반 패치 방식입니다. 여러 컨트롤러가 같은 리소스를 수정해도 필드 단위로 소유권을 나누기 때문에 충돌 없이 안전하게 동작합니다.
 
 ## 왜 SSA인가
 
@@ -3086,7 +3086,7 @@ tokio::join!(stream.for_each(|_| async {}), ctrl_a, ctrl_b);
 `owns`/`watches`도 shared 스트림을 지원합니다. `owns_shared_stream()`으로 자식 리소스의 watch도 공유할 수 있습니다.
 
 :::warning[Unstable feature]
-shared reflector API는 `unstable-runtime-stream-control` feature 뒤에 있습니다:
+shared reflector API를 쓰려면 `unstable-runtime-stream-control` feature flag가 필요합니다:
 
 ```toml
 kube = { version = "3.0.1", features = ["unstable-runtime-stream-control"] }
@@ -3458,7 +3458,7 @@ let app = Router::new().route("/metrics", get(metrics_handler));
 
 ### Readiness
 
-**Reflector와 Store**에서 다룬 것처럼, Store는 생성 시 비어있고 watcher 스트림이 poll되어야 채워집니다. readiness probe는 Store가 초기 목록 로드를 완료했는지 확인합니다.
+**Reflector와 Store**에서 다룬 것처럼, Store는 생성 시 비어있고 watcher 스트림이 poll되어야 채워집니다. readiness probe는 Store가 initial list 로드를 완료했는지 확인합니다.
 
 ```rust
 let (reader, writer) = reflector::store();
@@ -3533,7 +3533,7 @@ Controller::new(api, wc)
 
 ## 단위 테스트
 
-reconciler를 순수 함수에 가깝게 유지하면 API 호출 없이 로직을 검증할 수 있습니다. 핵심은 상태 계산 로직과 API 호출을 분리하는 것입니다.
+상태 계산 로직과 API 호출을 분리해두면, API 호출 없이 로직만 단위 테스트할 수 있습니다.
 
 ```rust
 // 로직만 분리
@@ -3786,13 +3786,13 @@ let stream = metadata_watcher(api, wc).default_backoff();
 
 ### StreamingList
 
-**Watcher state machine**에서 다룬 StreamingList 전략을 사용하면 초기 목록 로드 시 메모리 피크를 낮출 수 있습니다.
+**Watcher state machine**에서 다룬 StreamingList 전략을 사용하면 initial list 로드 시 메모리 피크를 낮출 수 있습니다.
 
 ```rust
 let wc = watcher::Config::default().streaming_lists();
 ```
 
-Kubernetes 1.27 이상이 필요합니다. LIST 대신 WATCH로 초기 목록을 스트리밍하므로 전체 목록을 한 번에 메모리에 올리지 않습니다.
+Kubernetes 1.27 이상이 필요합니다. LIST 대신 WATCH로 initial list을 스트리밍하므로 전체 목록을 한 번에 메모리에 올리지 않습니다.
 
 ### page_size 조절
 
@@ -4109,9 +4109,9 @@ spec:
 
 컨트롤러는 네트워크 호출(API 서버) 외에 시스템 권한이 필요하지 않습니다. 모든 capability를 제거하고 읽기 전용 파일시스템으로 실행합니다.
 
-### 최소 이미지
+### Minimal 이미지
 
-Rust의 정적 링킹을 사용하면 극도로 작은 이미지를 만들 수 있습니다.
+Rust의 정적 링킹으로 매우 작은 컨테이너 이미지를 만들 수 있습니다.
 
 ```dockerfile title="Dockerfile (musl 정적 링킹)"
 FROM rust:1.88 AS builder
@@ -4271,7 +4271,7 @@ kube 기반 컨트롤러의 가용성을 확보하는 방법을 다룹니다. �
 
 ## 단일 인스턴스로 충분한 이유
 
-Kubernetes 컨트롤러는 일반적인 웹 서버와 다릅니다. watch + reconcile 루프는 **큐 소비자** 모델입니다:
+Kubernetes 컨트롤러는 일반적인 웹 서버와 다릅니다. watch + reconcile 루프는 **queue consumer** 모델입니다:
 
 1. **idempotent reconcile**: **reconciler 패턴**에 따라 모든 reconcile은 멱등합니다. 일시 중단 후 재시작해도 원하는 상태에 수렴합니다
 2. **watcher 자동 복구**: watcher가 재시작하면 `resourceVersion`부터 다시 watch하거나, 없으면 re-list로 전체 상태를 복구합니다
@@ -4840,7 +4840,7 @@ kube-rs 컨트롤러와의 관계:
 | Kubewarden | Wasm (Rust, Go 등) | Rust로 정책 작성 가능, OCI 배포 |
 | OPA/Gatekeeper | Rego | 범용 정책 엔진, 넓은 생태계 |
 
-Rust 개발자에게는 **Kubewarden**이 특히 흥미롭습니다. 정책을 Rust로 작성하고 Wasm으로 컴파일하여 배포합니다.
+**Kubewarden**은 Rust로 정책을 작성하고 Wasm으로 컴파일해서 배포하는 방식입니다.
 
 kube-rs 컨트롤러와 함께 사용할 때:
 - 컨트롤러가 생성하는 자식 리소스에도 정책이 적용됩니다

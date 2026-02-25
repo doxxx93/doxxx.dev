@@ -203,7 +203,7 @@ let rv = pod.resource_version();  // Option<String>
 
 ## ObjectRef — Resource Reference
 
-`ObjectRef<K>` is a lightweight reference that identifies a resource. It plays a central role in tracking reconcile targets within the Controller.
+`ObjectRef<K>` is a lightweight reference that identifies a resource. The Controller uses it as the key for tracking reconcile targets.
 
 ```rust title="kube-runtime/src/reflector/object_ref.rs (simplified)"
 #[non_exhaustive]

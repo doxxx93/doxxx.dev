@@ -25,7 +25,7 @@ pub struct DocumentStatus {
 }
 ```
 
-사용자가 정의하는 것은 `DocumentSpec`(과 선택적 `DocumentStatus`)뿐입니다. 나머지는 매크로가 생성합니다.
+직접 작성하는 건 `DocumentSpec`(+ `DocumentStatus`는 optional)뿐이고, 나머지는 매크로가 생성합니다.
 
 ## 생성되는 코드
 

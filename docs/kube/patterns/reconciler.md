@@ -6,7 +6,7 @@ description: "idempotent reconciler 작성법, 무한루프 방지, Action 전�
 
 # Reconciler 패턴
 
-Reconciler는 [Controller 파이프라인](../runtime-internals/controller-pipeline.md)의 핵심입니다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룹니다.
+Reconciler는 [Controller 파이프라인](../runtime-internals/controller-pipeline.md)에서 실제 비즈니스 로직이 실행되는 부분입니다. "현재 상태를 보고 원하는 상태로 수렴시키는" 함수를 어떻게 올바르게 작성하는지, 흔한 실수는 무엇인지 다룹니다.
 
 ## 함수 시그니처
 
@@ -26,7 +26,7 @@ async fn reconcile(obj: Arc<MyResource>, ctx: Arc<Context>) -> Result<Action, Er
 
 ### Context 패턴
 
-reconciler를 순수 함수에 가깝게 유지하려면 모든 외부 의존성을 Context에 담습니다.
+reconciler의 외부 의존성(Client, 설정 등)은 전부 Context에 넣어서 관리합니다.
 
 ```rust
 struct Context {

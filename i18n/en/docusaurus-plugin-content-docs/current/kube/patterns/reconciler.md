@@ -6,7 +6,7 @@ description: "Writing idempotent reconcilers, preventing infinite loops, and Act
 
 # Reconciler Patterns
 
-The reconciler is the core of the [Controller pipeline](../runtime-internals/controller-pipeline.md). This section covers how to correctly write a function that "observes the current state and converges toward the desired state," and what common mistakes to avoid.
+The reconciler is where your business logic runs in the [Controller pipeline](../runtime-internals/controller-pipeline.md). This section covers how to correctly write a function that "observes the current state and converges toward the desired state," and what common mistakes to avoid.
 
 ## Function Signature
 

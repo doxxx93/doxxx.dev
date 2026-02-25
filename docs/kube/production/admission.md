@@ -366,7 +366,7 @@ kube-rs 컨트롤러와의 관계:
 | Kubewarden | Wasm (Rust, Go 등) | Rust로 정책 작성 가능, OCI 배포 |
 | OPA/Gatekeeper | Rego | 범용 정책 엔진, 넓은 생태계 |
 
-Rust 개발자에게는 **Kubewarden**이 특히 흥미롭습니다. 정책을 Rust로 작성하고 Wasm으로 컴파일하여 배포합니다.
+**Kubewarden**은 Rust로 정책을 작성하고 Wasm으로 컴파일해서 배포하는 방식입니다.
 
 kube-rs 컨트롤러와 함께 사용할 때:
 - 컨트롤러가 생성하는 자식 리소스에도 정책이 적용됩니다

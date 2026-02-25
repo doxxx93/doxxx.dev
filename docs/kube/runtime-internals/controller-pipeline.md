@@ -31,16 +31,16 @@ graph TD
 
 각 단계:
 
-1. **watcher()** — API 서버를 watch하여 `Event<K>` 스트림을 생성합니다
-2. **reflector()** — Event를 Store에 캐싱하면서 그대로 통과시킵니다
-3. **.applied_objects()** — `Event::Apply(K)`와 `Event::InitApply(K)`에서 `K`만 추출합니다
-4. **trigger_self()** — `K` → `ReconcileRequest<K>`로 변환합니다
-5. **owns()/watches()** — 관련 리소스에 대한 추가 trigger 스트림을 생성합니다
-6. **select_all()** — 모든 trigger 스트림을 하나로 합칩니다
-7. **debounced_scheduler()** — 동일 `ObjectRef`에 대한 중복을 제거하고 지연을 적용합니다
-8. **Runner** — concurrency를 제어하고, 같은 객체의 동시 reconcile을 방지합니다
-9. **reconciler** — 사용자 코드를 실행합니다
-10. **Action/Error** — 결과에 따라 scheduler로 피드백합니다
+1. **watcher()** — API 서버에 watch 연결을 열어 `Event<K>` 스트림을 만듦
+2. **reflector()** — 스트림을 통과시키면서, 각 Event를 인메모리 Store에 기록
+3. **.applied_objects()** — `Event::Apply(K)`, `Event::InitApply(K)`에서 객체 `K`만 꺼냄
+4. **trigger_self()** — 꺼낸 `K`를 `ReconcileRequest<K>`로 변환
+5. **owns()/watches()** — 관련 리소스(자식, 참조 대상)의 변경도 trigger 스트림으로 추가
+6. **select_all()** — 위 trigger 스트림들을 하나로 merge
+7. **debounced_scheduler()** — 같은 `ObjectRef`가 여러 번 들어오면 하나로 합치고, debounce 지연 적용
+8. **Runner** — concurrency 제한. 같은 객체는 동시에 reconcile하지 않음
+9. **reconciler** — 사용자 코드 실행
+10. **Action/Error** — 결과(재시도 시간, 에러)를 scheduler로 피드백
 
 ## Controller struct
 
@@ -194,7 +194,7 @@ Controller::for_stream(main_stream, reader)
 이 패턴은 `owns()`/`watches()`가 내부에서 생성하는 watcher를 외부에서 직접 구성하는 것입니다. 스트림에 `.modify()`로 필드를 제거하거나, shared reflector로 여러 Controller가 공유하는 등의 세밀한 제어가 가능합니다. [제네릭 컨트롤러](../patterns/generic-controllers.md#공유-reflector)에서 공유 패턴을 다룹니다.
 
 :::warning[Unstable feature flags]
-이 API들은 불안정 기능 플래그 뒤에 있습니다:
+아래 API는 unstable feature flag를 활성화해야 사용할 수 있습니다:
 - `reconcile_on()` → `unstable-runtime-reconcile-on`
 - `for_stream()`, `owns_stream()`, `watches_stream()` → `unstable-runtime-stream-control`
 
@@ -216,7 +216,7 @@ graph LR
 
 동작 방식:
 
-- 같은 `ObjectRef`에 대한 여러 trigger가 들어오면 **가장 이른 시간 하나만** 유지합니다
+- 같은 `ObjectRef`에 trigger가 여러 번 들어오면, 가장 빠른 예약 시간 하나만 남기고 나머지는 버립니다
 - debounce가 설정되면, 설정된 기간 내의 추가 trigger를 무시합니다
 
 ```
@@ -250,7 +250,7 @@ graph TD
     F --> G["scheduler에서 대기 중인 항목 확인"]
 ```
 
-**hold_unless 패턴**이 핵심입니다. 같은 객체에 대한 동시 reconcile을 방지합니다:
+같은 객체의 동시 reconcile을 방지하는 건 **hold_unless 패턴**입니다:
 
 - A 객체 reconcile 중 → A에 대한 새 trigger 도착 → scheduler에서 대기
 - A 완료 → scheduler에서 A를 다시 꺼내 실행

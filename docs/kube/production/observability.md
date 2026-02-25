@@ -174,7 +174,7 @@ let app = Router::new().route("/metrics", get(metrics_handler));
 
 ### Readiness
 
-[Reflector와 Store](../runtime-internals/reflector-and-store.md)에서 다룬 것처럼, Store는 생성 시 비어있고 watcher 스트림이 poll되어야 채워집니다. readiness probe는 Store가 초기 목록 로드를 완료했는지 확인합니다.
+[Reflector와 Store](../runtime-internals/reflector-and-store.md)에서 다룬 것처럼, Store는 생성 시 비어있고 watcher 스트림이 poll되어야 채워집니다. readiness probe는 Store가 initial list 로드를 완료했는지 확인합니다.
 
 ```rust
 let (reader, writer) = reflector::store();

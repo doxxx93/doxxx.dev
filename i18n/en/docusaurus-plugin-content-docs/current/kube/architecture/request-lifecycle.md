@@ -40,7 +40,7 @@ sequenceDiagram
 
 ## Inside Api&lt;K&gt;
 
-`Api<K>` is a thin handle that connects kube-core's URL builder with the Client.
+`Api<K>` is a thin wrapper that connects kube-core's URL builder with the Client.
 
 ```rust title="kube-client/src/api/mod.rs (simplified)"
 pub struct Api<K> {

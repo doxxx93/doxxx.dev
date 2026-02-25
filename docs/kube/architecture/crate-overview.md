@@ -64,7 +64,7 @@ HTTP 의존성 없이 Kubernetes API와 상호작용하는 데 필요한 타입�
 | `crd` | CRD 확장 | `CustomResourceExt` |
 | `error_boundary` | deserialization 보호 | `DeserializeGuard` |
 
-`request` 모듈이 핵심입니다. HTTP 요청의 URL path와 query parameter를 조립하지만, 실제로 요청을 보내지는 않습니다. 이 분리 덕분에 kube-core는 네트워크 의존성 없이 순수한 타입 크레이트로 유지됩니다.
+`request` 모듈이 중심인데, HTTP 요청의 URL path와 query parameter를 조립하되 실제로 보내지는 않습니다. 이 분리 덕분에 kube-core는 네트워크 의존성 없이 순수 타입 크레이트로 유지됩니다.
 
 ### kube-client — 네트워크 계층
 
