@@ -55,6 +55,13 @@ serde_json = "1"
 anyhow = "1"
 ```
 
+## Download Full Docs
+
+The entire documentation is available as a single Markdown file.
+
+- [kube-docs-en.md](pathname:///downloads/kube-docs-en.md) — English
+- [kube-docs-ko.md](pathname:///downloads/kube-docs-ko.md) — 한국어
+
 ## References
 
 - [kube.rs](https://kube.rs) — Official website
