@@ -10,7 +10,7 @@ This section covers what `kube-runtime` does under the hood. We examine the watc
 
 ```mermaid
 graph TD
-    A["watcher()"] -->|"Event&lt;K&gt; stream"| B["reflector()"]
+    A["watcher()"] -->|"Event~K~ stream"| B["reflector()"]
     B -->|"Cached in Store"| C["Controller"]
     C -->|"Scheduling + concurrency control"| D["reconciler()"]
     D -->|"Action/Error"| C

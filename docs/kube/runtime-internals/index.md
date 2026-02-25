@@ -10,7 +10,7 @@ description: "kube-runtime의 내부 동작 — watcher 상태 머신, reflector
 
 ```mermaid
 graph TD
-    A["watcher()"] -->|"Event&lt;K&gt; 스트림"| B["reflector()"]
+    A["watcher()"] -->|"Event~K~ 스트림"| B["reflector()"]
     B -->|"Store에 캐싱"| C["Controller"]
     C -->|"스케줄링 + 동시성 제어"| D["reconciler()"]
     D -->|"Action/Error"| C
