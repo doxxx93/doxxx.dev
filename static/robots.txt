@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /blog/
 Disallow: /en/search
+Disallow: /downloads/
 
 Sitemap: https://doxxx.dev/sitemap.xml
