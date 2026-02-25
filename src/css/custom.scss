@@ -503,6 +503,11 @@ article .markdown > p:first-child > img {
 }
 
 // Last updated date — prevent awkward line-wrapping
+.theme-last-updated {
+  white-space: nowrap;
+  display: inline;
+}
+
 .theme-last-updated b,
 .theme-last-updated time {
   white-space: nowrap;
