@@ -6,7 +6,7 @@ description: "How the in-memory cache works — atomic swap, async characteristi
 
 # Reflector and Store
 
-The Reflector is a transparent adapter that intercepts the watcher stream and writes to an in-memory cache (Store). It passes events through unchanged while updating the cache as a side effect.
+The Reflector is a passthrough adapter on the watcher stream. It forwards events unchanged while updating an in-memory cache (Store) as a side effect.
 
 ## The reflector Function
 

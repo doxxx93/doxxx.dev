@@ -10,7 +10,7 @@ kube 기반 컨트롤러의 가용성을 확보하는 방법을 다룹니다. �
 
 ## 단일 인스턴스로 충분한 이유
 
-Kubernetes 컨트롤러는 일반적인 웹 서버와 다릅니다. watch + reconcile 루프는 **큐 소비자** 모델입니다:
+Kubernetes 컨트롤러는 일반적인 웹 서버와 다릅니다. watch + reconcile 루프는 **queue consumer** 모델입니다:
 
 1. **idempotent reconcile**: [reconciler 패턴](../patterns/reconciler.md)에 따라 모든 reconcile은 멱등합니다. 일시 중단 후 재시작해도 원하는 상태에 수렴합니다
 2. **watcher 자동 복구**: watcher가 재시작하면 `resourceVersion`부터 다시 watch하거나, 없으면 re-list로 전체 상태를 복구합니다

@@ -31,7 +31,7 @@ pub trait Resource {
 }
 ```
 
-두 가지 연관 타입이 이 trait의 핵심입니다.
+이 trait에서 중요한 건 두 가지 associated type입니다.
 
 ### DynamicType — 메타데이터의 위치
 

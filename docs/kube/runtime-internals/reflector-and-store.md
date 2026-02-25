@@ -6,7 +6,7 @@ description: "인메모리 캐시의 동작 원리 — atomic swap, 비동기 �
 
 # Reflector와 Store
 
-Reflector는 watcher 스트림을 가로채서 인메모리 캐시(Store)에 기록하는 투명한 어댑터입니다. 스트림을 그대로 통과시키면서 사이드이펙트로 캐시를 업데이트합니다.
+Reflector는 watcher 스트림을 그대로 통과시키면서, 사이드이펙트로 인메모리 캐시(Store)를 업데이트하는 passthrough 어댑터입니다.
 
 ## reflector 함수
 

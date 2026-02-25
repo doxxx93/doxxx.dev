@@ -250,7 +250,7 @@ graph TD
     F --> G["Check for pending items in scheduler"]
 ```
 
-The **hold_unless pattern** is the key. It prevents concurrent reconciles of the same object:
+Concurrent reconciles of the same object are prevented by the **hold_unless pattern**:
 
 - Object A is reconciling, a new trigger for A arrives, held in scheduler
 - A completes, A is dequeued from scheduler and runs again

@@ -103,9 +103,9 @@ spec:
 
 컨트롤러는 네트워크 호출(API 서버) 외에 시스템 권한이 필요하지 않습니다. 모든 capability를 제거하고 읽기 전용 파일시스템으로 실행합니다.
 
-### 최소 이미지
+### Minimal 이미지
 
-Rust의 정적 링킹을 사용하면 극도로 작은 이미지를 만들 수 있습니다.
+Rust의 정적 링킹으로 매우 작은 컨테이너 이미지를 만들 수 있습니다.
 
 ```dockerfile title="Dockerfile (musl 정적 링킹)"
 FROM rust:1.88 AS builder

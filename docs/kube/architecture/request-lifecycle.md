@@ -40,7 +40,7 @@ sequenceDiagram
 
 ## Api&lt;K&gt; 내부
 
-`Api<K>`는 kube-core의 URL 빌더와 Client를 연결하는 얇은 핸들입니다.
+`Api<K>`는 kube-core의 URL 빌더와 Client를 연결하는 thin wrapper입니다.
 
 ```rust title="kube-client/src/api/mod.rs (단순화)"
 pub struct Api<K> {

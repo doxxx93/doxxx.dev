@@ -80,9 +80,9 @@ stateDiagram-v2
     state "finalizer 없음<br/>삭제 중" as S4
 
     S1 --> S2 : JSON Patch로 finalizer 추가
-    S2 --> S2 : Event::Apply - 정상 reconcile
+    S2 --> S2 : Apply 이벤트, 정상 reconcile
     S2 --> S3 : deletionTimestamp 설정됨
-    S3 --> S4 : Event::Cleanup 성공, finalizer 제거
+    S3 --> S4 : Cleanup 성공, finalizer 제거
     S4 --> [*] : Kubernetes가 실제 삭제
 ```
 

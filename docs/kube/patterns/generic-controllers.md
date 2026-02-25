@@ -247,7 +247,7 @@ tokio::join!(stream.for_each(|_| async {}), ctrl_a, ctrl_b);
 `owns`/`watches`도 shared 스트림을 지원합니다. `owns_shared_stream()`으로 자식 리소스의 watch도 공유할 수 있습니다.
 
 :::warning[Unstable feature]
-shared reflector API는 `unstable-runtime-stream-control` feature 뒤에 있습니다:
+shared reflector API를 쓰려면 `unstable-runtime-stream-control` feature flag가 필요합니다:
 
 ```toml
 kube = { version = "3.0.1", features = ["unstable-runtime-stream-control"] }

@@ -366,7 +366,7 @@ Use dedicated frameworks when organization-level policy management is needed.
 | Kubewarden | Wasm (Rust, Go, etc.) | Write policies in Rust, OCI-based deployment |
 | OPA/Gatekeeper | Rego | General-purpose policy engine, broad ecosystem |
 
-**Kubewarden** is particularly interesting for Rust developers. You write policies in Rust, compile them to Wasm, and deploy them.
+**Kubewarden** lets you write policies in Rust, compile them to Wasm, and deploy them.
 
 When using alongside kube-rs controllers:
 - Policies also apply to child resources created by the controller

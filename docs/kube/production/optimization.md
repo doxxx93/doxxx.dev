@@ -53,13 +53,13 @@ let stream = metadata_watcher(api, wc).default_backoff();
 
 ### StreamingList
 
-[Watcher state machine](../runtime-internals/watcher.md)에서 다룬 StreamingList 전략을 사용하면 초기 목록 로드 시 메모리 피크를 낮출 수 있습니다.
+[Watcher state machine](../runtime-internals/watcher.md)에서 다룬 StreamingList 전략을 사용하면 initial list 로드 시 메모리 피크를 낮출 수 있습니다.
 
 ```rust
 let wc = watcher::Config::default().streaming_lists();
 ```
 
-Kubernetes 1.27 이상이 필요합니다. LIST 대신 WATCH로 초기 목록을 스트리밍하므로 전체 목록을 한 번에 메모리에 올리지 않습니다.
+Kubernetes 1.27 이상이 필요합니다. LIST 대신 WATCH로 initial list을 스트리밍하므로 전체 목록을 한 번에 메모리에 올리지 않습니다.
 
 ### page_size 조절
 

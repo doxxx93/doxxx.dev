@@ -6,7 +6,7 @@ description: "watcher state machine, ListWatch vs StreamingList, 에러 복구"
 
 # Watcher
 
-`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **state machine**을 올려서 자동 재연결, 초기 목록 로드, 에러 복구를 제공하는 Stream입니다.
+`Api::watch()`는 연결이 끊기면 그대로 종료되고, `resourceVersion` 만료에도 대응하지 않습니다. `watcher()`는 이 위에 **state machine**을 올려서 자동 재연결, initial list 로드, 에러 복구를 제공하는 Stream입니다.
 
 ## watcher의 역할
 
@@ -16,7 +16,7 @@ description: "watcher state machine, ListWatch vs StreamingList, 에러 복구"
 |------|------|
 | 연결 끊기면 종료 | 수동으로 재시작해야 합니다 |
 | `resourceVersion` 만료 대응 없음 | 410 Gone 응답을 받으면 그대로 에러 |
-| 초기 목록 없음 | watch는 "지금부터"의 변경만 봅니다 |
+| initial list 없음 | watch는 "지금부터"의 변경만 봅니다 |
 
 `watcher()`는 이 모든 것을 자동으로 처리합니다:
 
@@ -40,7 +40,7 @@ stateDiagram-v2
     Empty --> InitialWatch : StreamingList 전략
     InitPage --> InitPage : 다음 페이지
     InitPage --> InitListed : 모든 페이지 완료
-    InitialWatch --> InitListed : 초기 목록 완료
+    InitialWatch --> InitListed : initial list 완료
     InitListed --> Watching : WATCH 시작
     Watching --> Watching : 정상 이벤트
     Watching --> Empty : 410 Gone / 치명적 에러
@@ -53,10 +53,10 @@ stateDiagram-v2
 | **Empty** | 초기 상태 또는 에러 후 리셋. 설정된 전략에 따라 분기합니다. | — |
 | **InitPage** | paginated LIST 호출 (`page_size=500`). 각 페이지마다 `Event::InitApply(obj)`를 발행합니다. `continue_token`으로 다음 페이지를 가져옵니다. | `LIST ?limit=500&continue=...` |
 | **InitialWatch** | `sendInitialEvents=true`로 WATCH를 시작합니다. 서버가 기존 객체를 하나씩 보내고 Bookmark으로 완료를 알립니다. | `WATCH ?sendInitialEvents=true` |
-| **InitListed** | 초기 목록 완료. `Event::InitDone`을 발행하고, 마지막 `resourceVersion`으로 WATCH를 시작합니다. | `WATCH ?resourceVersion=...` |
+| **InitListed** | initial list 완료. `Event::InitDone`을 발행하고, 마지막 `resourceVersion`으로 WATCH를 시작합니다. | `WATCH ?resourceVersion=...` |
 | **Watching** | 정상 watch 상태. Added/Modified → `Event::Apply`, Deleted → `Event::Delete`. 410 Gone이나 연결 끊김 시 Empty로 복귀합니다. | — (기존 연결 유지) |
 
-## 두 가지 초기 목록 전략
+## 두 가지 initial list 전략
 
 ### ListWatch (기본)
 
@@ -81,7 +81,7 @@ Kubernetes 1.27부터 사용 가능한 효율적인 전략입니다.
 
 1. `WATCH` + `sendInitialEvents=true` + `resourceVersionMatch=NotOlderThan`
 2. 서버가 기존 객체를 하나씩 Added로 전송
-3. Bookmark으로 초기 목록 완료 신호
+3. Bookmark으로 initial list 완료 신호
 
 ```rust
 // StreamingList 전략 사용
@@ -97,8 +97,8 @@ watcher는 Kubernetes의 `WatchEvent`를 더 높은 수준의 `Event`로 변환�
 ```rust
 pub enum Event<K> {
     Init,          // re-list 시작
-    InitApply(K),  // 초기 목록의 각 객체
-    InitDone,      // 초기 목록 완료
+    InitApply(K),  // initial list의 각 객체
+    InitDone,      // initial list 완료
     Apply(K),      // watch 중 Added/Modified
     Delete(K),     // watch 중 Deleted
 }
@@ -106,7 +106,7 @@ pub enum Event<K> {
 
 Kubernetes의 `WatchEvent`와 매핑:
 
-| WatchEvent | 초기 목록 중 | watch 중 |
+| WatchEvent | initial list 중 | watch 중 |
 |-----------|-------------|---------|
 | Added | `InitApply(K)` | `Apply(K)` |
 | Modified | — | `Apply(K)` |
