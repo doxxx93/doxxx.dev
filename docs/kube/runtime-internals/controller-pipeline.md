@@ -21,7 +21,7 @@ graph TD
     E --> G["select_all()"]
     G --> I["debounced_scheduler()"]
     I --> J["Runner"]
-    J --> K["reconciler(Arc&lt;K&gt;, ctx)"]
+    J --> K["reconciler(Arc~K~, ctx)"]
     K --> L["Action / Error"]
     L --> |"requeue"| I
 

@@ -23,19 +23,19 @@ let list = pods.list(&ListParams::default()).await?;
 ```mermaid
 sequenceDiagram
     participant User as 사용자 코드
-    participant Api as Api&lt;Pod&gt;
+    participant Api as Api~Pod~
     participant Req as kube-core::Request
     participant Client as Client (Tower)
     participant K8s as API Server
 
     User->>Api: pods.list(&lp)
     Api->>Req: request.list(&lp)
-    Req-->>Api: http::Request&lt;Vec&lt;u8&gt;&gt;
-    Api->>Client: client.request::&lt;ObjectList&lt;Pod&gt;&gt;(req)
+    Req-->>Api: http::Request~Vec~u8~~
+    Api->>Client: client.request::~ObjectList~Pod~~(req)
     Client->>K8s: HTTP GET /api/v1/namespaces/default/pods
     K8s-->>Client: 200 OK + JSON body
-    Client-->>Api: ObjectList&lt;Pod&gt;
-    Api-->>User: Result&lt;ObjectList&lt;Pod&gt;&gt;
+    Client-->>Api: ObjectList~Pod~
+    Api-->>User: Result~ObjectList~Pod~~
 ```
 
 ## Api&lt;K&gt; 내부

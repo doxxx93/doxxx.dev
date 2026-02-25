@@ -80,9 +80,9 @@ stateDiagram-v2
     state "No finalizer\nDeleting" as S4
 
     S1 --> S2 : Add finalizer via JSON Patch
-    S2 --> S2 : Event::Apply (normal reconcile)
+    S2 --> S2 : Event::Apply - normal reconcile
     S2 --> S3 : deletionTimestamp set
-    S3 --> S4 : Event::Cleanup succeeds → remove finalizer
+    S3 --> S4 : Event::Cleanup succeeds, remove finalizer
     S4 --> [*] : Kubernetes performs actual deletion
 ```
 
