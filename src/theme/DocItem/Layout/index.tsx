@@ -1,5 +1,7 @@
 import React, {type ReactNode} from 'react';
 import clsx from 'clsx';
+import Head from '@docusaurus/Head';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useWindowSize} from '@docusaurus/theme-common';
 import {useDoc} from '@docusaurus/plugin-content-docs/client';
 import DocItemPaginator from '@theme/DocItem/Paginator';
@@ -14,6 +16,29 @@ import ContentVisibility from '@theme/ContentVisibility';
 import type {Props} from '@theme/DocItem/Layout';
 
 import styles from './styles.module.css';
+
+// Docs section → OG image path (relative to static/)
+// Add new entries here when adding new doc sections
+const DOCS_OG_IMAGES: Record<string, string> = {
+  kube: '/img/docs-kube-og.png',
+};
+
+function DocsOgImage() {
+  const {metadata} = useDoc();
+  const {siteConfig} = useDocusaurusContext();
+  const section = metadata.id.split('/')[0];
+  const ogImage = DOCS_OG_IMAGES[section];
+
+  if (!ogImage) return null;
+
+  const absoluteUrl = `${siteConfig.url}${ogImage}`;
+  return (
+    <Head>
+      <meta property="og:image" content={absoluteUrl} />
+      <meta name="twitter:image" content={absoluteUrl} />
+    </Head>
+  );
+}
 
 /**
  * Decide if the toc should be rendered, on mobile or desktop viewports
@@ -44,6 +69,7 @@ export default function DocItemLayout({children}: Props): ReactNode {
   const {metadata} = useDoc();
   return (
     <div className="row">
+      <DocsOgImage />
       <div className={clsx('col', !docTOC.hidden && styles.docItemCol)}>
         <ContentVisibility metadata={metadata} />
         <DocVersionBanner />
