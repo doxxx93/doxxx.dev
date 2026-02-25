@@ -611,9 +611,9 @@ graph TD
 
 ```mermaid
 graph LR
-    A["Config::infer()"] --> B{"$KUBECONFIG 또는\n~/.kube/config?"}
+    A["Config::infer()"] --> B{"$KUBECONFIG 또는<br/>~/.kube/config?"}
     B -->|있음| C[kubeconfig 로드]
-    B -->|없음| D{"/var/run/secrets/\nkubernetes.io/\nserviceaccount/?"}
+    B -->|없음| D{"/var/run/secrets/<br/>kubernetes.io/<br/>serviceaccount/?"}
     D -->|있음| E[in-cluster config]
     D -->|없음| F[에러]
 ```
@@ -2276,10 +2276,10 @@ finalizer는 리소스 삭제 전 cleanup을 **보장**합니다. watch 이벤�
 
 ```mermaid
 stateDiagram-v2
-    state "finalizer 없음\n삭제 아님" as S1
-    state "finalizer 있음\n삭제 아님" as S2
-    state "finalizer 있음\n삭제 중" as S3
-    state "finalizer 없음\n삭제 중" as S4
+    state "finalizer 없음<br/>삭제 아님" as S1
+    state "finalizer 있음<br/>삭제 아님" as S2
+    state "finalizer 있음<br/>삭제 중" as S3
+    state "finalizer 없음<br/>삭제 중" as S4
 
     S1 --> S2 : JSON Patch로 finalizer 추가
     S2 --> S2 : Event::Apply - 정상 reconcile
@@ -2707,7 +2707,7 @@ kube에서 에러는 여러 계층에서 발생합니다. 어디서 어떤 에�
 
 ```mermaid
 graph TD
-    A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError\nkube::Error::HttpError"]
+    A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
     B -->|"역직렬화 실패"| E3["kube::Error::SerializationError"]
     C["watcher()"] -->|"초기 LIST 실패"| E4["watcher::Error::InitialListFailed"]

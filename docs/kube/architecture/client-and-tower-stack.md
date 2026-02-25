@@ -64,9 +64,9 @@ graph TD
 
 ```mermaid
 graph LR
-    A["Config::infer()"] --> B{"$KUBECONFIG 또는\n~/.kube/config?"}
+    A["Config::infer()"] --> B{"$KUBECONFIG 또는<br/>~/.kube/config?"}
     B -->|있음| C[kubeconfig 로드]
-    B -->|없음| D{"/var/run/secrets/\nkubernetes.io/\nserviceaccount/?"}
+    B -->|없음| D{"/var/run/secrets/<br/>kubernetes.io/<br/>serviceaccount/?"}
     D -->|있음| E[in-cluster config]
     D -->|없음| F[에러]
 ```
