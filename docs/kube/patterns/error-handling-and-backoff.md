@@ -12,7 +12,7 @@ kube에서 에러는 여러 계층에서 발생합니다. 어디서 어떤 에�
 
 ```mermaid
 graph TD
-    A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError\nkube::Error::HttpError"]
+    A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
     B -->|"역직렬화 실패"| E3["kube::Error::SerializationError"]
     C["watcher()"] -->|"초기 LIST 실패"| E4["watcher::Error::InitialListFailed"]

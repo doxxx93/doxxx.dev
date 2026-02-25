@@ -74,10 +74,10 @@ finalizer는 리소스 삭제 전 cleanup을 **보장**합니다. watch 이벤�
 
 ```mermaid
 stateDiagram-v2
-    state "finalizer 없음\n삭제 아님" as S1
-    state "finalizer 있음\n삭제 아님" as S2
-    state "finalizer 있음\n삭제 중" as S3
-    state "finalizer 없음\n삭제 중" as S4
+    state "finalizer 없음<br/>삭제 아님" as S1
+    state "finalizer 있음<br/>삭제 아님" as S2
+    state "finalizer 있음<br/>삭제 중" as S3
+    state "finalizer 없음<br/>삭제 중" as S4
 
     S1 --> S2 : JSON Patch로 finalizer 추가
     S2 --> S2 : Event::Apply - 정상 reconcile

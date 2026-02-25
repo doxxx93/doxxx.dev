@@ -611,9 +611,9 @@ graph TD
 
 ```mermaid
 graph LR
-    A["Config::infer()"] --> B{"$KUBECONFIG or\n~/.kube/config?"}
+    A["Config::infer()"] --> B{"$KUBECONFIG or<br/>~/.kube/config?"}
     B -->|exists| C[Load kubeconfig]
-    B -->|not found| D{"/var/run/secrets/\nkubernetes.io/\nserviceaccount/?"}
+    B -->|not found| D{"/var/run/secrets/<br/>kubernetes.io/<br/>serviceaccount/?"}
     D -->|exists| E[in-cluster config]
     D -->|not found| F[Error]
 ```
@@ -2276,10 +2276,10 @@ Finalizers **guarantee** cleanup operations before resource deletion. A `Delete`
 
 ```mermaid
 stateDiagram-v2
-    state "No finalizer\nNot deleting" as S1
-    state "Finalizer present\nNot deleting" as S2
-    state "Finalizer present\nDeleting" as S3
-    state "No finalizer\nDeleting" as S4
+    state "No finalizer<br/>Not deleting" as S1
+    state "Finalizer present<br/>Not deleting" as S2
+    state "Finalizer present<br/>Deleting" as S3
+    state "No finalizer<br/>Deleting" as S4
 
     S1 --> S2 : Add finalizer via JSON Patch
     S2 --> S2 : Event::Apply - normal reconcile
@@ -2707,7 +2707,7 @@ Errors in kube occur at multiple layers. This section maps out where different e
 
 ```mermaid
 graph TD
-    A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError\nkube::Error::HttpError"]
+    A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
     B -->|"Deserialization failure"| E3["kube::Error::SerializationError"]
     C["watcher()"] -->|"Initial LIST failure"| E4["watcher::Error::InitialListFailed"]

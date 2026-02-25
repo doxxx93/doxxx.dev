@@ -74,10 +74,10 @@ Finalizers **guarantee** cleanup operations before resource deletion. A `Delete`
 
 ```mermaid
 stateDiagram-v2
-    state "No finalizer\nNot deleting" as S1
-    state "Finalizer present\nNot deleting" as S2
-    state "Finalizer present\nDeleting" as S3
-    state "No finalizer\nDeleting" as S4
+    state "No finalizer<br/>Not deleting" as S1
+    state "Finalizer present<br/>Not deleting" as S2
+    state "Finalizer present<br/>Deleting" as S3
+    state "No finalizer<br/>Deleting" as S4
 
     S1 --> S2 : Add finalizer via JSON Patch
     S2 --> S2 : Event::Apply - normal reconcile

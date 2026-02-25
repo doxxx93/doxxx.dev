@@ -12,7 +12,7 @@ Errors in kube occur at multiple layers. This section maps out where different e
 
 ```mermaid
 graph TD
-    A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError\nkube::Error::HttpError"]
+    A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
     B -->|"Deserialization failure"| E3["kube::Error::SerializationError"]
     C["watcher()"] -->|"Initial LIST failure"| E4["watcher::Error::InitialListFailed"]

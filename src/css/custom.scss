@@ -502,6 +502,12 @@ article .markdown > p:first-child > img {
   .menu__list-item { margin-top: 2px; }
 }
 
+// Last updated date — prevent awkward line-wrapping
+.theme-last-updated b,
+.theme-last-updated time {
+  white-space: nowrap;
+}
+
 // Docs page title — match blog post title
 .theme-doc-markdown > header > h1 {
   @include page-title;
