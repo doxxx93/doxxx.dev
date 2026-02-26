@@ -80,31 +80,24 @@ graph LR
 | 설정 | 기본값 | 용도 |
 |------|--------|------|
 | `connect_timeout` | 30초 | TCP 연결 수립 |
-| `read_timeout` | 295초 | 응답 대기 |
-| `write_timeout` | 295초 | 요청 전송 |
+| `read_timeout` | `None` | 응답 대기 (무제한) |
+| `write_timeout` | `None` | 요청 전송 (무제한) |
 
-:::warning[295초 타임아웃 함정]
-`read_timeout`이 295초인 이유는 watch long-polling을 지원하기 위해서입니다. 하지만 이 타임아웃은 일반 GET/PUT/PATCH 요청에도 동일하게 적용됩니다.
+:::info[타임아웃 설계 — 계층별 분리]
+이전에는 `read_timeout`이 295초로 설정되어 watch long-polling과 일반 API 호출에 동일하게 적용되었습니다. 이로 인해 exec, attach, port-forward 같은 장기 연결이 유휴 295초 후 끊기는 문제가 있었습니다 ([kube#1798](https://github.com/kube-rs/kube/issues/1798)).
 
-네트워크 장애 시 단순한 `pods.get("name")`도 5분 가까이 블로킹될 수 있습니다.
+현재는 Go client와 동일하게 global `read_timeout`을 `None`으로 설정하고, 각 계층이 자체 타임아웃을 관리합니다:
 
-**대응 방법:**
+- **watcher**: 서버 측 `timeoutSeconds` + 마진으로 idle timeout을 자체 관리. 네트워크 장애 시 자동 재연결
+- **exec/attach/port-forward**: 타임아웃 없음 (무기한 유휴 가능)
+- **reconciler 내 API 호출**: 필요 시 `tokio::time::timeout`으로 개별 감싸기
 
 ```rust
-// 방법 1: 개별 호출에 tokio timeout 적용
+// reconciler 내부에서 느린 호출 방어
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     pods.get("my-pod")
 ).await??;
-
-// 방법 2: 용도별 Client 분리
-let short_cfg = Config::infer().await?;
-let short_cfg = Config {
-    read_timeout: Some(Duration::from_secs(30)),
-    ..short_cfg
-};
-let api_client = Client::try_from(short_cfg)?;
-// watcher용은 기본 295초 Client 사용
 ```
 :::
 
@@ -138,24 +131,16 @@ let client = ClientBuilder::try_from(config)?
     .build();
 ```
 
-### 용도별 Client 분리 패턴
+### Client 커스텀 타임아웃
 
-watcher용(긴 timeout)과 API 호출용(짧은 timeout)을 분리하는 것이 실전에서 흔한 패턴입니다.
+global `read_timeout`이 `None`이므로 용도별 Client 분리는 더 이상 필수가 아닙니다. 필요한 경우 개별 호출에 `tokio::time::timeout`을 적용하거나, 특정 용도로 짧은 타임아웃 Client를 만들 수 있습니다.
 
 ```rust
-// watcher용 Client — 기본 295초 타임아웃
-let watcher_client = Client::try_default().await?;
+// 기본 Client — 타임아웃 없음 (watcher, exec 등 모두 사용 가능)
+let client = Client::try_default().await?;
 
-// API 호출용 Client — 짧은 타임아웃
-let mut api_config = Config::infer().await?;
-api_config.read_timeout = Some(Duration::from_secs(30));
-api_config.write_timeout = Some(Duration::from_secs(30));
-let api_client = Client::try_from(api_config)?;
-
-// reconciler에서는 api_client 사용
-struct Context {
-    api_client: Client,
-}
+// 특정 용도로 짧은 타임아웃이 필요한 경우
+let mut config = Config::infer().await?;
+config.read_timeout = Some(Duration::from_secs(30));
+let short_timeout_client = Client::try_from(config)?;
 ```
-
-이렇게 분리하면 watcher는 long-polling을 유지하면서도, reconciler 내부의 API 호출은 빠르게 타임아웃됩니다.
