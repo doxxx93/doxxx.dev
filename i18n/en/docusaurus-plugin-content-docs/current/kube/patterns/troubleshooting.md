@@ -24,11 +24,11 @@ Details: [Reconciler Patterns — Infinite Loop](./reconciler.md#infinite-loop-p
 
 ### Continuous Memory Growth
 
-**Symptom**: Pod memory keeps growing over time, eventually OOMKilled.
+**Symptom**: Higher than expected Pod memory.
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| Re-list spikes | Check for periodic spikes in memory graph | Use `streaming_lists()`, reduce `page_size` |
+| Re-list spikes | Check for periodic spikes in memory graph | Use `streaming_lists()`, or reduce `page_size` |
 | Large objects in Store cache | Check Store size with jemalloc profiling | Remove managedFields etc. with `.modify()`, use `metadata_watcher()` |
 | Watch scope too broad | Check cached object count with Store's `state().len()` | Narrow scope with label/field selectors |
 
@@ -42,6 +42,7 @@ Details: [Optimization — Reflector optimization](../production/optimization.md
 |-------|--------------|----------|
 | 410 Gone + bookmarks not configured | Check logs for `WatchError` 410 | watcher auto-re-lists with `default_backoff()` |
 | Credential expiration | Check logs for 401/403 errors | Verify `Config::infer()` auto-refreshes, check exec plugin configuration |
+| RBAC / NetworkPolicies | Log shows 403 Forbidden | Add watch/list permissions to ClusterRole; check NetworkPolicy allows egress to API server |
 | Backoff not configured | Stream terminates on first error | Always use `.default_backoff()` |
 
 Details: [Watcher State Machine](../runtime-internals/watcher.md), [Error Handling and Backoff — Watcher errors](./error-handling-and-backoff.md#watcher-errors-and-backoff)
@@ -54,7 +55,7 @@ Details: [Watcher State Machine](../runtime-internals/watcher.md), [Error Handli
 |-------|--------------|----------|
 | Too many concurrent reconciles | Check active reconcile count in metrics | Set `Config::concurrency(N)` |
 | Too many watch connections | Check number of `owns()`, `watches()` calls | Share watches with a shared reflector |
-| Too many API calls in reconciler | Check HTTP request count in tracing spans | Leverage Store cache, parallelize with `try_join!` |
+| Too many API calls in reconciler | Check HTTP request count in tracing spans | Leverage Store cache; batch where possible |
 
 Details: [Optimization — Reconciler optimization](../production/optimization.md#reconciler-optimization), [Optimization — API server load](../production/optimization.md#api-server-load)
 
@@ -64,7 +65,7 @@ Details: [Optimization — Reconciler optimization](../production/optimization.m
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| cleanup function failing | Check cleanup errors in logs | Design cleanup to eventually succeed (treat missing external resources as success) |
+| cleanup function failing | Check cleanup errors in logs; monitor via `error_policy` metrics | Design cleanup to eventually succeed (treat missing external resources as success) |
 | predicate_filter blocking finalizer events | Check if only `predicates::generation` is used | Use `predicates::generation.combine(predicates::finalizers)` |
 | Controller is down | Check Pod status | Automatically handled after controller recovery |
 
@@ -78,9 +79,10 @@ Details: [Relations and Finalizers — Caveats](./relations-and-finalizers.md#ca
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| Store not yet initialized | Readiness probe failing | Verify behavior after `wait_until_ready()` |
+| Store not yet initialized (advanced; only with streams interface) | Readiness probe failing | Verify behavior after `wait_until_ready()` |
 | predicate_filter blocking all events | Check predicate logic | Adjust predicate combination or temporarily remove for testing |
 | Insufficient RBAC permissions | Check logs for 403 Forbidden | Add watch/list permissions to ClusterRole |
+| NetworkPolicies blocking API server access | Connection timeouts in logs | Check NetworkPolicy allows egress to API server |
 | watcher Config selector too narrow | Verify matches with `kubectl get -l <selector>` | Adjust selector |
 
 ## Debugging Tools
@@ -134,7 +136,7 @@ kubectl get myresource <name> -o jsonpath='{.metadata.finalizers}'
 
 ```toml
 [dependencies]
-tikv-jemallocator = { version = "0.6", features = ["profiling"] }
+tikv-jemallocator = { version = "*", features = ["profiling"] }
 ```
 
 ```rust
@@ -158,7 +160,7 @@ Check whether slow reconciler performance is caused by async task scheduling.
 
 ```toml
 [dependencies]
-console-subscriber = "0.4"
+console-subscriber = "*"
 ```
 
 ```rust
@@ -172,3 +174,5 @@ tokio-console http://localhost:6669
 ```
 
 You can monitor per-task poll time, waker count, and wait time in real time. If a reconciler task is blocked for a long time, the cause may be synchronous operations or slow API calls inside it.
+
+For lightweight runtime metrics without the TUI, consider [tokio-metrics](https://github.com/tokio-rs/tokio-metrics) which can export to Prometheus.
