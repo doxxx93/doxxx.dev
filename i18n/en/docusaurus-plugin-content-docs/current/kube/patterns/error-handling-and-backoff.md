@@ -40,7 +40,7 @@ graph TD
 
 :::warning[You must attach a backoff]
 ```rust
-// ✗ Stream terminates on first error → Controller stops
+// ✗ Without backoff, errors cause a tight retry loop
 let stream = watcher(api, wc);
 
 // ✓ Automatic retry with exponential backoff
@@ -90,19 +90,20 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 
 ## Client-Level Retries
 
-kube-client does not have built-in retries for regular API calls. When `create()`, `patch()`, `get()`, etc. fail, they return the error as-is.
+By default, kube-client does not retry regular API calls. When `create()`, `patch()`, `get()`, etc. fail, they return the error as-is.
 
-To implement retries yourself, use Tower's retry middleware:
+Since version 3, kube provides a built-in [`RetryPolicy`](https://docs.rs/kube/latest/kube/client/retry/struct.RetryPolicy.html) that implements Tower's retry middleware. It retries on 429, 503, and 504 with exponential backoff:
 
 ```rust
-use tower::retry::Policy;
+use kube::client::retry::RetryPolicy;
+use tower::{ServiceBuilder, retry::RetryLayer, buffer::BufferLayer};
 
-struct RetryPolicy;
-
-impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
-    // Only retry on 5xx, timeouts, and network errors
-    // Don't retry on 4xx (the request itself is wrong)
-}
+let service = ServiceBuilder::new()
+    .layer(config.base_uri_layer())
+    .option_layer(config.auth_layer()?)
+    .layer(BufferLayer::new(1024))
+    .layer(RetryLayer::new(RetryPolicy::default()))
+    // ...
 ```
 
 ### Retryability
@@ -118,21 +119,7 @@ impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
 
 ## Timeout Strategy
 
-As covered in [Client internals](../architecture/client-and-tower-stack.md), the default `read_timeout` is set to 295 seconds for watches, which can cause regular API calls to block for up to 5 minutes.
-
-### Mitigation 1: Separate Clients
-
-```rust
-// Client for watchers (default 295s)
-let watcher_client = Client::try_default().await?;
-
-// Client for API calls (short timeout)
-let mut config = Config::infer().await?;
-config.read_timeout = Some(Duration::from_secs(15));
-let api_client = Client::try_from(config)?;
-```
-
-### Mitigation 2: Wrap Individual Calls
+If you need to guard against slow API calls in your reconciler, you can wrap individual calls with `tokio::time::timeout`:
 
 ```rust
 let pod = tokio::time::timeout(
@@ -141,6 +128,4 @@ let pod = tokio::time::timeout(
 ).await??;
 ```
 
-### Mitigation 3: Not a Big Issue in Controllers
-
-The watchers managed by the Controller need long timeouts. You only need to wrap the API calls inside the reconciler with a timeout.
+In a Controller context, stream timeouts rely internally on watcher idle timeouts and stream backoff parameters. Only individual API calls inside your reconciler typically need shorter timeouts.

@@ -142,6 +142,10 @@ api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 
 k8s-openapi 타입은 `#[serde(skip_serializing_if = "Option::is_none")]`이 이미 적용되어 있어 `None` 필드는 serialization되지 않습니다. 커스텀 타입에서는 직접 설정해야 합니다.
 
+:::note[현재 한계: Rust에는 ApplyConfigurations가 없습니다]
+Go의 client-go에는 SSA 전용으로 설계된 완전 optional builder 타입인 [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations)가 있습니다. Rust에는 아직 동등한 것이 없습니다 ([kube#649](https://github.com/kube-rs/kube/issues/649)). 일부 k8s-openapi 필드는 완전히 optional이 아니기 때문에 (예: `maxReplicas` 같은 정수 필드) typed partial SSA가 어색할 수 있습니다. `serde_json::json!()`으로 partial patch를 작성하면 이 문제를 피할 수 있습니다.
+:::
+
 ```rust
 #[derive(Serialize)]
 struct MyStatus {

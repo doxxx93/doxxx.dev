@@ -24,11 +24,11 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 
 ### 메모리 지속 증가
 
-**증상**: Pod 메모리가 시간이 지남에 따라 계속 증가하고, OOMKilled 발생합니다.
+**증상**: 예상보다 높은 Pod 메모리 사용량.
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| re-list 스파이크 | 메모리 그래프에서 주기적 급등 패턴 확인 | `streaming_lists()` 사용, `page_size` 축소 |
+| re-list 스파이크 | 메모리 그래프에서 주기적 급등 패턴 확인 | `streaming_lists()` 사용, 또는 `page_size` 축소 |
 | Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, `metadata_watcher()` |
 | watch 범위가 너무 넓음 | Store의 `state().len()`으로 캐시 객체 수 확인 | label/field selector로 범위 축소 |
 
@@ -42,6 +42,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 |------|----------|--------|
 | 410 Gone + bookmark 미설정 | 로그에서 `WatchError` 410 확인 | watcher가 `default_backoff()`로 자동 re-list |
 | credential 만료 | 로그에서 401/403 에러 확인 | `Config::infer()`로 자동 갱신되는지 확인, exec plugin 설정 점검 |
+| RBAC / NetworkPolicies | 로그에서 403 Forbidden 확인 | ClusterRole에 watch/list 권한 추가, NetworkPolicy가 API 서버 egress를 허용하는지 확인 |
 | backoff 미설정 | 첫 에러에 스트림 종료 | `.default_backoff()` 반드시 사용 |
 
 자세한 내용: [Watcher state machine](../runtime-internals/watcher.md), [에러 처리와 Backoff — Watcher 에러](./error-handling-and-backoff.md#watcher-에러와-backoff)
@@ -54,7 +55,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 |------|----------|--------|
 | 동시 reconcile 과다 | 메트릭에서 active reconcile 수 확인 | `Config::concurrency(N)` 설정 |
 | watch 연결 과다 | `owns()`, `watches()` 수 확인 | shared reflector로 watch 공유 |
-| reconciler 내 API 호출 과다 | tracing span에서 HTTP 요청 수 확인 | Store 캐시 활용, `try_join!`으로 병렬화 |
+| reconciler 내 API 호출 과다 | tracing span에서 HTTP 요청 수 확인 | Store 캐시 활용, 가능하면 배치 처리 |
 
 자세한 내용: [최적화 — Reconciler 최적화](../production/optimization.md#reconciler-최적화), [최적화 — API 서버 부하](../production/optimization.md#api-서버-부하)
 
@@ -64,7 +65,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| cleanup 함수 실패 | 로그에서 cleanup 에러 확인 | cleanup이 최종적으로 성공하도록 설계 (외부 리소스 없으면 성공 처리) |
+| cleanup 함수 실패 | 로그에서 cleanup 에러 확인, `error_policy` 메트릭으로 모니터링 | cleanup이 최종적으로 성공하도록 설계 (외부 리소스 없으면 성공 처리) |
 | predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)` |
 | 컨트롤러가 다운 | Pod 상태 확인 | 컨트롤러 복구 후 자동 처리됨 |
 
@@ -78,9 +79,10 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| Store가 아직 초기화되지 않음 | readiness probe 실패 | `wait_until_ready()` 이후에 동작 확인 |
+| Store가 아직 초기화되지 않음 (advanced; streams 인터페이스 사용 시) | readiness probe 실패 | `wait_until_ready()` 이후에 동작 확인 |
 | predicate_filter가 모든 이벤트 차단 | predicate 로직 확인 | predicate 조합 수정 또는 일시 제거 후 테스트 |
 | RBAC 권한 부족 | 로그에서 403 Forbidden 확인 | ClusterRole에 watch/list 권한 추가 |
+| NetworkPolicies가 API 서버 접근 차단 | 로그에서 연결 타임아웃 확인 | NetworkPolicy가 API 서버 egress를 허용하는지 확인 |
 | watcher Config의 selector가 너무 좁음 | `kubectl get -l <selector>`로 매칭 확인 | selector 수정 |
 
 ## 디버깅 도구
@@ -134,7 +136,7 @@ kubectl get myresource <name> -o jsonpath='{.metadata.finalizers}'
 
 ```toml
 [dependencies]
-tikv-jemallocator = { version = "0.6", features = ["profiling"] }
+tikv-jemallocator = { version = "*", features = ["profiling"] }
 ```
 
 ```rust
@@ -158,7 +160,7 @@ reconciler가 느린 원인이 async 태스크 스케줄링에 있는지 확인�
 
 ```toml
 [dependencies]
-console-subscriber = "0.4"
+console-subscriber = "*"
 ```
 
 ```rust
@@ -172,3 +174,5 @@ tokio-console http://localhost:6669
 ```
 
 태스크별 poll 시간, waker 횟수, 대기 시간을 실시간으로 확인할 수 있습니다. reconciler 태스크가 오래 blocked되어 있다면 내부의 동기 연산이나 느린 API 호출이 원인일 수 있습니다.
+
+TUI 없이 경량 런타임 메트릭만 필요하다면 [tokio-metrics](https://github.com/tokio-rs/tokio-metrics)를 사용하면 Prometheus로 export할 수 있습니다.

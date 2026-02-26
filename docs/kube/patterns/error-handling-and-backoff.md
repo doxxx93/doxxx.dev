@@ -40,7 +40,7 @@ graph TD
 
 :::warning[반드시 backoff을 붙여야 합니다]
 ```rust
-// ✗ 첫 에러에 스트림 종료 → Controller 멈춤
+// ✗ backoff 없으면 에러 시 타이트 재시도 루프
 let stream = watcher(api, wc);
 
 // ✓ 지수 백오프로 자동 재시도
@@ -90,19 +90,20 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 
 ## Client 레벨 재시도
 
-kube-client에는 일반 API 호출에 대한 내장 재시도가 없습니다. `create()`, `patch()`, `get()` 등이 실패하면 그대로 에러를 반환합니다.
+기본적으로 kube-client는 일반 API 호출을 재시도하지 않습니다. `create()`, `patch()`, `get()` 등이 실패하면 그대로 에러를 반환합니다.
 
-직접 구현하려면 Tower의 retry 미들웨어를 사용합니다:
+버전 3부터 kube는 내장 [`RetryPolicy`](https://docs.rs/kube/latest/kube/client/retry/struct.RetryPolicy.html)를 제공합니다. Tower의 retry 미들웨어를 구현하며, 429, 503, 504에 대해 지수 백오프로 재시도합니다:
 
 ```rust
-use tower::retry::Policy;
+use kube::client::retry::RetryPolicy;
+use tower::{ServiceBuilder, retry::RetryLayer, buffer::BufferLayer};
 
-struct RetryPolicy;
-
-impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
-    // 5xx, 타임아웃, 네트워크 에러만 재시도
-    // 4xx는 재시도하지 않음 (요청 자체가 잘못됨)
-}
+let service = ServiceBuilder::new()
+    .layer(config.base_uri_layer())
+    .option_layer(config.auth_layer()?)
+    .layer(BufferLayer::new(1024))
+    .layer(RetryLayer::new(RetryPolicy::default()))
+    // ...
 ```
 
 ### 재시도 가능 여부
@@ -118,21 +119,7 @@ impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
 
 ## 타임아웃 전략
 
-[Client 내부 구조](../architecture/client-and-tower-stack.md)에서 다룬 것처럼, 기본 `read_timeout`이 watch용으로 295초 설정되어 있어 일반 API 호출도 5분 블로킹될 수 있습니다.
-
-### 대응 1: Client 분리
-
-```rust
-// watcher용 Client (기본 295초)
-let watcher_client = Client::try_default().await?;
-
-// API 호출용 Client (짧은 타임아웃)
-let mut config = Config::infer().await?;
-config.read_timeout = Some(Duration::from_secs(15));
-let api_client = Client::try_from(config)?;
-```
-
-### 대응 2: 개별 호출 감싸기
+reconciler 내부에서 느린 API 호출을 방어하려면 `tokio::time::timeout`으로 개별 호출을 감쌉니다:
 
 ```rust
 let pod = tokio::time::timeout(
@@ -141,6 +128,4 @@ let pod = tokio::time::timeout(
 ).await??;
 ```
 
-### 대응 3: Controller에서는 큰 문제가 아닙니다
-
-Controller가 관리하는 watcher는 긴 timeout이 필요합니다. reconciler 내부의 API 호출만 timeout으로 감싸면 됩니다.
+Controller 컨텍스트에서 스트림 타임아웃은 watcher 내부의 idle timeout과 스트림 backoff 파라미터에 의존합니다. 보통 reconciler 내부의 개별 API 호출만 짧은 타임아웃이 필요합니다.
