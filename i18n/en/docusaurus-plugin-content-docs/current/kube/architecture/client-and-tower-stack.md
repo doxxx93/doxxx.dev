@@ -80,31 +80,24 @@ graph LR
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `connect_timeout` | 30s | TCP connection establishment |
-| `read_timeout` | 295s | Waiting for a response |
-| `write_timeout` | 295s | Sending a request |
+| `read_timeout` | `None` | Waiting for a response (unlimited) |
+| `write_timeout` | `None` | Sending a request (unlimited) |
 
-:::warning[The 295-second timeout trap]
-The `read_timeout` is set to 295 seconds to support watch long-polling. However, this same timeout applies to regular GET/PUT/PATCH requests as well.
+:::info[Timeout design — per-layer separation]
+Previously, `read_timeout` was set to 295 seconds, applying uniformly to both watch long-polling and regular API calls. This caused long-lived connections like exec, attach, and port-forward to break after 295 seconds of idle time ([kube#1798](https://github.com/kube-rs/kube/issues/1798)).
 
-During a network outage, even a simple `pods.get("name")` can block for nearly 5 minutes.
+Now, matching the Go client behavior, the global `read_timeout` defaults to `None`, and each layer manages its own timeouts:
 
-**Mitigation strategies:**
+- **watcher**: Self-manages idle timeout based on server-side `timeoutSeconds` + margin. Auto-reconnects on network failure.
+- **exec/attach/port-forward**: No timeout (can idle indefinitely)
+- **API calls in reconciler**: Wrap with `tokio::time::timeout` as needed
 
 ```rust
-// Option 1: Apply a tokio timeout to individual calls
+// Guard against slow calls inside reconciler
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     pods.get("my-pod")
 ).await??;
-
-// Option 2: Separate Clients by purpose
-let short_cfg = Config::infer().await?;
-let short_cfg = Config {
-    read_timeout: Some(Duration::from_secs(30)),
-    ..short_cfg
-};
-let api_client = Client::try_from(short_cfg)?;
-// Use the default 295s Client for the watcher
 ```
 :::
 
@@ -138,24 +131,16 @@ let client = ClientBuilder::try_from(config)?
     .build();
 ```
 
-### Pattern: Separating Clients by Purpose
+### Custom Client Timeouts
 
-Separating a watcher Client (long timeout) from an API call Client (short timeout) is a common production pattern.
+Since the global `read_timeout` defaults to `None`, separating clients by purpose is no longer necessary. You can wrap individual calls with `tokio::time::timeout` as needed, or create a short-timeout client for specific use cases.
 
 ```rust
-// Client for watchers — default 295s timeout
-let watcher_client = Client::try_default().await?;
+// Default Client — no timeout (works for watcher, exec, etc.)
+let client = Client::try_default().await?;
 
-// Client for API calls — short timeout
-let mut api_config = Config::infer().await?;
-api_config.read_timeout = Some(Duration::from_secs(30));
-api_config.write_timeout = Some(Duration::from_secs(30));
-let api_client = Client::try_from(api_config)?;
-
-// Use api_client in the reconciler
-struct Context {
-    api_client: Client,
-}
+// If you need a short timeout for a specific use case
+let mut config = Config::infer().await?;
+config.read_timeout = Some(Duration::from_secs(30));
+let short_timeout_client = Client::try_from(config)?;
 ```
-
-This way, the watcher maintains its long-polling connection while API calls within the reconciler time out quickly.
