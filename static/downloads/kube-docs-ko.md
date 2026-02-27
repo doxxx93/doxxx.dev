@@ -627,31 +627,24 @@ graph LR
 | 설정 | 기본값 | 용도 |
 |------|--------|------|
 | `connect_timeout` | 30초 | TCP 연결 수립 |
-| `read_timeout` | 295초 | 응답 대기 |
-| `write_timeout` | 295초 | 요청 전송 |
+| `read_timeout` | `None` | 응답 대기 (무제한) |
+| `write_timeout` | `None` | 요청 전송 (무제한) |
 
-:::warning[295초 타임아웃 함정]
-`read_timeout`이 295초인 이유는 watch long-polling을 지원하기 위해서입니다. 하지만 이 타임아웃은 일반 GET/PUT/PATCH 요청에도 동일하게 적용됩니다.
+:::info[타임아웃 설계 — 계층별 분리]
+이전에는 `read_timeout`이 295초로 설정되어 watch long-polling과 일반 API 호출에 동일하게 적용되었습니다. 이로 인해 exec, attach, port-forward 같은 장기 연결이 유휴 295초 후 끊기는 문제가 있었습니다 ([kube#1798](https://github.com/kube-rs/kube/issues/1798)).
 
-네트워크 장애 시 단순한 `pods.get("name")`도 5분 가까이 블로킹될 수 있습니다.
+현재는 Go client와 동일하게 global `read_timeout`을 `None`으로 설정하고, 각 계층이 자체 타임아웃을 관리합니다:
 
-**대응 방법:**
+- **watcher**: 서버 측 `timeoutSeconds` + 마진으로 idle timeout을 자체 관리. 네트워크 장애 시 자동 재연결
+- **exec/attach/port-forward**: 타임아웃 없음 (무기한 유휴 가능)
+- **reconciler 내 API 호출**: 필요 시 `tokio::time::timeout`으로 개별 감싸기
 
 ```rust
-// 방법 1: 개별 호출에 tokio timeout 적용
+// reconciler 내부에서 느린 호출 방어
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     pods.get("my-pod")
 ).await??;
-
-// 방법 2: 용도별 Client 분리
-let short_cfg = Config::infer().await?;
-let short_cfg = Config {
-    read_timeout: Some(Duration::from_secs(30)),
-    ..short_cfg
-};
-let api_client = Client::try_from(short_cfg)?;
-// watcher용은 기본 295초 Client 사용
 ```
 :::
 
@@ -685,27 +678,19 @@ let client = ClientBuilder::try_from(config)?
     .build();
 ```
 
-### 용도별 Client 분리 패턴
+### Client 커스텀 타임아웃
 
-watcher용(긴 timeout)과 API 호출용(짧은 timeout)을 분리하는 것이 실전에서 흔한 패턴입니다.
+global `read_timeout`이 `None`이므로 용도별 Client 분리는 더 이상 필수가 아닙니다. 필요한 경우 개별 호출에 `tokio::time::timeout`을 적용하거나, 특정 용도로 짧은 타임아웃 Client를 만들 수 있습니다.
 
 ```rust
-// watcher용 Client — 기본 295초 타임아웃
-let watcher_client = Client::try_default().await?;
+// 기본 Client — 타임아웃 없음 (watcher, exec 등 모두 사용 가능)
+let client = Client::try_default().await?;
 
-// API 호출용 Client — 짧은 타임아웃
-let mut api_config = Config::infer().await?;
-api_config.read_timeout = Some(Duration::from_secs(30));
-api_config.write_timeout = Some(Duration::from_secs(30));
-let api_client = Client::try_from(api_config)?;
-
-// reconciler에서는 api_client 사용
-struct Context {
-    api_client: Client,
-}
+// 특정 용도로 짧은 타임아웃이 필요한 경우
+let mut config = Config::infer().await?;
+config.read_timeout = Some(Duration::from_secs(30));
+let short_timeout_client = Client::try_from(config)?;
 ```
-
-이렇게 분리하면 watcher는 long-polling을 유지하면서도, reconciler 내부의 API 호출은 빠르게 타임아웃됩니다.
 
 
 ---
@@ -2437,12 +2422,14 @@ Merge patch와 달리 SSA는 `apiVersion`과 `kind`가 필수입니다.
 ### field manager 미지정
 
 ```rust
-// ✗ 기본 field manager 사용 → 의도치 않은 소유권 충돌
+// ✗ field_manager가 None → API 서버가 요청을 거부합니다
 let pp = PatchParams::default();
 
 // ✓ 명시적 field manager
 let pp = PatchParams::apply("my-controller");
 ```
+
+SSA에서 field manager는 **필수**입니다. `field_manager`가 `None`(기본값)이면 API 서버가 에러를 반환합니다. SSA 작업에는 항상 `PatchParams::apply("my-controller")`를 사용합니다.
 
 ### force 남용
 
@@ -2511,7 +2498,11 @@ let pp = PatchParams::apply("my-controller");
 api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 ```
 
-k8s-openapi 타입은 `#[serde(skip_serializing_if = "Option::is_none")]`이 이미 적용되어 있어 `None` 필드는 serialization되지 않습니다. 커스텀 타입에서는 직접 설정해야 합니다.
+k8s-openapi 타입은 커스텀 직렬화를 사용하여 `None` 필드를 생략합니다 (Option 필드는 값이 있을 때만 직렬화됩니다). 커스텀 타입에서는 `skip_serializing_if`를 직접 설정해야 합니다.
+
+:::note[현재 한계: Rust에는 ApplyConfigurations가 없습니다]
+Go의 client-go에는 SSA 전용으로 설계된 [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations)가 있습니다 — 모든 필드가 `Option`인 완전 optional builder 타입으로, 소유할 필드만 포함합니다. Rust에는 아직 동등한 것이 없습니다 ([kube#649](https://github.com/kube-rs/kube/issues/649)). k8s-openapi는 upstream Go struct를 그대로 반영하므로 일부 필드가 `Option`이 아닙니다 (예: `HorizontalPodAutoscalerSpec`의 `max_replicas: i32`). default struct를 직렬화하면 해당 필드도 포함되어 SSA가 소유권을 가져갑니다. `serde_json::json!()`으로 partial patch를 작성하는 것이 권장되는 우회 방법입니다.
+:::
 
 ```rust
 #[derive(Serialize)]
@@ -2709,9 +2700,10 @@ kube에서 에러는 여러 계층에서 발생합니다. 어디서 어떤 에�
 graph TD
     A["Client::send()"] -->|"네트워크/TLS/타임아웃"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
-    B -->|"역직렬화 실패"| E3["kube::Error::SerializationError"]
+    B -->|"역직렬화 실패"| E3["kube::Error::SerdeError"]
     C["watcher()"] -->|"초기 LIST 실패"| E4["watcher::Error::InitialListFailed"]
-    C -->|"WATCH 연결 실패"| E5["watcher::Error::WatchFailed"]
+    C -->|"WATCH 시작 실패"| E5["watcher::Error::WatchStartFailed"]
+    C -->|"WATCH 스트림 실패"| E5b["watcher::Error::WatchFailed"]
     C -->|"WATCH 중 서버 에러"| E6["watcher::Error::WatchError"]
     D["Controller::run()"] -->|"trigger 스트림"| C
     D -->|"사용자 코드"| E7["reconciler Error"]
@@ -2724,28 +2716,31 @@ graph TD
 | 계층 | 에러 타입 | 원인 |
 |------|----------|------|
 | Client | `HyperError`, `HttpError` | 네트워크, TLS, 타임아웃 |
-| Api | `Error::Api { status }` | Kubernetes 4xx/5xx 응답 |
-| Api | `SerializationError` | JSON deserialization 실패 |
+| Api | `Api(Status)` | Kubernetes 4xx/5xx 응답 |
+| Api | `SerdeError` | JSON deserialization 실패 |
 | watcher | `InitialListFailed` | 초기 LIST 실패 |
-| watcher | `WatchFailed` | WATCH 연결 실패 |
+| watcher | `WatchStartFailed` | WATCH 연결 실패 |
+| watcher | `WatchFailed` | WATCH 스트림 중간 실패 |
 | watcher | `WatchError` | WATCH 중 서버 에러 (410 Gone 등) |
 | Controller | reconciler Error | 사용자 코드에서 발생 |
 
 ## Watcher 에러와 backoff
 
-:::warning[반드시 backoff을 붙여야 합니다]
+Watcher 에러는 **soft error**입니다 — watcher는 모든 실패(403, 네트워크 문제 포함)에 대해 재시도합니다. 외부 환경이 개선되면 복구될 수 있기 때문입니다. 이런 에러를 **조용히(silently)** 무시해서는 안 됩니다.
+
+핵심 요구사항은 watcher 스트림에 backoff를 붙이는 것입니다:
+
 ```rust
-// ✗ 첫 에러에 스트림 종료 → Controller 멈춤
+// ✗ backoff 없으면 에러 시 타이트 재시도 루프
 let stream = watcher(api, wc);
 
 // ✓ 지수 백오프로 자동 재시도
 let stream = watcher(api, wc).default_backoff();
 ```
-:::
 
 ### default_backoff
 
-`ExponentialBackoff`를 적용합니다: 800ms → 1.6초 → 3.2초 → ... → 30초(최대). 성공적인 이벤트를 수신하면 backoff가 리셋됩니다. 120초 동안 에러가 없으면 타이머도 리셋됩니다.
+`ExponentialBackoff`를 적용합니다: base 800ms, factor 2, max 30초, jitter 활성화. 성공적인 이벤트를 수신하면 backoff가 리셋됩니다.
 
 ### 커스텀 backoff
 
@@ -2761,6 +2756,28 @@ let stream = watcher(api, wc).backoff(
 
 ## Reconciler 에러와 error_policy
 
+### 에러 타입 정의
+
+`Controller::run`은 에러 타입에 `std::error::Error + Send + 'static`을 요구합니다. 최신 `anyhow` (1.0.65+)는 이 bound를 만족하지만, `finalizer::Error` 래퍼와의 호환성 문제가 있고 `error_policy`에서 에러 타입을 구분할 수 없게 됩니다. `thiserror`로 구체적인 에러 타입을 정의합니다:
+
+```rust
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("Kubernetes API error: {0}")]
+    KubeApi(#[from] kube::Error),
+
+    #[error("Missing spec field: {0}")]
+    MissingField(String),
+
+    #[error("External service error: {0}")]
+    External(String),
+}
+```
+
+### error_policy
+
+reconciler가 `Err`를 반환하면 `error_policy`가 호출되어 다음 동작을 결정합니다:
+
 ```rust
 fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action {
     tracing::error!(?err, "reconcile failed");
@@ -2774,9 +2791,12 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 }
 ```
 
-`Controller::run(reconcile, error_policy, ctx)`:
-- reconciler가 `Err`를 반환하면 `error_policy`가 호출됩니다
-- `error_policy`가 반환한 `Action`에 따라 scheduler에 예약합니다
+일시적 에러와 영구적 에러를 구분할 수 있습니다:
+
+| 유형 | 예시 | 처리 |
+|------|------|------|
+| 일시적 | 네트워크 에러, 타임아웃, 429 | `error_policy`에서 requeue |
+| 영구적 | 잘못된 spec, 설정 오류 | status에 condition 기록 + `Action::await_change()` |
 
 ### 현재 한계
 
@@ -2785,60 +2805,50 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 
 ## Client 레벨 재시도
 
-kube-client에는 일반 API 호출에 대한 내장 재시도가 없습니다. `create()`, `patch()`, `get()` 등이 실패하면 그대로 에러를 반환합니다.
+기본적으로 kube-client는 일반 API 호출을 재시도하지 않습니다. `create()`, `patch()`, `get()` 등이 실패하면 그대로 에러를 반환합니다.
 
-직접 구현하려면 Tower의 retry 미들웨어를 사용합니다:
+버전 3부터 kube는 내장 [`RetryPolicy`](https://docs.rs/kube/latest/kube/client/retry/struct.RetryPolicy.html)를 제공합니다. Tower의 retry 미들웨어를 구현하며, 429, 503, 504에 대해 지수 백오프로 재시도합니다:
 
 ```rust
-use tower::retry::Policy;
+use kube::client::retry::RetryPolicy;
+use tower::{ServiceBuilder, retry::RetryLayer, buffer::BufferLayer};
 
-struct RetryPolicy;
-
-impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
-    // 5xx, 타임아웃, 네트워크 에러만 재시도
-    // 4xx는 재시도하지 않음 (요청 자체가 잘못됨)
-}
+let service = ServiceBuilder::new()
+    .layer(config.base_uri_layer())
+    .option_layer(config.auth_layer()?)
+    .layer(BufferLayer::new(1024))
+    .layer(RetryLayer::new(RetryPolicy::default()))
+    // ...
 ```
 
-### 재시도 가능 여부
+`RetryPolicy`는 **429**, **503**, **504** 응답에 대해서만 재시도합니다. 네트워크 에러나 다른 5xx 코드는 재시도하지 않습니다.
 
-| 에러 | 재시도 | 이유 |
-|------|--------|------|
-| 5xx | 가능 | 서버 일시 장애 |
-| 타임아웃 | 가능 | 일시적 네트워크 문제 |
-| 429 Too Many Requests | 가능 | rate limit → 대기 후 재시도 |
-| 네트워크 에러 | 가능 | 일시적 연결 실패 |
-| 4xx (400, 403, 404 등) | 불가 | 요청이 잘못됨 |
-| 409 Conflict | 불가 | SSA 충돌 → 로직 수정 필요 |
+### 계층별 재시도 전략
+
+아래 표는 에러별 처리 위치를 정리합니다. `RetryPolicy`는 client 계층만 담당하며, 다른 에러는 다른 계층에서 처리해야 합니다:
+
+| 에러 | 재시도 | 처리 위치 |
+|------|--------|-----------|
+| 429, 503, 504 | 가능 | Client 계층: `RetryPolicy` (설정 시) |
+| 기타 5xx | 상황에 따라 | Reconciler: `error_policy` 또는 커스텀 Tower 미들웨어 |
+| 타임아웃 / 네트워크 | 가능 | Reconciler: `error_policy` requeue, 또는 watcher: backoff |
+| 4xx (400, 403, 404) | 불가 | 요청 또는 RBAC 수정 필요 |
+| 409 Conflict | 상황에 따라 | SSA: field manager 충돌. Non-SSA: resourceVersion 충돌 |
 
 ## 타임아웃 전략
 
-**Client 내부 구조**에서 다룬 것처럼, 기본 `read_timeout`이 watch용으로 295초 설정되어 있어 일반 API 호출도 5분 블로킹될 수 있습니다.
-
-### 대응 1: Client 분리
+reconciler 내부에서 느린 API 호출을 방어하려면 `tokio::time::timeout`으로 개별 호출을 감쌉니다:
 
 ```rust
-// watcher용 Client (기본 295초)
-let watcher_client = Client::try_default().await?;
-
-// API 호출용 Client (짧은 타임아웃)
-let mut config = Config::infer().await?;
-config.read_timeout = Some(Duration::from_secs(15));
-let api_client = Client::try_from(config)?;
-```
-
-### 대응 2: 개별 호출 감싸기
-
-```rust
+// 첫 번째 ?는 timeout Result<T, Elapsed>를 풀고
+// 두 번째 ?는 API Result<Pod, kube::Error>를 풉니다
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     api.get("my-pod"),
 ).await??;
 ```
 
-### 대응 3: Controller에서는 큰 문제가 아닙니다
-
-Controller가 관리하는 watcher는 긴 timeout이 필요합니다. reconciler 내부의 API 호출만 timeout으로 감싸면 됩니다.
+Controller 컨텍스트에서 스트림 타임아웃은 watcher 내부의 타임아웃과 스트림 backoff 파라미터, `watcher::Config`에 의존합니다. 보통 reconciler 내부의 개별 API 호출만 짧은 타임아웃이 필요합니다.
 
 
 ---
@@ -3111,19 +3121,19 @@ API 서버 부하를 줄이는 다른 방법은 **최적화 — API 서버 부�
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
 | status에 비결정론적 값 쓰기 (타임스탬프 등) | `RUST_LOG=kube=debug`로 매 reconcile마다 patch 발생 확인 | 결정론적 값만 사용하거나 변경 없으면 patch 건너뛰기 |
-| predicate_filter 미적용 | reconcile 로그에서 status-only 변경도 trigger되는지 확인 | `predicate_filter(predicates::generation)` 적용 |
+| predicate_filter 미적용 | reconcile 로그에서 status-only 변경도 trigger되는지 확인 | `predicate_filter(predicates::generation, Default::default())` 적용 |
 | 다른 컨트롤러와 경쟁 (annotation 핑퐁) | `kubectl get -w`로 resourceVersion 변경 패턴 확인 | SSA로 필드 소유권 분리 |
 
 자세한 내용: [Reconciler 패턴 — 무한 루프](./reconciler.md#무한-루프-패턴)
 
 ### 메모리 지속 증가
 
-**증상**: Pod 메모리가 시간이 지남에 따라 계속 증가하고, OOMKilled 발생합니다.
+**증상**: 예상보다 높은 Pod 메모리 사용량.
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| re-list 스파이크 | 메모리 그래프에서 주기적 급등 패턴 확인 | `streaming_lists()` 사용, `page_size` 축소 |
-| Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, `metadata_watcher()` |
+| 초기 list 할당 | 시작 직후 높은 기본 메모리 | `streaming_lists()` 사용, 그리고/또는 `page_size` 축소 |
+| Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, 그리고/또는 `metadata_watcher()` |
 | watch 범위가 너무 넓음 | Store의 `state().len()`으로 캐시 객체 수 확인 | label/field selector로 범위 축소 |
 
 자세한 내용: **최적화 — Reflector 최적화**, **최적화 — re-list 메모리 스파이크**
@@ -3136,6 +3146,7 @@ API 서버 부하를 줄이는 다른 방법은 **최적화 — API 서버 부�
 |------|----------|--------|
 | 410 Gone + bookmark 미설정 | 로그에서 `WatchError` 410 확인 | watcher가 `default_backoff()`로 자동 re-list |
 | credential 만료 | 로그에서 401/403 에러 확인 | `Config::infer()`로 자동 갱신되는지 확인, exec plugin 설정 점검 |
+| RBAC / NetworkPolicies | 로그에서 403 Forbidden 확인 | ClusterRole에 watch/list 권한 추가, NetworkPolicy가 API 서버 egress를 허용하는지 확인 |
 | backoff 미설정 | 첫 에러에 스트림 종료 | `.default_backoff()` 반드시 사용 |
 
 자세한 내용: **Watcher state machine**, [에러 처리와 Backoff — Watcher 에러](./error-handling-and-backoff.md#watcher-에러와-backoff)
@@ -3146,9 +3157,9 @@ API 서버 부하를 줄이는 다른 방법은 **최적화 — API 서버 부�
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| 동시 reconcile 과다 | 메트릭에서 active reconcile 수 확인 | `Config::concurrency(N)` 설정 |
+| 동시 reconcile 과다 | 메트릭에서 active reconcile 수 확인 | `Config::concurrency(N)` 설정 (기본값은 무제한) |
 | watch 연결 과다 | `owns()`, `watches()` 수 확인 | shared reflector로 watch 공유 |
-| reconciler 내 API 호출 과다 | tracing span에서 HTTP 요청 수 확인 | Store 캐시 활용, `try_join!`으로 병렬화 |
+| reconciler 내 API 호출 과다 | tracing span에서 HTTP 요청 수 확인 | Store 캐시 활용, 가능하면 배치 처리 |
 
 자세한 내용: **최적화 — Reconciler 최적화**, **최적화 — API 서버 부하**
 
@@ -3158,8 +3169,8 @@ API 서버 부하를 줄이는 다른 방법은 **최적화 — API 서버 부�
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| cleanup 함수 실패 | 로그에서 cleanup 에러 확인 | cleanup이 최종적으로 성공하도록 설계 (외부 리소스 없으면 성공 처리) |
-| predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)` |
+| cleanup 함수 실패 | 로그에서 cleanup 에러 확인, `error_policy` 메트릭으로 모니터링 | cleanup이 최종적으로 성공하도록 설계 (외부 리소스 없으면 성공 처리) |
+| predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)`에 `Default::default()` config |
 | 컨트롤러가 다운 | Pod 상태 확인 | 컨트롤러 복구 후 자동 처리됨 |
 
 긴급 해제: `kubectl patch <resource> -p '{"metadata":{"finalizers":null}}' --type=merge` (cleanup 건너뜀)
@@ -3172,9 +3183,10 @@ API 서버 부하를 줄이는 다른 방법은 **최적화 — API 서버 부�
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| Store가 아직 초기화되지 않음 | readiness probe 실패 | `wait_until_ready()` 이후에 동작 확인 |
+| Store가 아직 초기화되지 않음 (advanced; streams 인터페이스 사용 시) | readiness probe 실패 | `wait_until_ready()` 이후에 동작 확인 |
 | predicate_filter가 모든 이벤트 차단 | predicate 로직 확인 | predicate 조합 수정 또는 일시 제거 후 테스트 |
 | RBAC 권한 부족 | 로그에서 403 Forbidden 확인 | ClusterRole에 watch/list 권한 추가 |
+| NetworkPolicies가 API 서버 접근 차단 | 로그에서 연결 타임아웃 확인 | NetworkPolicy가 API 서버 egress를 허용하는지 확인 |
 | watcher Config의 selector가 너무 좁음 | `kubectl get -l <selector>`로 매칭 확인 | selector 수정 |
 
 ## 디버깅 도구
@@ -3201,7 +3213,7 @@ Controller가 자동 생성하는 span에서 `object.ref`와 `object.reason`을 
 
 ```bash
 # 특정 리소스의 reconcile 로그만 필터
-cat logs.json | jq 'select(.span.object_ref | contains("my-resource-name"))'
+cat logs.json | jq 'select(.span."object.ref" | contains("my-resource-name"))'
 ```
 
 자세한 내용: **모니터링 — 구조화된 로깅**
@@ -3228,7 +3240,7 @@ kubectl get myresource <name> -o jsonpath='{.metadata.finalizers}'
 
 ```toml
 [dependencies]
-tikv-jemallocator = { version = "0.6", features = ["profiling"] }
+tikv-jemallocator = { version = "*", features = ["profiling"] }
 ```
 
 ```rust
@@ -3244,7 +3256,7 @@ MALLOC_CONF="prof:true,prof_active:true,lg_prof_interval:30" ./my-controller
 jeprof --svg ./my-controller jeprof.*.heap > heap.svg
 ```
 
-Store에 캐시된 객체가 메모리의 대부분을 차지하는 경우가 많습니다. 프로파일에서 `AHashMap` 관련 할당이 크면 `.modify()`나 `metadata_watcher()`를 적용합니다.
+Store 캐시가 주요 메모리 소비원인 경우가 많습니다. 프로파일에서 `AHashMap` 관련 할당이 크면 `.modify()`로 큰 필드를 제거하거나 `metadata_watcher()`를 적용합니다.
 
 ### 비동기 런타임 프로파일링 (tokio-console)
 
@@ -3252,7 +3264,7 @@ reconciler가 느린 원인이 async 태스크 스케줄링에 있는지 확인�
 
 ```toml
 [dependencies]
-console-subscriber = "0.4"
+console-subscriber = "*"
 ```
 
 ```rust
@@ -3266,6 +3278,8 @@ tokio-console http://localhost:6669
 ```
 
 태스크별 poll 시간, waker 횟수, 대기 시간을 실시간으로 확인할 수 있습니다. reconciler 태스크가 오래 blocked되어 있다면 내부의 동기 연산이나 느린 API 호출이 원인일 수 있습니다.
+
+TUI 없이 경량 런타임 메트릭만 필요하다면 [tokio-metrics](https://github.com/tokio-rs/tokio-metrics)를 사용하면 Prometheus로 export할 수 있습니다.
 
 
 ---
