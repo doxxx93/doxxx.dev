@@ -295,9 +295,12 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
     flex-wrap: nowrap !important;
   }
 
-  // Blog main content — fill remaining space with generous padding
+  // Blog main content — fill remaining space with generous padding.
+  // max-width: none overrides Infima col--7 cap (58.33%) so content
+  // matches docs width. Safe because row is nowrap.
   main.col--7 {
     flex: 1 1 0% !important;
+    max-width: none !important;
     min-width: 0 !important;
     padding-left: 7rem !important;
     padding-right: 7rem !important;
