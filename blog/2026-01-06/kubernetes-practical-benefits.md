@@ -3,11 +3,11 @@ title: 실무자가 말하는 쿠버네티스, '복잡함' 너머의 '편리함'
 authors: doxxx
 tags: [ kubernetes, devops, infrastructure, iac, monitoring, auto-scaling ]
 date: 2026-01-06 12:00:00 +0900
-image: ./cover.png
+image: /img/blog/2026-01-06/cover.png
 description: 쿠버네티스의 복잡성 너머에 있는 실무적 이점을 살펴봅니다. 코드 기반 인프라 관리, 서비스 자동 안정화, 모니터링 구조, 그리고 생태계의 장점까지.
 ---
 
-![](./cover.png)
+![](/img/blog/2026-01-06/cover.png)
 
 쿠버네티스를 처음 접하면 복잡성과 가파른 학습 곡선에 막막함을 느끼기 쉽습니다. 하지만 이 초기 장벽을 넘어 실무에 적용하기 시작하면, 그 복잡함 속에 숨겨진 강력한 편리함들을 체감하게 됩니다.
 

@@ -9,7 +9,7 @@ tags:
     Glues
   ]
 date: 2024-11-23 19:47:57 +0900
-image: ./cover.webp
+image: /img/blog/2024-11-23/img.webp
 description: I'd like to share my experience participating in the Open Contribution Jam 2024 event and contributing to the Glues project.
 ---
 
