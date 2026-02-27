@@ -66,12 +66,14 @@ Unlike merge patch, SSA requires `apiVersion` and `kind`.
 ### Missing field manager
 
 ```rust
-// ✗ Uses default field manager → unintended ownership conflicts
+// ✗ field_manager is None → API server rejects the request
 let pp = PatchParams::default();
 
 // ✓ Explicit field manager
 let pp = PatchParams::apply("my-controller");
 ```
+
+A field manager is **required** for SSA. When `field_manager` is `None` (the default), the API server returns an error. Always use `PatchParams::apply("my-controller")` for SSA operations.
 
 ### Overusing force
 
@@ -140,10 +142,10 @@ let pp = PatchParams::apply("my-controller");
 api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 ```
 
-k8s-openapi types already have `#[serde(skip_serializing_if = "Option::is_none")]` applied, so `None` fields are not serialized. For custom types, you need to set this yourself.
+k8s-openapi types use custom serialization that omits `None` fields (Option fields are only serialized when they contain a value), so `None` fields are excluded from the patch. For your own types, you need to add `skip_serializing_if` explicitly.
 
 :::note[Current limitation: no ApplyConfigurations in Rust]
-Go's client-go provides [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations) — fully optional builder types designed specifically for SSA. Rust does not have an equivalent yet ([kube#649](https://github.com/kube-rs/kube/issues/649)). Some k8s-openapi fields are not fully optional (e.g. certain integer fields like `maxReplicas`), which can make typed partial SSA awkward. Using `serde_json::json!()` for partial patches avoids this issue.
+Go's client-go provides [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations) — fully optional builder types designed specifically for SSA where every field is `Option`, so you only include the fields you want to own. Rust does not have an equivalent yet ([kube#649](https://github.com/kube-rs/kube/issues/649)). Because k8s-openapi mirrors the upstream Go structs, some fields are not `Option` (e.g. `max_replicas: i32` in `HorizontalPodAutoscalerSpec`), which means serializing a default struct will include those fields and SSA will take ownership of them. Using `serde_json::json!()` for partial patches is the recommended workaround.
 :::
 
 ```rust
