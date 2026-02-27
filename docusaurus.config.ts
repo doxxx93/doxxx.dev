@@ -1,8 +1,6 @@
 import {themes as prismThemes} from "prism-react-renderer";
 import type {Config} from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
 
 const config: Config = {
   title: "doxxx.dev",
@@ -70,18 +68,7 @@ const config: Config = {
   },
   themes: ["@docusaurus/theme-mermaid"],
 
-  stylesheets: [
-    // Pretendard (Korean web font)
-    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css",
-    // KaTeX
-    {
-      href: "https://cdn.jsdelivr.net/npm/katex@0.16.32/dist/katex.min.css",
-      type: "text/css",
-      integrity:
-        "sha384-8K5tjYRcv7hr4uuSd0QJJchz//nSR63itKQtnYvhozplQjQG85jQyfkH1YIMAkUv",
-      crossorigin: "anonymous",
-    },
-  ],
+  stylesheets: [],
 
   presets: [
     [
@@ -101,8 +88,6 @@ const config: Config = {
             "Writing about Kubernetes, Cloud, and Rust",
           blogSidebarTitle: "All Posts",
           blogSidebarCount: "ALL",
-          remarkPlugins: [remarkMath],
-          rehypePlugins: [rehypeKatex],
           showReadingTime: true,
           editLocalizedFiles: true,
           showLastUpdateTime: true,
@@ -122,7 +107,7 @@ const config: Config = {
         },
         ...(process.env.NODE_ENV === "production" && {
           gtag: {
-            trackingID: "G-S7SC61596T",
+            trackingID: "G-6Z46YSGF2C",
             anonymizeIP: true,
           },
         }),
@@ -153,11 +138,15 @@ const config: Config = {
       tagName: 'link',
       attributes: {
         rel: 'preload',
-        href: '/fonts/CascadiaCode.woff2',
-        as: 'font',
-        type: 'font/woff2',
-        crossorigin: 'anonymous',
+        href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css',
+        as: 'style',
+        onload: "this.onload=null;this.rel='stylesheet'",
       },
+    },
+    {
+      tagName: 'noscript',
+      attributes: {},
+      innerHTML: '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />',
     },
     {
       tagName: 'script',

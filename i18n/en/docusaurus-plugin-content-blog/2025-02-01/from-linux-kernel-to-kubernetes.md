@@ -3,11 +3,11 @@ title: Understanding Container Technology, From Kernel to Kubernetes
 authors: doxxx
 tags: [ container, kubernetes, linux-kernel, docker ]
 date: 2025-02-01 23:26:30 +0900
-image: https://i.imgur.com/OmPuTTB.png
+image: ./cover.png
 description: From the fundamental concepts of container technology to the runtime architecture, we will explain in detail the core functions of the Linux kernel and how Kubernetes manages containers.
 ---
 
-![](https://i.imgur.com/OmPuTTB.png)
+![](./cover.png)
 
 Container technology is an essential element in cloud-native environments. This article covers everything from Linux kernel-based technologies to management methods in Kubernetes.
 

@@ -9,7 +9,7 @@ tags:
     Glues
   ]
 date: 2024-11-23 19:47:57 +0900
-image: https://cf.festa.io/img/2024-11-23/578a092e-8a55-43f7-8f6e-0da67d52ebb4.png
+image: ./cover.webp
 description: I'd like to share my experience participating in the Open Contribution Jam 2024 event and contributing to the Glues project.
 ---
 

@@ -3,11 +3,11 @@ title: Building a Kubernetes Cluster, from Architecture to Networking
 authors: doxxx
 tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
-image: https://i.imgur.com/2GFF8XI.png
+image: ./cover.png
 description: Building a cluster with kubeadm — Control Plane architecture and network configuration explained.
 ---
 
-![](https://i.imgur.com/2GFF8XI.png)
+![](./cover.png)
 
 Installing Kubernetes directly with kubeadm will give you a deeper understanding of how the cluster works internally. This article covers the core architecture and network configurations encountered during the installation process.
 
