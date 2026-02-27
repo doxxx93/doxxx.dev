@@ -7,7 +7,7 @@ image: /img/blog/2026-02-20/cover.webp
 description: 4개월간 kube-rs에 20개 PR을 기여하며 배운 점들을 기록합니다.
 ---
 
-![](/img/blog/2026-02-20/cover.webp)
+![kube-rs 기여 활동 통계](/img/blog/2026-02-20/cover.webp)
 
 2025년 10월, GitHub에서 이슈 하나를 읽었다. 4개월 뒤 20개의 PR이 머지되었고, 프로젝트 멤버로 초대받았다.
 

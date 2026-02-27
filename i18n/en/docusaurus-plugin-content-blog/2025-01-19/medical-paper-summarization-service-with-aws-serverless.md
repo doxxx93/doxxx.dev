@@ -7,7 +7,7 @@ image: /img/blog/2025-01-19/cover.webp
 description: Building a medical paper summary service with AWS serverless architecture.
 ---
 
-![0.png](/img/blog/2025-01-19/cover.webp)
+![Paper summarization service architecture](/img/blog/2025-01-19/cover.webp)
 
 Through a three-week collaborative project conducted at the NIPA AWS Developer Bootcamp, we developed a medical paper summarization service.
 

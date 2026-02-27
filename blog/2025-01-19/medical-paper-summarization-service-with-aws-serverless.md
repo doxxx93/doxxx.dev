@@ -7,7 +7,7 @@ image: /img/blog/2025-01-19/cover.webp
 description: 의학 논문 요약 서비스를 AWS 서버리스로 설계하고 구현한 경험을 공유합니다.
 ---
 
-![0.png](/img/blog/2025-01-19/cover.webp)
+![논문 요약 서비스 아키텍처](/img/blog/2025-01-19/cover.webp)
 
 NIPA AWS Developer 부트캠프에서 진행한 3주간의 협력 프로젝트를 통해 의학 논문 요약 서비스를 개발했습니다.
 

@@ -7,7 +7,7 @@ image: /img/blog/2026-02-20/cover.webp
 description: Lessons from contributing 20 PRs to kube-rs over 4 months.
 ---
 
-![](/img/blog/2026-02-20/cover.webp)
+![kube-rs contribution statistics](/img/blog/2026-02-20/cover.webp)
 
 In October 2025, I read an issue on GitHub. Four months later, 20 PRs had been merged and I'd been invited as a project member.
 
