@@ -122,21 +122,6 @@ const config: Config = {
     {
       tagName: 'link',
       attributes: {
-        rel: 'preconnect',
-        href: 'https://cdn.jsdelivr.net',
-        crossorigin: 'anonymous',
-      },
-    },
-    {
-      tagName: 'link',
-      attributes: {
-        rel: 'dns-prefetch',
-        href: 'https://cdn.jsdelivr.net',
-      },
-    },
-    {
-      tagName: 'link',
-      attributes: {
         rel: 'preload',
         href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css',
         as: 'style',
@@ -176,7 +161,7 @@ const config: Config = {
       title: "doxxx.dev",
       logo: {
         alt: "Doxxx profile logo",
-        src: "img/logo.png",
+        src: "img/logo.webp",
       },
       items: [
         {

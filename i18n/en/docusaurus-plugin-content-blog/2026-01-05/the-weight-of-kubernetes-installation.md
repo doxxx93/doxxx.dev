@@ -7,7 +7,7 @@ image: /img/blog/2026-01-05/cover.webp
 description: Building a cluster with kubeadm — Control Plane architecture and network configuration explained.
 ---
 
-![](/img/blog/2026-01-05/cover.webp)
+![Kubernetes cluster architecture](/img/blog/2026-01-05/cover.webp)
 
 Installing Kubernetes directly with kubeadm will give you a deeper understanding of how the cluster works internally. This article covers the core architecture and network configurations encountered during the installation process.
 
