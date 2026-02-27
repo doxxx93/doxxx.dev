@@ -3,11 +3,11 @@ title: 컨테이너 기술의 이해, 커널부터 쿠버네티스까지
 authors: doxxx
 tags: [ container, kubernetes, linux-kernel, docker ]
 date: 2025-02-01 23:26:30 +0900
-image: /img/blog/2025-02-01/cover.png
+image: /img/blog/2025-02-01/cover.webp
 description: 컨테이너 기술의 기본 개념부터 런타임 아키텍처까지, 리눅스 커널의 핵심 기능과 쿠버네티스의 컨테이너 관리 방식을 자세히 설명합니다.
 ---
 
-![](/img/blog/2025-02-01/cover.png)
+![](/img/blog/2025-02-01/cover.webp)
 
 컨테이너 기술은 클라우드 네이티브 환경에서 필수적인 요소입니다. 본 글에서는 리눅스 커널 기반 기술부터 Kubernetes에서의 관리 방식까지 다룹니다.
 
