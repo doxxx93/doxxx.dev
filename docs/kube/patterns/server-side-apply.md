@@ -66,12 +66,14 @@ Merge patch와 달리 SSA는 `apiVersion`과 `kind`가 필수입니다.
 ### field manager 미지정
 
 ```rust
-// ✗ 기본 field manager 사용 → 의도치 않은 소유권 충돌
+// ✗ field_manager가 None → API 서버가 요청을 거부합니다
 let pp = PatchParams::default();
 
 // ✓ 명시적 field manager
 let pp = PatchParams::apply("my-controller");
 ```
+
+SSA에서 field manager는 **필수**입니다. `field_manager`가 `None`(기본값)이면 API 서버가 에러를 반환합니다. SSA 작업에는 항상 `PatchParams::apply("my-controller")`를 사용합니다.
 
 ### force 남용
 
@@ -140,10 +142,10 @@ let pp = PatchParams::apply("my-controller");
 api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 ```
 
-k8s-openapi 타입은 `#[serde(skip_serializing_if = "Option::is_none")]`이 이미 적용되어 있어 `None` 필드는 serialization되지 않습니다. 커스텀 타입에서는 직접 설정해야 합니다.
+k8s-openapi 타입은 커스텀 직렬화를 사용하여 `None` 필드를 생략합니다 (Option 필드는 값이 있을 때만 직렬화됩니다). 커스텀 타입에서는 `skip_serializing_if`를 직접 설정해야 합니다.
 
 :::note[현재 한계: Rust에는 ApplyConfigurations가 없습니다]
-Go의 client-go에는 SSA 전용으로 설계된 완전 optional builder 타입인 [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations)가 있습니다. Rust에는 아직 동등한 것이 없습니다 ([kube#649](https://github.com/kube-rs/kube/issues/649)). 일부 k8s-openapi 필드는 완전히 optional이 아니기 때문에 (예: `maxReplicas` 같은 정수 필드) typed partial SSA가 어색할 수 있습니다. `serde_json::json!()`으로 partial patch를 작성하면 이 문제를 피할 수 있습니다.
+Go의 client-go에는 SSA 전용으로 설계된 [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations)가 있습니다 — 모든 필드가 `Option`인 완전 optional builder 타입으로, 소유할 필드만 포함합니다. Rust에는 아직 동등한 것이 없습니다 ([kube#649](https://github.com/kube-rs/kube/issues/649)). k8s-openapi는 upstream Go struct를 그대로 반영하므로 일부 필드가 `Option`이 아닙니다 (예: `HorizontalPodAutoscalerSpec`의 `max_replicas: i32`). default struct를 직렬화하면 해당 필드도 포함되어 SSA가 소유권을 가져갑니다. `serde_json::json!()`으로 partial patch를 작성하는 것이 권장되는 우회 방법입니다.
 :::
 
 ```rust

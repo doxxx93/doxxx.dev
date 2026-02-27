@@ -17,7 +17,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
 | status에 비결정론적 값 쓰기 (타임스탬프 등) | `RUST_LOG=kube=debug`로 매 reconcile마다 patch 발생 확인 | 결정론적 값만 사용하거나 변경 없으면 patch 건너뛰기 |
-| predicate_filter 미적용 | reconcile 로그에서 status-only 변경도 trigger되는지 확인 | `predicate_filter(predicates::generation)` 적용 |
+| predicate_filter 미적용 | reconcile 로그에서 status-only 변경도 trigger되는지 확인 | `predicate_filter(predicates::generation, Default::default())` 적용 |
 | 다른 컨트롤러와 경쟁 (annotation 핑퐁) | `kubectl get -w`로 resourceVersion 변경 패턴 확인 | SSA로 필드 소유권 분리 |
 
 자세한 내용: [Reconciler 패턴 — 무한 루프](./reconciler.md#무한-루프-패턴)
@@ -28,8 +28,8 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| re-list 스파이크 | 메모리 그래프에서 주기적 급등 패턴 확인 | `streaming_lists()` 사용, 또는 `page_size` 축소 |
-| Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, `metadata_watcher()` |
+| 초기 list 할당 | 시작 직후 높은 기본 메모리 | `streaming_lists()` 사용, 그리고/또는 `page_size` 축소 |
+| Store 캐시에 큰 객체 | jemalloc 프로파일링으로 Store 크기 확인 | `.modify()`로 managedFields 등 제거, 그리고/또는 `metadata_watcher()` |
 | watch 범위가 너무 넓음 | Store의 `state().len()`으로 캐시 객체 수 확인 | label/field selector로 범위 축소 |
 
 자세한 내용: [최적화 — Reflector 최적화](../production/optimization.md#reflector-최적화), [최적화 — re-list 메모리 스파이크](../production/optimization.md#re-list-메모리-스파이크)
@@ -53,7 +53,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
-| 동시 reconcile 과다 | 메트릭에서 active reconcile 수 확인 | `Config::concurrency(N)` 설정 |
+| 동시 reconcile 과다 | 메트릭에서 active reconcile 수 확인 | `Config::concurrency(N)` 설정 (기본값은 무제한) |
 | watch 연결 과다 | `owns()`, `watches()` 수 확인 | shared reflector로 watch 공유 |
 | reconciler 내 API 호출 과다 | tracing span에서 HTTP 요청 수 확인 | Store 캐시 활용, 가능하면 배치 처리 |
 
@@ -66,7 +66,7 @@ description: "증상별 진단, 디버깅 도구, 프로파일링으로 문제 �
 | 원인 | 확인 방법 | 해결책 |
 |------|----------|--------|
 | cleanup 함수 실패 | 로그에서 cleanup 에러 확인, `error_policy` 메트릭으로 모니터링 | cleanup이 최종적으로 성공하도록 설계 (외부 리소스 없으면 성공 처리) |
-| predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)` |
+| predicate_filter가 finalizer 이벤트 차단 | `predicates::generation`만 사용 시 | `predicates::generation.combine(predicates::finalizers)`에 `Default::default()` config |
 | 컨트롤러가 다운 | Pod 상태 확인 | 컨트롤러 복구 후 자동 처리됨 |
 
 긴급 해제: `kubectl patch <resource> -p '{"metadata":{"finalizers":null}}' --type=merge` (cleanup 건너뜀)
@@ -109,7 +109,7 @@ Controller가 자동 생성하는 span에서 `object.ref`와 `object.reason`을 
 
 ```bash
 # 특정 리소스의 reconcile 로그만 필터
-cat logs.json | jq 'select(.span.object_ref | contains("my-resource-name"))'
+cat logs.json | jq 'select(.span."object.ref" | contains("my-resource-name"))'
 ```
 
 자세한 내용: [모니터링 — 구조화된 로깅](../production/observability.md#구조화된-로깅)
@@ -152,7 +152,7 @@ MALLOC_CONF="prof:true,prof_active:true,lg_prof_interval:30" ./my-controller
 jeprof --svg ./my-controller jeprof.*.heap > heap.svg
 ```
 
-Store에 캐시된 객체가 메모리의 대부분을 차지하는 경우가 많습니다. 프로파일에서 `AHashMap` 관련 할당이 크면 `.modify()`나 `metadata_watcher()`를 적용합니다.
+Store 캐시가 주요 메모리 소비원인 경우가 많습니다. 프로파일에서 `AHashMap` 관련 할당이 크면 `.modify()`로 큰 필드를 제거하거나 `metadata_watcher()`를 적용합니다.
 
 ### 비동기 런타임 프로파일링 (tokio-console)
 

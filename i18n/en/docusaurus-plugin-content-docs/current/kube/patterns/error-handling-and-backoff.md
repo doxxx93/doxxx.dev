@@ -14,9 +14,10 @@ Errors in kube occur at multiple layers. This section maps out where different e
 graph TD
     A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
-    B -->|"Deserialization failure"| E3["kube::Error::SerializationError"]
+    B -->|"Deserialization failure"| E3["kube::Error::SerdeError"]
     C["watcher()"] -->|"Initial LIST failure"| E4["watcher::Error::InitialListFailed"]
-    C -->|"WATCH connection failure"| E5["watcher::Error::WatchFailed"]
+    C -->|"WATCH start failure"| E5["watcher::Error::WatchStartFailed"]
+    C -->|"WATCH stream failure"| E5b["watcher::Error::WatchFailed"]
     C -->|"Server error during WATCH"| E6["watcher::Error::WatchError"]
     D["Controller::run()"] -->|"trigger stream"| C
     D -->|"User code"| E7["reconciler Error"]
@@ -29,16 +30,20 @@ graph TD
 | Layer | Error Type | Cause |
 |-------|-----------|-------|
 | Client | `HyperError`, `HttpError` | Network, TLS, timeout |
-| Api | `Error::Api { status }` | Kubernetes 4xx/5xx response |
-| Api | `SerializationError` | JSON deserialization failure |
+| Api | `Api(Status)` | Kubernetes 4xx/5xx response |
+| Api | `SerdeError` | JSON deserialization failure |
 | watcher | `InitialListFailed` | Initial LIST failure |
-| watcher | `WatchFailed` | WATCH connection failure |
+| watcher | `WatchStartFailed` | WATCH connection failure |
+| watcher | `WatchFailed` | WATCH stream failure mid-connection |
 | watcher | `WatchError` | Server error during WATCH (410 Gone, etc.) |
 | Controller | reconciler Error | Raised in user code |
 
 ## Watcher Errors and Backoff
 
-:::warning[You must attach a backoff]
+Watcher errors are **soft errors** — the watcher retries on all failures (including 403s, network issues) because external circumstances may improve. They should never be **silently** discarded.
+
+The key requirement is attaching a backoff to the watcher stream:
+
 ```rust
 // ✗ Without backoff, errors cause a tight retry loop
 let stream = watcher(api, wc);
@@ -46,11 +51,10 @@ let stream = watcher(api, wc);
 // ✓ Automatic retry with exponential backoff
 let stream = watcher(api, wc).default_backoff();
 ```
-:::
 
 ### default_backoff
 
-Applies `ExponentialBackoff`: 800ms → 1.6s → 3.2s → ... → 30s (max). The backoff resets when a successful event is received. If no errors occur for 120 seconds, the timer also resets.
+Applies `ExponentialBackoff`: base 800ms, factor 2, max 30s, with jitter enabled. The backoff resets when a successful event is received.
 
 ### Custom backoff
 
@@ -66,6 +70,28 @@ let stream = watcher(api, wc).backoff(
 
 ## Reconciler Errors and error_policy
 
+### Defining error types
+
+`Controller::run` requires `std::error::Error + Send + 'static` on the error type. While modern `anyhow` (1.0.65+) satisfies these bounds, it causes ergonomic issues with the `finalizer::Error` wrapper and loses the ability to distinguish error types in `error_policy`. Define a concrete error type with `thiserror`:
+
+```rust
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("Kubernetes API error: {0}")]
+    KubeApi(#[from] kube::Error),
+
+    #[error("Missing spec field: {0}")]
+    MissingField(String),
+
+    #[error("External service error: {0}")]
+    External(String),
+}
+```
+
+### error_policy
+
+When the reconciler returns `Err`, `error_policy` is called to decide the next action:
+
 ```rust
 fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action {
     tracing::error!(?err, "reconcile failed");
@@ -79,9 +105,12 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 }
 ```
 
-`Controller::run(reconcile, error_policy, ctx)`:
-- When the reconciler returns `Err`, `error_policy` is called
-- Schedules according to the `Action` returned by `error_policy`
+You can distinguish transient from permanent errors:
+
+| Type | Examples | Handling |
+|------|----------|---------|
+| Transient | Network error, timeout, 429 | Requeue via `error_policy` |
+| Permanent | Invalid spec, bad config | Record condition on status + `Action::await_change()` |
 
 ### Current Limitations
 
@@ -106,26 +135,31 @@ let service = ServiceBuilder::new()
     // ...
 ```
 
-### Retryability
+`RetryPolicy` specifically retries **429**, **503**, and **504** responses. It does not retry network errors or other 5xx codes.
 
-| Error | Retryable | Reason |
-|-------|-----------|--------|
-| 5xx | Yes | Temporary server failure |
-| Timeout | Yes | Temporary network issue |
-| 429 Too Many Requests | Yes | Rate limit → wait and retry |
-| Network error | Yes | Temporary connection failure |
-| 4xx (400, 403, 404, etc.) | No | The request is wrong |
-| 409 Conflict | No | SSA conflict → fix the logic |
+### Retry across layers
+
+The table below summarizes where different errors should be handled. Note that `RetryPolicy` only covers the client layer — other errors require handling at other layers:
+
+| Error | Retryable | Where to handle |
+|-------|-----------|-----------------|
+| 429, 503, 504 | Yes | Client layer: `RetryPolicy` (if configured) |
+| Other 5xx | Depends | Reconciler: `error_policy` or custom Tower middleware |
+| Timeout / Network | Yes | Reconciler: `error_policy` requeue, or watcher: backoff |
+| 4xx (400, 403, 404) | No | Fix the request or RBAC |
+| 409 Conflict | Depends | SSA: field manager conflict. Non-SSA: resourceVersion conflict |
 
 ## Timeout Strategy
 
 If you need to guard against slow API calls in your reconciler, you can wrap individual calls with `tokio::time::timeout`:
 
 ```rust
+// First ? unwraps the timeout Result<T, Elapsed>
+// Second ? unwraps the API Result<Pod, kube::Error>
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     api.get("my-pod"),
 ).await??;
 ```
 
-In a Controller context, stream timeouts rely internally on watcher idle timeouts and stream backoff parameters. Only individual API calls inside your reconciler typically need shorter timeouts.
+In a Controller context, stream timeouts rely internally on watcher timeouts and can be configured via stream backoff parameters and `watcher::Config`. Only individual API calls inside your reconciler typically need shorter timeouts.
