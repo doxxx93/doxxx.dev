@@ -627,31 +627,24 @@ graph LR
 | Setting | Default | Purpose |
 |---------|---------|---------|
 | `connect_timeout` | 30s | TCP connection establishment |
-| `read_timeout` | 295s | Waiting for a response |
-| `write_timeout` | 295s | Sending a request |
+| `read_timeout` | `None` | Waiting for a response (unlimited) |
+| `write_timeout` | `None` | Sending a request (unlimited) |
 
-:::warning[The 295-second timeout trap]
-The `read_timeout` is set to 295 seconds to support watch long-polling. However, this same timeout applies to regular GET/PUT/PATCH requests as well.
+:::info[Timeout design — per-layer separation]
+Previously, `read_timeout` was set to 295 seconds, applying uniformly to both watch long-polling and regular API calls. This caused long-lived connections like exec, attach, and port-forward to break after 295 seconds of idle time ([kube#1798](https://github.com/kube-rs/kube/issues/1798)).
 
-During a network outage, even a simple `pods.get("name")` can block for nearly 5 minutes.
+Now, matching the Go client behavior, the global `read_timeout` defaults to `None`, and each layer manages its own timeouts:
 
-**Mitigation strategies:**
+- **watcher**: Self-manages idle timeout based on server-side `timeoutSeconds` + margin. Auto-reconnects on network failure.
+- **exec/attach/port-forward**: No timeout (can idle indefinitely)
+- **API calls in reconciler**: Wrap with `tokio::time::timeout` as needed
 
 ```rust
-// Option 1: Apply a tokio timeout to individual calls
+// Guard against slow calls inside reconciler
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     pods.get("my-pod")
 ).await??;
-
-// Option 2: Separate Clients by purpose
-let short_cfg = Config::infer().await?;
-let short_cfg = Config {
-    read_timeout: Some(Duration::from_secs(30)),
-    ..short_cfg
-};
-let api_client = Client::try_from(short_cfg)?;
-// Use the default 295s Client for the watcher
 ```
 :::
 
@@ -685,27 +678,19 @@ let client = ClientBuilder::try_from(config)?
     .build();
 ```
 
-### Pattern: Separating Clients by Purpose
+### Custom Client Timeouts
 
-Separating a watcher Client (long timeout) from an API call Client (short timeout) is a common production pattern.
+Since the global `read_timeout` defaults to `None`, separating clients by purpose is no longer necessary. You can wrap individual calls with `tokio::time::timeout` as needed, or create a short-timeout client for specific use cases.
 
 ```rust
-// Client for watchers — default 295s timeout
-let watcher_client = Client::try_default().await?;
+// Default Client — no timeout (works for watcher, exec, etc.)
+let client = Client::try_default().await?;
 
-// Client for API calls — short timeout
-let mut api_config = Config::infer().await?;
-api_config.read_timeout = Some(Duration::from_secs(30));
-api_config.write_timeout = Some(Duration::from_secs(30));
-let api_client = Client::try_from(api_config)?;
-
-// Use api_client in the reconciler
-struct Context {
-    api_client: Client,
-}
+// If you need a short timeout for a specific use case
+let mut config = Config::infer().await?;
+config.read_timeout = Some(Duration::from_secs(30));
+let short_timeout_client = Client::try_from(config)?;
 ```
-
-This way, the watcher maintains its long-polling connection while API calls within the reconciler time out quickly.
 
 
 ---
@@ -2437,12 +2422,14 @@ Unlike merge patch, SSA requires `apiVersion` and `kind`.
 ### Missing field manager
 
 ```rust
-// ✗ Uses default field manager → unintended ownership conflicts
+// ✗ field_manager is None → API server rejects the request
 let pp = PatchParams::default();
 
 // ✓ Explicit field manager
 let pp = PatchParams::apply("my-controller");
 ```
+
+A field manager is **required** for SSA. When `field_manager` is `None` (the default), the API server returns an error. Always use `PatchParams::apply("my-controller")` for SSA operations.
 
 ### Overusing force
 
@@ -2511,7 +2498,11 @@ let pp = PatchParams::apply("my-controller");
 api.patch("my-cm", &pp, &Patch::Apply(cm)).await?;
 ```
 
-k8s-openapi types already have `#[serde(skip_serializing_if = "Option::is_none")]` applied, so `None` fields are not serialized. For custom types, you need to set this yourself.
+k8s-openapi types use custom serialization that omits `None` fields (Option fields are only serialized when they contain a value), so `None` fields are excluded from the patch. For your own types, you need to add `skip_serializing_if` explicitly.
+
+:::note[Current limitation: no ApplyConfigurations in Rust]
+Go's client-go provides [ApplyConfigurations](https://pkg.go.dev/k8s.io/client-go/applyconfigurations) — fully optional builder types designed specifically for SSA where every field is `Option`, so you only include the fields you want to own. Rust does not have an equivalent yet ([kube#649](https://github.com/kube-rs/kube/issues/649)). Because k8s-openapi mirrors the upstream Go structs, some fields are not `Option` (e.g. `max_replicas: i32` in `HorizontalPodAutoscalerSpec`), which means serializing a default struct will include those fields and SSA will take ownership of them. Using `serde_json::json!()` for partial patches is the recommended workaround.
+:::
 
 ```rust
 #[derive(Serialize)]
@@ -2709,9 +2700,10 @@ Errors in kube occur at multiple layers. This section maps out where different e
 graph TD
     A["Client::send()"] -->|"Network/TLS/Timeout"| E1["kube::Error::HyperError<br/>kube::Error::HttpError"]
     B["Api::list() / get() / patch()"] -->|"4xx/5xx"| E2["kube::Error::Api { status }"]
-    B -->|"Deserialization failure"| E3["kube::Error::SerializationError"]
+    B -->|"Deserialization failure"| E3["kube::Error::SerdeError"]
     C["watcher()"] -->|"Initial LIST failure"| E4["watcher::Error::InitialListFailed"]
-    C -->|"WATCH connection failure"| E5["watcher::Error::WatchFailed"]
+    C -->|"WATCH start failure"| E5["watcher::Error::WatchStartFailed"]
+    C -->|"WATCH stream failure"| E5b["watcher::Error::WatchFailed"]
     C -->|"Server error during WATCH"| E6["watcher::Error::WatchError"]
     D["Controller::run()"] -->|"trigger stream"| C
     D -->|"User code"| E7["reconciler Error"]
@@ -2724,28 +2716,31 @@ graph TD
 | Layer | Error Type | Cause |
 |-------|-----------|-------|
 | Client | `HyperError`, `HttpError` | Network, TLS, timeout |
-| Api | `Error::Api { status }` | Kubernetes 4xx/5xx response |
-| Api | `SerializationError` | JSON deserialization failure |
+| Api | `Api(Status)` | Kubernetes 4xx/5xx response |
+| Api | `SerdeError` | JSON deserialization failure |
 | watcher | `InitialListFailed` | Initial LIST failure |
-| watcher | `WatchFailed` | WATCH connection failure |
+| watcher | `WatchStartFailed` | WATCH connection failure |
+| watcher | `WatchFailed` | WATCH stream failure mid-connection |
 | watcher | `WatchError` | Server error during WATCH (410 Gone, etc.) |
 | Controller | reconciler Error | Raised in user code |
 
 ## Watcher Errors and Backoff
 
-:::warning[You must attach a backoff]
+Watcher errors are **soft errors** — the watcher retries on all failures (including 403s, network issues) because external circumstances may improve. They should never be **silently** discarded.
+
+The key requirement is attaching a backoff to the watcher stream:
+
 ```rust
-// ✗ Stream terminates on first error → Controller stops
+// ✗ Without backoff, errors cause a tight retry loop
 let stream = watcher(api, wc);
 
 // ✓ Automatic retry with exponential backoff
 let stream = watcher(api, wc).default_backoff();
 ```
-:::
 
 ### default_backoff
 
-Applies `ExponentialBackoff`: 800ms → 1.6s → 3.2s → ... → 30s (max). The backoff resets when a successful event is received. If no errors occur for 120 seconds, the timer also resets.
+Applies `ExponentialBackoff`: base 800ms, factor 2, max 30s, with jitter enabled. The backoff resets when a successful event is received.
 
 ### Custom backoff
 
@@ -2761,6 +2756,28 @@ let stream = watcher(api, wc).backoff(
 
 ## Reconciler Errors and error_policy
 
+### Defining error types
+
+`Controller::run` requires `std::error::Error + Send + 'static` on the error type. While modern `anyhow` (1.0.65+) satisfies these bounds, it causes ergonomic issues with the `finalizer::Error` wrapper and loses the ability to distinguish error types in `error_policy`. Define a concrete error type with `thiserror`:
+
+```rust
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error("Kubernetes API error: {0}")]
+    KubeApi(#[from] kube::Error),
+
+    #[error("Missing spec field: {0}")]
+    MissingField(String),
+
+    #[error("External service error: {0}")]
+    External(String),
+}
+```
+
+### error_policy
+
+When the reconciler returns `Err`, `error_policy` is called to decide the next action:
+
 ```rust
 fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action {
     tracing::error!(?err, "reconcile failed");
@@ -2774,9 +2791,12 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 }
 ```
 
-`Controller::run(reconcile, error_policy, ctx)`:
-- When the reconciler returns `Err`, `error_policy` is called
-- Schedules according to the `Action` returned by `error_policy`
+You can distinguish transient from permanent errors:
+
+| Type | Examples | Handling |
+|------|----------|---------|
+| Transient | Network error, timeout, 429 | Requeue via `error_policy` |
+| Permanent | Invalid spec, bad config | Record condition on status + `Action::await_change()` |
 
 ### Current Limitations
 
@@ -2785,60 +2805,50 @@ fn error_policy(obj: Arc<MyResource>, err: &Error, ctx: Arc<Context>) -> Action 
 
 ## Client-Level Retries
 
-kube-client does not have built-in retries for regular API calls. When `create()`, `patch()`, `get()`, etc. fail, they return the error as-is.
+By default, kube-client does not retry regular API calls. When `create()`, `patch()`, `get()`, etc. fail, they return the error as-is.
 
-To implement retries yourself, use Tower's retry middleware:
+Since version 3, kube provides a built-in [`RetryPolicy`](https://docs.rs/kube/latest/kube/client/retry/struct.RetryPolicy.html) that implements Tower's retry middleware. It retries on 429, 503, and 504 with exponential backoff:
 
 ```rust
-use tower::retry::Policy;
+use kube::client::retry::RetryPolicy;
+use tower::{ServiceBuilder, retry::RetryLayer, buffer::BufferLayer};
 
-struct RetryPolicy;
-
-impl Policy<Request<Body>, Response<Body>, Error> for RetryPolicy {
-    // Only retry on 5xx, timeouts, and network errors
-    // Don't retry on 4xx (the request itself is wrong)
-}
+let service = ServiceBuilder::new()
+    .layer(config.base_uri_layer())
+    .option_layer(config.auth_layer()?)
+    .layer(BufferLayer::new(1024))
+    .layer(RetryLayer::new(RetryPolicy::default()))
+    // ...
 ```
 
-### Retryability
+`RetryPolicy` specifically retries **429**, **503**, and **504** responses. It does not retry network errors or other 5xx codes.
 
-| Error | Retryable | Reason |
-|-------|-----------|--------|
-| 5xx | Yes | Temporary server failure |
-| Timeout | Yes | Temporary network issue |
-| 429 Too Many Requests | Yes | Rate limit → wait and retry |
-| Network error | Yes | Temporary connection failure |
-| 4xx (400, 403, 404, etc.) | No | The request is wrong |
-| 409 Conflict | No | SSA conflict → fix the logic |
+### Retry across layers
+
+The table below summarizes where different errors should be handled. Note that `RetryPolicy` only covers the client layer — other errors require handling at other layers:
+
+| Error | Retryable | Where to handle |
+|-------|-----------|-----------------|
+| 429, 503, 504 | Yes | Client layer: `RetryPolicy` (if configured) |
+| Other 5xx | Depends | Reconciler: `error_policy` or custom Tower middleware |
+| Timeout / Network | Yes | Reconciler: `error_policy` requeue, or watcher: backoff |
+| 4xx (400, 403, 404) | No | Fix the request or RBAC |
+| 409 Conflict | Depends | SSA: field manager conflict. Non-SSA: resourceVersion conflict |
 
 ## Timeout Strategy
 
-As covered in **Client internals**, the default `read_timeout` is set to 295 seconds for watches, which can cause regular API calls to block for up to 5 minutes.
-
-### Mitigation 1: Separate Clients
+If you need to guard against slow API calls in your reconciler, you can wrap individual calls with `tokio::time::timeout`:
 
 ```rust
-// Client for watchers (default 295s)
-let watcher_client = Client::try_default().await?;
-
-// Client for API calls (short timeout)
-let mut config = Config::infer().await?;
-config.read_timeout = Some(Duration::from_secs(15));
-let api_client = Client::try_from(config)?;
-```
-
-### Mitigation 2: Wrap Individual Calls
-
-```rust
+// First ? unwraps the timeout Result<T, Elapsed>
+// Second ? unwraps the API Result<Pod, kube::Error>
 let pod = tokio::time::timeout(
     Duration::from_secs(10),
     api.get("my-pod"),
 ).await??;
 ```
 
-### Mitigation 3: Not a Big Issue in Controllers
-
-The watchers managed by the Controller need long timeouts. You only need to wrap the API calls inside the reconciler with a timeout.
+In a Controller context, stream timeouts rely internally on watcher timeouts and can be configured via stream backoff parameters and `watcher::Config`. Only individual API calls inside your reconciler typically need shorter timeouts.
 
 
 ---
@@ -3111,19 +3121,19 @@ This section organizes common problems encountered during controller operation b
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
 | Writing non-deterministic values to status (timestamps, etc.) | Check with `RUST_LOG=kube=debug` that a patch occurs every reconcile | Use only deterministic values or skip the patch when nothing changed |
-| predicate_filter not applied | Check reconcile logs to see if status-only changes also trigger | Apply `predicate_filter(predicates::generation)` |
+| predicate_filter not applied | Check reconcile logs to see if status-only changes also trigger | Apply `predicate_filter(predicates::generation, Default::default())` |
 | Racing with another controller (annotation ping-pong) | Check resourceVersion change patterns with `kubectl get -w` | Separate field ownership with SSA |
 
 Details: [Reconciler Patterns — Infinite Loop](./reconciler.md#infinite-loop-patterns)
 
 ### Continuous Memory Growth
 
-**Symptom**: Pod memory keeps growing over time, eventually OOMKilled.
+**Symptom**: Higher than expected Pod memory.
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| Re-list spikes | Check for periodic spikes in memory graph | Use `streaming_lists()`, reduce `page_size` |
-| Large objects in Store cache | Check Store size with jemalloc profiling | Remove managedFields etc. with `.modify()`, use `metadata_watcher()` |
+| Initial list allocations | High baseline memory after startup | Use `streaming_lists()`, and/or reduce `page_size` |
+| Large objects in Store cache | Check Store size with jemalloc profiling | Remove managedFields etc. with `.modify()`, and/or use `metadata_watcher()` |
 | Watch scope too broad | Check cached object count with Store's `state().len()` | Narrow scope with label/field selectors |
 
 Details: **Optimization — Reflector optimization**, **Optimization — re-list memory spikes**
@@ -3136,6 +3146,7 @@ Details: **Optimization — Reflector optimization**, **Optimization — re-list
 |-------|--------------|----------|
 | 410 Gone + bookmarks not configured | Check logs for `WatchError` 410 | watcher auto-re-lists with `default_backoff()` |
 | Credential expiration | Check logs for 401/403 errors | Verify `Config::infer()` auto-refreshes, check exec plugin configuration |
+| RBAC / NetworkPolicies | Log shows 403 Forbidden | Add watch/list permissions to ClusterRole; check NetworkPolicy allows egress to API server |
 | Backoff not configured | Stream terminates on first error | Always use `.default_backoff()` |
 
 Details: **Watcher State Machine**, [Error Handling and Backoff — Watcher errors](./error-handling-and-backoff.md#watcher-errors-and-backoff)
@@ -3146,9 +3157,9 @@ Details: **Watcher State Machine**, [Error Handling and Backoff — Watcher erro
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| Too many concurrent reconciles | Check active reconcile count in metrics | Set `Config::concurrency(N)` |
+| Too many concurrent reconciles | Check active reconcile count in metrics | Set `Config::concurrency(N)` (default is unlimited) |
 | Too many watch connections | Check number of `owns()`, `watches()` calls | Share watches with a shared reflector |
-| Too many API calls in reconciler | Check HTTP request count in tracing spans | Leverage Store cache, parallelize with `try_join!` |
+| Too many API calls in reconciler | Check HTTP request count in tracing spans | Leverage Store cache; batch where possible |
 
 Details: **Optimization — Reconciler optimization**, **Optimization — API server load**
 
@@ -3158,8 +3169,8 @@ Details: **Optimization — Reconciler optimization**, **Optimization — API se
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| cleanup function failing | Check cleanup errors in logs | Design cleanup to eventually succeed (treat missing external resources as success) |
-| predicate_filter blocking finalizer events | Check if only `predicates::generation` is used | Use `predicates::generation.combine(predicates::finalizers)` |
+| cleanup function failing | Check cleanup errors in logs; monitor via `error_policy` metrics | Design cleanup to eventually succeed (treat missing external resources as success) |
+| predicate_filter blocking finalizer events | Check if only `predicates::generation` is used | Use `predicates::generation.combine(predicates::finalizers)` with `Default::default()` config |
 | Controller is down | Check Pod status | Automatically handled after controller recovery |
 
 Emergency release: `kubectl patch <resource> -p '{"metadata":{"finalizers":null}}' --type=merge` (skips cleanup)
@@ -3172,9 +3183,10 @@ Details: [Relations and Finalizers — Caveats](./relations-and-finalizers.md#ca
 
 | Cause | How to Verify | Solution |
 |-------|--------------|----------|
-| Store not yet initialized | Readiness probe failing | Verify behavior after `wait_until_ready()` |
+| Store not yet initialized (advanced; only with streams interface) | Readiness probe failing | Verify behavior after `wait_until_ready()` |
 | predicate_filter blocking all events | Check predicate logic | Adjust predicate combination or temporarily remove for testing |
 | Insufficient RBAC permissions | Check logs for 403 Forbidden | Add watch/list permissions to ClusterRole |
+| NetworkPolicies blocking API server access | Connection timeouts in logs | Check NetworkPolicy allows egress to API server |
 | watcher Config selector too narrow | Verify matches with `kubectl get -l <selector>` | Adjust selector |
 
 ## Debugging Tools
@@ -3201,7 +3213,7 @@ Check `object.ref` and `object.reason` in the spans automatically generated by t
 
 ```bash
 # Filter reconcile logs for a specific resource
-cat logs.json | jq 'select(.span.object_ref | contains("my-resource-name"))'
+cat logs.json | jq 'select(.span."object.ref" | contains("my-resource-name"))'
 ```
 
 Details: **Monitoring — Structured logging**
@@ -3228,7 +3240,7 @@ kubectl get myresource <name> -o jsonpath='{.metadata.finalizers}'
 
 ```toml
 [dependencies]
-tikv-jemallocator = { version = "0.6", features = ["profiling"] }
+tikv-jemallocator = { version = "*", features = ["profiling"] }
 ```
 
 ```rust
@@ -3244,7 +3256,7 @@ MALLOC_CONF="prof:true,prof_active:true,lg_prof_interval:30" ./my-controller
 jeprof --svg ./my-controller jeprof.*.heap > heap.svg
 ```
 
-Objects cached in the Store often account for the majority of memory. If the profile shows large `AHashMap`-related allocations, apply `.modify()` or `metadata_watcher()`.
+The Store cache is often the primary memory consumer. If the profile shows large `AHashMap`-related allocations, apply `.modify()` to strip large fields, or switch to `metadata_watcher()`.
 
 ### Async Runtime Profiling (tokio-console)
 
@@ -3252,7 +3264,7 @@ Check whether slow reconciler performance is caused by async task scheduling.
 
 ```toml
 [dependencies]
-console-subscriber = "0.4"
+console-subscriber = "*"
 ```
 
 ```rust
@@ -3266,6 +3278,8 @@ tokio-console http://localhost:6669
 ```
 
 You can monitor per-task poll time, waker count, and wait time in real time. If a reconciler task is blocked for a long time, the cause may be synchronous operations or slow API calls inside it.
+
+For lightweight runtime metrics without the TUI, consider [tokio-metrics](https://github.com/tokio-rs/tokio-metrics) which can export to Prometheus.
 
 
 ---
