@@ -3,11 +3,11 @@ title: 4 Months of Contributing to kube-rs
 authors: doxxx
 tags: [open-source, rust, kubernetes, kube-rs]
 date: 2026-02-20 12:00:00 +0900
-image: ./cover.png
+image: /img/blog/2026-02-20/cover.png
 description: Lessons from contributing 20 PRs to kube-rs over 4 months.
 ---
 
-![](./cover.png)
+![](/img/blog/2026-02-20/cover.png)
 
 In October 2025, I read an issue on GitHub. Four months later, 20 PRs had been merged and I'd been invited as a project member.
 
