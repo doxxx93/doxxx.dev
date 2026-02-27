@@ -3,11 +3,11 @@ title: Development of a Paper Summary Service Implemented with AWS Serverless
 authors: doxxx
 tags: [ aws, serverless, bedrock, claude ]
 date: 2025-01-19 20:48:30 +0900
-image: https://i.imgur.com/6IkEE2X.png
+image: ./cover.png
 description: Building a medical paper summary service with AWS serverless architecture.
 ---
 
-![0.png](https://i.imgur.com/6IkEE2X.png)
+![0.png](./cover.png)
 
 Through a three-week collaborative project conducted at the NIPA AWS Developer Bootcamp, we developed a medical paper summarization service.
 

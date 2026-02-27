@@ -3,11 +3,11 @@ title: "4 Practical Benefits of Kubernetes: Beyond the Complexity"
 authors: doxxx
 tags: [ kubernetes, devops, infrastructure, iac, monitoring, auto-scaling ]
 date: 2026-01-06 12:00:00 +0900
-image: https://i.imgur.com/zqIiZG9.png
+image: ./cover.png
 description: Exploring the practical benefits beyond Kubernetes complexity. From code-based infrastructure management to automated service stabilization, monitoring architecture, and ecosystem advantages.
 ---
 
-![](https://i.imgur.com/zqIiZG9.png)
+![](./cover.png)
 
 When first encountering Kubernetes, it's easy to feel overwhelmed by its complexity and steep learning curve. However, once you overcome this initial barrier and start applying it in production, you begin to experience the powerful conveniences hidden within that complexity.
 
