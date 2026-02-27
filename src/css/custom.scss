@@ -288,10 +288,17 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
     overflow-y: auto;
   }
 
+  // Blog row — prevent Infima flex-wrap: wrap from pushing TOC below content.
+  // Infima .col sets width: 100% / flex-basis: 100% via --ifm-col-width
+  // inside @layer, which causes content to fill entire row before TOC.
+  .container.margin-vert--lg > .row {
+    flex-wrap: nowrap !important;
+  }
+
   // Blog main content — fill remaining space with generous padding
   main.col--7 {
     flex: 1 1 0% !important;
-    max-width: none !important;
+    min-width: 0 !important;
     padding-left: 7rem !important;
     padding-right: 7rem !important;
   }
@@ -308,6 +315,17 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 1rem !important;
+  }
+
+  // Docs row — same nowrap fix as blog
+  [class*='docMainContainer'] .row {
+    flex-wrap: nowrap !important;
+  }
+
+  // Docs content column — allow shrinking to fit alongside TOC
+  [class*='docMainContainer'] .row > .col:first-child {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
   }
 
   // TOC column — match blog col--2 absolute width.
