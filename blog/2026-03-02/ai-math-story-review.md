@@ -7,11 +7,11 @@ image: /img/blog/2026-03-02/cover.webp
 description: "한빛미디어 나는리뷰어다 2026 - AI를 움직이는 수학 이야기 리뷰"
 ---
 
+![책 표지](/img/blog/2026-03-02/cover.webp)
+
 > 한빛미디어 서평단 \<나는리뷰어다\> 활동을 위해서 책을 협찬 받아 작성된 서평입니다.
 
 <!-- truncate -->
-
-![책 표지](/img/blog/2026-03-02/cover.webp)
 
 ## 이 책을 고른 이유
 
