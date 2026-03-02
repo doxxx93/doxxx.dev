@@ -7,11 +7,11 @@ image: /img/blog/2026-03-02/cover.webp
 description: "Hanbit Media I Am a Reviewer 2026 - The Math Behind AI (AI를 움직이는 수학 이야기) book review"
 ---
 
+![Book cover](/img/blog/2026-03-02/cover.webp)
+
 > This review was written as part of Hanbit Media's \<I Am a Reviewer\> program, which provided the book.
 
 <!-- truncate -->
-
-![Book cover](/img/blog/2026-03-02/cover.webp)
 
 ## Why I Picked This Book
 
