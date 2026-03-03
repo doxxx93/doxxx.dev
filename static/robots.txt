@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /blog/
 Disallow: /en/search
 Disallow: /downloads/
 
 Sitemap: https://doxxx.dev/sitemap.xml
+Sitemap: https://doxxx.dev/en/sitemap.xml
