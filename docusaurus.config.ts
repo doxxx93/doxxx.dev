@@ -46,11 +46,17 @@ const config: Config = {
       "@docusaurus/plugin-client-redirects",
       {
         createRedirects(existingPath) {
+          const redirects: string[] = [];
           // /blog/... → /... 리다이렉트 (구글 인덱싱된 옛 URL 지원)
           if (!existingPath.startsWith("/docs") && !existingPath.startsWith("/blog")) {
-            return [`/blog${existingPath}`];
+            redirects.push(`/blog${existingPath}`);
           }
-          return undefined;
+          // /en/blog/... → /en/... 리다이렉트
+          if (existingPath.startsWith("/en/") && !existingPath.startsWith("/en/docs") && !existingPath.startsWith("/en/blog")) {
+            const pathWithoutLocale = existingPath.slice(3); // "/en/foo" → "/foo"
+            redirects.push(`/en/blog${pathWithoutLocale}`);
+          }
+          return redirects.length > 0 ? redirects : undefined;
         },
       },
     ],
