@@ -45,17 +45,50 @@ const config: Config = {
     [
       "@docusaurus/plugin-client-redirects",
       {
+        // 삭제된 페이지 리디렉트 (Google 404 해소용, 1~2개월 후 제거 가능)
+        redirects: [
+          { from: "/docs/intro", to: "/docs/kube" },
+        ],
         createRedirects(existingPath) {
           const redirects: string[] = [];
-          // /blog/... → /... 리다이렉트 (구글 인덱싱된 옛 URL 지원)
+
+          // 삭제된 태그 → /tags (태그 변경/삭제 시 여기에 추가)
+          const deletedTags = [
+            "containerd", "dynamodb", "summarization", "calico",
+            "textract", "namespace", "chroot", "medical-paper",
+            "컴퓨터-구조",
+          ];
+
+          // 삭제된 docs 페이지 → 대체 경로
+          const deletedDocs: Record<string, string> = {
+            "/docs/intro": "/docs/kube",
+          };
+
+          const isDefaultLocale = !existingPath.startsWith("/en/");
+          const isEnLocale = existingPath.startsWith("/en/");
+
+          // /blog/... → /... 리다이렉트 (routeBasePath 변경 대응)
           if (!existingPath.startsWith("/docs") && !existingPath.startsWith("/blog")) {
             redirects.push(`/blog${existingPath}`);
+            if (isEnLocale) {
+              const pathWithoutLocale = existingPath.slice(3);
+              redirects.push(`/en/blog${pathWithoutLocale}`);
+            }
           }
-          // /en/blog/... → /en/... 리다이렉트
-          if (existingPath.startsWith("/en/") && !existingPath.startsWith("/en/docs") && !existingPath.startsWith("/en/blog")) {
-            const pathWithoutLocale = existingPath.slice(3); // "/en/foo" → "/foo"
-            redirects.push(`/en/blog${pathWithoutLocale}`);
+
+          // 삭제된 태그 리디렉트
+          if (existingPath === "/tags" || existingPath === "/en/tags") {
+            const prefix = isEnLocale ? "/en" : "";
+            redirects.push(...deletedTags.map((t) => `${prefix}/tags/${t}`));
           }
+
+          // 삭제된 docs 리디렉트 (en locale)
+          for (const [from, to] of Object.entries(deletedDocs)) {
+            if (existingPath === `/en${to}`) {
+              redirects.push(`/en${from}`);
+            }
+          }
+
           return redirects.length > 0 ? redirects : undefined;
         },
       },
