@@ -56,7 +56,7 @@ const config: Config = {
           const deletedTags = [
             "containerd", "dynamodb", "summarization", "calico",
             "textract", "namespace", "chroot", "medical-paper",
-            "컴퓨터-구조",
+            "lambda", "컴퓨터-구조",
           ];
 
           // 삭제된 docs 페이지 → 대체 경로
