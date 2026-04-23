@@ -11,7 +11,7 @@ description: "Hanbit Media I Am a Reviewer 2026 - The Math Behind AI (AI를 움�
 
 > This review was written as part of Hanbit Media's \<I Am a Reviewer\> program, which provided the book.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## Why I Picked This Book
 

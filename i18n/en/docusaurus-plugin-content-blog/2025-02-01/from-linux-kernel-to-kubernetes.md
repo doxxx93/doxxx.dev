@@ -11,7 +11,7 @@ description: From the fundamental concepts of container technology to the runtim
 
 Container technology is an essential element in cloud-native environments. This article covers everything from Linux kernel-based technologies to management methods in Kubernetes.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## 1. A History of Linux and Container Technology
 

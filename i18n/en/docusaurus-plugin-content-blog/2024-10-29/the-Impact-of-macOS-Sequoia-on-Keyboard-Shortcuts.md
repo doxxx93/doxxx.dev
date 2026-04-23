@@ -18,7 +18,7 @@ in the `RegisterEventHotkey` API.
 
 :::
 
-<!-- truncate -->
+{/* truncate */}
 
 Recently, I've noticed an issue where shortcuts aren't working properly while using several applications.
 

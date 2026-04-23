@@ -10,7 +10,7 @@ description: Usu Korean History app — 8 months of development in review.
 
 This article reflects on the experiences and lessons learned while developing the Wusu Korean History app from February to October 2024, as well as future plans.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## Reasons for Reflection
 
