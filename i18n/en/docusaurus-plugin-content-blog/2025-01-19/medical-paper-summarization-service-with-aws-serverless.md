@@ -13,7 +13,7 @@ Through a three-week collaborative project conducted at the NIPA AWS Developer B
 
 In this article, we'll share practical examples of technical decisions and areas for improvement during service implementation.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## Entering
 

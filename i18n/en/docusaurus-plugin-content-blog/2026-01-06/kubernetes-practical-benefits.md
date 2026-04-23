@@ -11,7 +11,7 @@ description: Exploring the practical benefits beyond Kubernetes complexity. From
 
 When first encountering Kubernetes, it's easy to feel overwhelmed by its complexity and steep learning curve. However, once you overcome this initial barrier and start applying it in production, you begin to experience the powerful conveniences hidden within that complexity.
 
-<!-- truncate -->
+{/* truncate */}
 
 This article introduces four key benefits of Kubernetes that are often overshadowed by the first impression of complexity, but are more apparent to practitioners.
 

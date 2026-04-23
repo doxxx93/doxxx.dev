@@ -17,7 +17,7 @@ description: I'd like to share my experience participating in the Open Contribut
 
 I went to Open Contribution Jam 2024.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## Event Overview
 

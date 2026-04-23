@@ -11,7 +11,7 @@ image: ./self-learning-cs-cover.jpg
 
 혼자 공부하는 컴퓨터 구조 + 운영체제 서적을 읽고 정리한 글입니다.
 
-<!-- truncate -->
+{/* truncate */}
 
 # Ch.01 컴퓨터 구조 시작하기
 

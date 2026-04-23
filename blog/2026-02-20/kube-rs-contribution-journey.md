@@ -13,7 +13,7 @@ description: 4개월간 kube-rs에 20개 PR을 기여하며 배운 점들을 기
 
 그 사이에 있었던 일들을 기록해둔다.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## 시작
 

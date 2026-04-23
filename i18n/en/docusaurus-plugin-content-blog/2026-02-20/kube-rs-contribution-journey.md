@@ -13,7 +13,7 @@ In October 2025, I read an issue on GitHub. Four months later, 20 PRs had been m
 
 Here's a record of what happened in between.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## How It Started
 

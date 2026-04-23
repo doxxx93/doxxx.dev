@@ -11,7 +11,7 @@ image: https://image.yes24.com/goods/111378840/XL
 
 This is an article I wrote after reading a book on computer architecture and operating systems that I studied on my own.
 
-<!-- truncate -->
+{/* truncate */}
 
 # Ch.01 Getting Started with Computer Architecture
 

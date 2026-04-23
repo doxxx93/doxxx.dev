@@ -13,7 +13,7 @@ Kubernetes 컨트롤 플레인의 거의 모든 컴포넌트는 API Server와의
 
 이 글에서는 Watch Cache의 내부 구조를 먼저 살펴본 뒤, 어디서 문제가 생기면 어떤 일이 벌어지는지를 정리합니다.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## 아키텍처
 
