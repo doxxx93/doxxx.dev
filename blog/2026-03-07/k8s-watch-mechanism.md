@@ -3,6 +3,7 @@ title: "Kubernetes API Server의 Watch 메커니즘과 Informer 패턴"
 authors: doxxx
 tags: [kubernetes, api-server, watch, informer, control-plane]
 date: 2026-03-07 12:00:00 +0900
+featured: true
 description: "Watch Cache의 아키텍처부터 410 Gone, 연쇄 OOM 같은 장애 시나리오까지. 어디서 문제가 생기면 어떤 일이 벌어지는지 정리합니다."
 image: /img/blog/2026-03-07/cover.webp
 ---

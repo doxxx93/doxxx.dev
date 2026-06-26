@@ -135,6 +135,16 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
             copyright: `Copyright ${new Date().getFullYear()} Doxxx`,
+            createFeedItems: async (params) => {
+              const { blogPosts, defaultCreateFeedItems, ...rest } = params;
+              return defaultCreateFeedItems({
+                // 엄선: frontmatter에 `featured: true`를 단 글만 공개 피드에 노출 (기본 숨김)
+                blogPosts: blogPosts.filter(
+                  (post) => post.metadata.frontMatter.featured === true,
+                ),
+                ...rest,
+              });
+            },
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
