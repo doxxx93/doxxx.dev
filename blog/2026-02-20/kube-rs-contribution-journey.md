@@ -3,6 +3,7 @@ title: kube-rs 4개월 기여 기록
 authors: doxxx
 tags: [open-source, rust, kubernetes, kube-rs]
 date: 2026-02-20 12:00:00 +0900
+featured: true
 image: /img/blog/2026-02-20/cover.webp
 description: 4개월간 kube-rs에 20개 PR을 기여하며 배운 점들을 기록합니다.
 ---

@@ -3,6 +3,7 @@ title: 쿠버네티스 클러스터 구축, 아키텍처부터 네트워크까�
 authors: doxxx
 tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
+featured: true
 image: /img/blog/2026-01-05/cover.webp
 description: kubeadm으로 클러스터 구축하며 Control Plane 아키텍처와 네트워크 구성을 설명합니다.
 ---
