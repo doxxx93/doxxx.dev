@@ -8,19 +8,25 @@ updates:
       actions:
         patterns: ["*"]
 
-  # Groups here cover minor/patch only, so every major lands as its own
-  # reviewable PR instead of riding along in a batch.
   - package-ecosystem: bun
     directory: /
     schedule:
       interval: monthly
     groups:
-      # the @docusaurus/* packages are released in lockstep and must move together
+      # Lockstep families. These carry no update-types filter on purpose: they
+      # have to move together across majors too, or the build fails outright
+      # ("react" and "react-dom" must be the exact same version).
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
       docusaurus:
         patterns:
           - "@docusaurus/*"
           - "docusaurus-plugin-*"
-        update-types: ["minor", "patch"]
+      # Everything else: minor/patch batched, each major on its own PR.
       rest:
         patterns: ["*"]
         update-types: ["minor", "patch"]
