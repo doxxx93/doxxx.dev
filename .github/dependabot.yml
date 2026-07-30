@@ -8,6 +8,8 @@ updates:
       actions:
         patterns: ["*"]
 
+  # Groups here cover minor/patch only, so every major lands as its own
+  # reviewable PR instead of riding along in a batch.
   - package-ecosystem: bun
     directory: /
     schedule:
@@ -18,5 +20,7 @@ updates:
         patterns:
           - "@docusaurus/*"
           - "docusaurus-plugin-*"
+        update-types: ["minor", "patch"]
       rest:
         patterns: ["*"]
+        update-types: ["minor", "patch"]
