@@ -2,7 +2,7 @@ import React from "react";
 import Giscus from "@giscus/react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-export default function Comments(): JSX.Element {
+export default function Comments(): React.JSX.Element {
   const {i18n} = useDocusaurusContext();
   const lang = i18n.currentLocale === "en" ? "en" : "ko";
 

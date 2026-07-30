@@ -7,7 +7,7 @@ import Comments from "@site/src/components/Comments";
 
 type Props = WrapperProps<typeof BlogPostItemType>;
 
-export default function BlogPostItemWrapper(props: Props): JSX.Element {
+export default function BlogPostItemWrapper(props: Props): React.JSX.Element {
   const { metadata, isBlogPostPage } = useBlogPost();
   const { comments = true } = metadata.frontMatter;
 
