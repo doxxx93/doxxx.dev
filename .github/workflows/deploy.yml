@@ -4,12 +4,19 @@ on:
   push:
     branches:
       - master
+  # Validates PRs (including dependabot's) with the build job only.
+  pull_request:
+    branches:
+      - master
 
-# Never cancel a deployment mid-flight; queued runs collapse to the latest.
+# Deploys on master share one queue and are never cancelled mid-flight.
+# PR builds are per-ref and a new push supersedes the running one.
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# The build job must stay secret-free: dependabot runs get a read-only token
+# and cannot see Actions secrets.
 permissions:
   contents: read
 
@@ -41,6 +48,7 @@ jobs:
       - name: Build website
         run: bun run build
       - name: Upload Build Artifact
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v5
         with:
           path: build
@@ -48,6 +56,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    if: github.event_name == 'push'
     permissions:
       contents: read
       pages: write
@@ -64,6 +73,7 @@ jobs:
   reindex:
     name: Trigger Algolia Crawler
     needs: deploy
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
