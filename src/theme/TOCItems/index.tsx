@@ -5,7 +5,7 @@ import type {WrapperProps} from '@docusaurus/types';
 
 type Props = WrapperProps<typeof TOCItemsType>;
 
-export default function TOCItemsWrapper(props: Props): JSX.Element {
+export default function TOCItemsWrapper(props: Props): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
 
