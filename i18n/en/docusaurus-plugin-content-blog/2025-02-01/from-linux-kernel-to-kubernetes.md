@@ -5,6 +5,7 @@ tags: [ container, kubernetes, linux-kernel, docker ]
 date: 2025-02-01 23:26:30 +0900
 image: /img/blog/2025-02-01/cover.webp
 description: From the fundamental concepts of container technology to the runtime architecture, we will explain in detail the core functions of the Linux kernel and how Kubernetes manages containers.
+featured: true
 ---
 
 ![Container technology overview](/img/blog/2025-02-01/cover.webp)

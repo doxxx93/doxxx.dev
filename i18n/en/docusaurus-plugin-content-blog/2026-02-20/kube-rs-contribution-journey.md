@@ -5,6 +5,7 @@ tags: [open-source, rust, kubernetes, kube-rs]
 date: 2026-02-20 12:00:00 +0900
 image: /img/blog/2026-02-20/cover.webp
 description: Lessons from contributing 20 PRs to kube-rs over 4 months.
+featured: true
 ---
 
 ![kube-rs contribution statistics](/img/blog/2026-02-20/cover.webp)

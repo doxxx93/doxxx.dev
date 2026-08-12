@@ -5,6 +5,7 @@ tags: [kubernetes, kubeadm, cni, devops]
 date: 2026-01-05 12:00:00 +0900
 image: /img/blog/2026-01-05/cover.webp
 description: Building a cluster with kubeadm — Control Plane architecture and network configuration explained.
+featured: true
 ---
 
 ![Kubernetes cluster architecture](/img/blog/2026-01-05/cover.webp)
