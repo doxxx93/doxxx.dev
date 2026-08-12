@@ -48,6 +48,12 @@ const config: Config = {
         // 삭제된 페이지 리디렉트 (Google 404 해소용, 1~2개월 후 제거 가능)
         redirects: [
           { from: "/docs/intro", to: "/docs/kube" },
+          // 이전 사이트 구조의 슬러그. 리포지터리에 흔적이 없어서 GSC 404 목록에도
+          // 안 잡혔는데, GA에는 실제 유입이 찍힌다. 외부 어딘가에 링크가 남아 있다.
+          {
+            from: "/blog/macos-15-sequoia-registereventhotkey-bug",
+            to: "/2024/10/29/the-Impact-of-macOS-Sequoia-on-Keyboard-Shortcuts",
+          },
         ],
         createRedirects(existingPath) {
           const redirects: string[] = [];
