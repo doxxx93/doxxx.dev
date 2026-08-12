@@ -301,6 +301,9 @@ const config: Config = {
       apiKey: "08f8e70633947cfb337e5a3a481ccfff",
       indexName: "doxxxdev",
       contextualSearch: true,
+      // 클릭/전환 이벤트 전송. 이게 없으면 Algolia 대시보드의 검색어·노클릭 검색
+      // 통계가 전부 비어 있어서 검색 품질을 튜닝할 근거가 안 쌓인다.
+      insights: true,
       searchParameters: {
         attributesToHighlight: ["hierarchy.lvl0", "hierarchy.lvl1", "hierarchy.lvl2", "content"],
         attributesToSnippet: ["content:30"],
