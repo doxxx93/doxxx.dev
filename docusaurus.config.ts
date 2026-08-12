@@ -41,7 +41,9 @@ const config: Config = {
 
   // Plugins
   plugins: [
-    "docusaurus-plugin-sass",
+    // charset: false — sass가 붙이는 @charset/BOM이 번들 중간에 끼면
+    // lightningcss(faster)가 바로 뒤 규칙(@font-face normal)을 통째로 버린다
+    ["docusaurus-plugin-sass", {sassOptions: {charset: false}}],
     [
       "@docusaurus/plugin-client-redirects",
       {
