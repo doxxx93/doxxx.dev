@@ -1,13 +1,13 @@
 ---
-title: macOS Sequoia has blocked keyboard shortcuts.
-description: macOS Sequoia broke keyboard shortcuts — the issue and workaround.
+title: "macOS Sequoia Blocks Option+Shift Keyboard Shortcuts (Error -9868)"
+description: "macOS Sequoia rejects RegisterEventHotKey registrations that use only Option and Shift, returning error -9868. Here is why, and what to use instead."
 authors: doxxx
-tags: [ macOS, Sequoia, keyboard shortcuts ]
+tags: [mac-os, sequoia, keyboard-shortcuts]
 date: 2024-10-29 09:47:57 +0900
 ---
 
-macOS Sequoia has blocked a keyboard shortcut combination frequently used by developers for security reasons. Shortcuts that use only the Option (⌥) and Shift (⇧) keys no longer work as
-in the `RegisterEventHotkey` API.
+macOS Sequoia has blocked a keyboard shortcut combination frequently used by developers, for security reasons. Shortcuts that use only the Option (⌥) and Shift (⇧) keys can no longer be
+registered through the `RegisterEventHotkey` API.
 
 :::warning\[TL;DR]
 
@@ -52,8 +52,8 @@ Posted on Apple Developer Forums
 
 **[macOS Sequoia] Using RegisterEventHotkey with option and shift modifiers doesn't work anymore**
 
-라는 제목의 [글](https://forums.developer.apple.com/forums/thread/763878)에서 Apple Frameworks Engineer가
-이렇게 [설명](https://forums.developer.apple.com/forums/thread/763878?answerId=804374022#804374022)하고 있습니다:
+In [that thread](https://forums.developer.apple.com/forums/thread/763878), an Apple Frameworks Engineer
+[explains](https://forums.developer.apple.com/forums/thread/763878?answerId=804374022#804374022) it this way:
 
 > This was an intentional change in macOS Sequoia to limit the ability of key-logging malware to observe keys in other
 > applications. The issue of concern was that shift+option can be used to generate alternate characters in passwords,
@@ -63,14 +63,7 @@ Posted on Apple Developer Forums
 > There is no workaround; macOS Sequoia now requires that a hotkey registration use at least one modifier that is not
 > shift or option.
 
-If we interpret this,
-
-> This is an intentional change in macOS Sequoia to limit the ability of keylogging malware to observe keystrokes from other applications. The concern is that using shift+option can create alternative characters in passwords, such as Ø (shift-option-O) and
-> .
->
-> There is no workaround, and macOS Sequoia now requires that you use at least one modifier other than Shift or Option when registering a shortcut.
-
-This is said to be a measure to prevent keylogging malware from intercepting special characters (e.g. Ø) entered with Option+Shift.
+So it is a measure to stop keylogging malware from intercepting the special characters (Ø and friends) that Option+Shift produces.
 
 ## Problems actually experienced
 

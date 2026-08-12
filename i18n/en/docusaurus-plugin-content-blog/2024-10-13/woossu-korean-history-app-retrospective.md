@@ -1,7 +1,7 @@
 ---
 title: A Review of the Usu Korean History App
 authors: doxxx
-tags: [ Project, retrospect ]
+tags: [project, retrospect]
 date: 2024-10-13 00:27:57 +0900
 description: Usu Korean History app — 8 months of development in review.
 ---

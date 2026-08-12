@@ -1,0 +1,129 @@
+# 태그 사전. permalink은 ko/en이 반드시 동일해야 한다.
+# 로케일마다 슬러그가 갈리면 Docusaurus가 만드는 hreflang이 존재하지 않는 URL을
+# 가리키고(로케일 접두사만 갈아끼우기 때문), 구글이 그 404를 계속 크롤한다.
+# 번역본은 i18n/en/docusaurus-plugin-content-blog/tags.yml 이 label만 덮어쓴다.
+# onInlineTags: 'throw' 라서 여기 없는 태그를 쓰면 빌드가 깨진다.
+
+agent:
+  label: Agent
+  permalink: /agent
+ai:
+  label: AI
+  permalink: /ai
+api-server:
+  label: API Server
+  permalink: /api-server
+auto-scaling:
+  label: Auto Scaling
+  permalink: /auto-scaling
+automation:
+  label: Automation
+  permalink: /automation
+aws:
+  label: AWS
+  permalink: /aws
+bedrock:
+  label: Bedrock
+  permalink: /bedrock
+book-review:
+  label: Book Review
+  permalink: /book-review
+books:
+  label: 서적
+  permalink: /books
+claude:
+  label: Claude
+  permalink: /claude
+cni:
+  label: CNI
+  permalink: /cni
+computer-architecture:
+  label: 컴퓨터 구조
+  permalink: /computer-architecture
+container:
+  label: Container
+  permalink: /container
+control-plane:
+  label: Control Plane
+  permalink: /control-plane
+devops:
+  label: DevOps
+  permalink: /devops
+docker:
+  label: Docker
+  permalink: /docker
+glues:
+  label: Glues
+  permalink: /glues
+iac:
+  label: IaC
+  permalink: /iac
+informer:
+  label: Informer
+  permalink: /informer
+infrastructure:
+  label: Infrastructure
+  permalink: /infrastructure
+keyboard-shortcuts:
+  label: Keyboard Shortcuts
+  permalink: /keyboard-shortcuts
+kube-rs:
+  label: kube-rs
+  permalink: /kube-rs
+kubeadm:
+  label: kubeadm
+  permalink: /kubeadm
+kubernetes:
+  label: Kubernetes
+  permalink: /kubernetes
+linux-kernel:
+  label: Linux Kernel
+  permalink: /linux-kernel
+mac-os:
+  label: macOS
+  permalink: /mac-os
+math:
+  label: Math
+  permalink: /math
+monitoring:
+  label: Monitoring
+  permalink: /monitoring
+open-contribution:
+  label: Open Contribution
+  permalink: /open-contribution
+open-contribution-jam:
+  label: Open Contribution Jam
+  permalink: /open-contribution-jam
+open-source:
+  label: Open Source
+  permalink: /open-source
+operating-system:
+  label: 운영체제
+  permalink: /operating-system
+productivity:
+  label: Productivity
+  permalink: /productivity
+project:
+  label: 프로젝트
+  permalink: /project
+retrospect:
+  label: 회고
+  permalink: /retrospect
+rust:
+  label: Rust
+  permalink: /rust
+sequoia:
+  label: Sequoia
+  permalink: /sequoia
+serverless:
+  label: Serverless
+  permalink: /serverless
+watch:
+  label: Watch
+  permalink: /watch
+나는리뷰어다:
+  label: 나는리뷰어다
+  permalink: /나는리뷰어다
+한빛미디어:
+  label: 한빛미디어
+  permalink: /한빛미디어

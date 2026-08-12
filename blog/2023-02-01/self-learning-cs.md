@@ -1,7 +1,7 @@
 ---
 title: 혼자 공부하는 컴퓨터 구조 + 운영체제
 authors: doxxx
-tags: [ 서적, 컴퓨터 구조, 운영체제 ]
+tags: [books, computer-architecture, operating-system]
 date: 2023-02-01 14:26:57 +0900
 description: 혼자 공부하는 컴퓨터 구조 + 운영체제 정리
 image: ./self-learning-cs-cover.jpg

@@ -2,7 +2,7 @@
 title: macOS Sequoia가 키보드 단축키를 막아버렸다.
 description: macOS Sequoia에서 키보드 단축키가 막힌 이슈와 해결 방법을 정리합니다.
 authors: doxxx
-tags: [ macOS, Sequoia, keyboard shortcuts ]
+tags: [mac-os, sequoia, keyboard-shortcuts]
 date: 2024-10-29 09:47:57 +0900
 image: ./macos-sequoia.webp
 ---

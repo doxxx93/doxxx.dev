@@ -1,7 +1,7 @@
 ---
 title: 우쑤한국사 앱 회고
 authors: doxxx
-tags: [ 프로젝트, 회고 ]
+tags: [project, retrospect]
 date: 2024-10-13 00:27:57 +0900
 description: 우쑤한국사 앱 8개월 개발 회고. 프로젝트를 되돌아봅니다.
 image: ./woossu-app-icon.jpg

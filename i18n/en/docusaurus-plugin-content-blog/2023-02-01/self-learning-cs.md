@@ -1,7 +1,7 @@
 ---
 title: Computer Architecture + Operating System for Self-Study
 authors: doxxx
-tags: [ books, computer architecture, operating system ]
+tags: [books, computer-architecture, operating-system]
 date: 2023-02-01 14:26:57 +0900
 description: Computer Architecture + Operating System Summary for Self-Study
 image: https://image.yes24.com/goods/111378840/XL

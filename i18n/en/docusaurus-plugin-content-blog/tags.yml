@@ -1,0 +1,127 @@
+# English labels for the tag dictionary. This file REPLACES blog/tags.yml for the
+# en locale, so every key must be present and every permalink must be byte-identical
+# to the Korean file. A divergent permalink makes hreflang point at a 404.
+
+agent:
+  label: Agent
+  permalink: /agent
+ai:
+  label: AI
+  permalink: /ai
+api-server:
+  label: API Server
+  permalink: /api-server
+auto-scaling:
+  label: Auto Scaling
+  permalink: /auto-scaling
+automation:
+  label: Automation
+  permalink: /automation
+aws:
+  label: AWS
+  permalink: /aws
+bedrock:
+  label: Bedrock
+  permalink: /bedrock
+book-review:
+  label: Book Review
+  permalink: /book-review
+books:
+  label: Books
+  permalink: /books
+claude:
+  label: Claude
+  permalink: /claude
+cni:
+  label: CNI
+  permalink: /cni
+computer-architecture:
+  label: Computer Architecture
+  permalink: /computer-architecture
+container:
+  label: Container
+  permalink: /container
+control-plane:
+  label: Control Plane
+  permalink: /control-plane
+devops:
+  label: DevOps
+  permalink: /devops
+docker:
+  label: Docker
+  permalink: /docker
+glues:
+  label: Glues
+  permalink: /glues
+iac:
+  label: IaC
+  permalink: /iac
+informer:
+  label: Informer
+  permalink: /informer
+infrastructure:
+  label: Infrastructure
+  permalink: /infrastructure
+keyboard-shortcuts:
+  label: Keyboard Shortcuts
+  permalink: /keyboard-shortcuts
+kube-rs:
+  label: kube-rs
+  permalink: /kube-rs
+kubeadm:
+  label: kubeadm
+  permalink: /kubeadm
+kubernetes:
+  label: Kubernetes
+  permalink: /kubernetes
+linux-kernel:
+  label: Linux Kernel
+  permalink: /linux-kernel
+mac-os:
+  label: macOS
+  permalink: /mac-os
+math:
+  label: Math
+  permalink: /math
+monitoring:
+  label: Monitoring
+  permalink: /monitoring
+open-contribution:
+  label: Open Contribution
+  permalink: /open-contribution
+open-contribution-jam:
+  label: Open Contribution Jam
+  permalink: /open-contribution-jam
+open-source:
+  label: Open Source
+  permalink: /open-source
+operating-system:
+  label: Operating System
+  permalink: /operating-system
+productivity:
+  label: Productivity
+  permalink: /productivity
+project:
+  label: Project
+  permalink: /project
+retrospect:
+  label: Retrospect
+  permalink: /retrospect
+rust:
+  label: Rust
+  permalink: /rust
+sequoia:
+  label: Sequoia
+  permalink: /sequoia
+serverless:
+  label: Serverless
+  permalink: /serverless
+watch:
+  label: Watch
+  permalink: /watch
+나는리뷰어다:
+  label: I Am a Reviewer
+  permalink: /나는리뷰어다
+한빛미디어:
+  label: Hanbit Media
+  permalink: /한빛미디어

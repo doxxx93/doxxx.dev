@@ -1,7 +1,7 @@
 ---
 title: Open Contribution Jam 2024 참여기
 authors: doxxx
-tags: [ open-contribution-jam, open-source, open-contribution, Glues ]
+tags: [open-contribution-jam, open-source, open-contribution, glues]
 date: 2024-11-23 19:47:57 +0900
 image: /img/blog/2024-11-23/img.webp
 description: Open Contribution Jam 2024 행사 참여 후기와 Glues 프로젝트 기여 경험을 공유합니다.

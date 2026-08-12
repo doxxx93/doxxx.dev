@@ -56,8 +56,18 @@ const config: Config = {
           const deletedTags = [
             "containerd", "dynamodb", "summarization", "calico",
             "textract", "namespace", "chroot", "medical-paper",
-            "lambda", "retrospect", "컴퓨터-구조",
+            "lambda",
           ];
+
+          // 슬러그가 바뀐 태그 → 새 태그 페이지.
+          // ko/en 태그 슬러그를 tags.yml로 통일하면서 한국어 슬러그가 영문으로 바뀌었다.
+          const renamedTags: Record<string, string> = {
+            "서적": "books",
+            "운영체제": "operating-system",
+            "컴퓨터-구조": "computer-architecture",
+            "프로젝트": "project",
+            "회고": "retrospect",
+          };
 
           // 삭제된 docs 페이지 → 대체 경로
           const deletedDocs: Record<string, string> = {
@@ -66,9 +76,15 @@ const config: Config = {
 
           const isDefaultLocale = !existingPath.startsWith("/en/");
           const isEnLocale = existingPath.startsWith("/en/");
+          const prefix = isEnLocale ? "/en" : "";
 
-          // /blog/... → /... 리다이렉트 (routeBasePath 변경 대응)
-          if (!existingPath.startsWith("/docs") && !existingPath.startsWith("/blog")) {
+          // /blog/... → /... 리다이렉트 (routeBasePath 변경 대응).
+          // .html로 끝나는 라우트(/404.html)는 제외 — /blog/404.html.html이 생긴다.
+          if (
+            !existingPath.startsWith("/docs") &&
+            !existingPath.startsWith("/blog") &&
+            !existingPath.endsWith(".html")
+          ) {
             redirects.push(`/blog${existingPath}`);
             if (isEnLocale) {
               const pathWithoutLocale = existingPath.slice(3);
@@ -76,10 +92,23 @@ const config: Config = {
             }
           }
 
-          // 삭제된 태그 리디렉트
+          // 삭제된 태그 리디렉트.
+          // 삭제된 태그는 원본 라우트가 없어서 위의 /blog 접두사 규칙이 돌지 않는다.
+          // 레거시 /blog/tags/... 도 여기서 같이 만들어야 404가 남지 않는다.
           if (existingPath === "/tags" || existingPath === "/en/tags") {
-            const prefix = isEnLocale ? "/en" : "";
-            redirects.push(...deletedTags.map((t) => `${prefix}/tags/${t}`));
+            for (const t of deletedTags) {
+              redirects.push(`${prefix}/tags/${t}`, `${prefix}/blog/tags/${t}`);
+            }
+          }
+
+          // 슬러그가 바뀐 태그 리디렉트 (양쪽 로케일)
+          for (const [oldSlug, newSlug] of Object.entries(renamedTags)) {
+            if (existingPath === `${prefix}/tags/${newSlug}`) {
+              redirects.push(
+                `${prefix}/tags/${oldSlug}`,
+                `${prefix}/blog/tags/${oldSlug}`,
+              );
+            }
           }
 
           // 삭제된 docs 리디렉트 (en locale)
@@ -149,10 +178,22 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/doxxx93/doxxx.dev/edit/master/",
+          // tags.yml에 없는 태그는 빌드를 깬다. ko/en 태그 슬러그가 다시 갈라지면
+          // hreflang이 404를 가리키게 되므로 CI에서 잡는다.
+          onInlineTags: "throw",
           // Useful options to enforce blogging best practices
-          // onInlineTags: 'warn',
           // onInlineAuthors: 'warn',
           // onUntruncatedBlogPosts: 'warn',
+        },
+        sitemap: {
+          // 태그·페이지네이션·검색은 얇은 자동 생성 페이지다. 사이트맵에서 빼서
+          // 크롤 예산을 글과 문서로 몰아준다 (이미 색인된 태그 페이지는 유지된다).
+          ignorePatterns: [
+            "/tags", "/tags/**", "/en/tags", "/en/tags/**",
+            "/authors", "/authors/**", "/en/authors", "/en/authors/**",
+            "/page/**", "/en/page/**",
+            "/search", "/en/search",
+          ],
         },
         ...(process.env.NODE_ENV === "production" && {
           gtag: {
