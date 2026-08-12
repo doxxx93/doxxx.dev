@@ -1,10 +1,11 @@
 ---
 sidebar_position: 1
-title: "kube"
-description: "Rust Kubernetes 클라이언트 라이브러리 심층 가이드"
+title: "kube-rs 심층 가이드"
+sidebar_label: "kube"
+description: "kube-rs 내부 구조: 크레이트 구성, client/tower 스택, 컨트롤러 런타임, 프로덕션 패턴"
 ---
 
-# kube
+# kube-rs 심층 가이드
 
 Rust로 작성된 Kubernetes 클라이언트 라이브러리입니다. Go의 [client-go](https://github.com/kubernetes/client-go)에 대응하며, [CNCF Sandbox](https://www.cncf.io/projects/) 프로젝트로 호스팅되고 있습니다.
 

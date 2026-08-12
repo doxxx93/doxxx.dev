@@ -1,4 +1,4 @@
-# kube
+# kube-rs 심층 가이드
 
 Rust로 작성된 Kubernetes 클라이언트 라이브러리입니다. Go의 [client-go](https://github.com/kubernetes/client-go)에 대응하며, [CNCF Sandbox](https://www.cncf.io/projects/) 프로젝트로 호스팅되고 있습니다.
 

@@ -1,10 +1,11 @@
 ---
 sidebar_position: 1
-title: "kube"
-description: "An in-depth guide to the Rust Kubernetes client library"
+title: "kube-rs: A Deep Dive into the Rust Kubernetes Client"
+sidebar_label: "kube"
+description: "How kube-rs works underneath: crate layout, the client and tower stack, controller runtime internals, and production patterns."
 ---
 
-# kube
+# kube-rs: A Deep Dive into the Rust Kubernetes Client
 
 A Kubernetes client library written in Rust. It is the Rust counterpart to Go's [client-go](https://github.com/kubernetes/client-go) and is hosted as a [CNCF Sandbox](https://www.cncf.io/projects/) project.
 
