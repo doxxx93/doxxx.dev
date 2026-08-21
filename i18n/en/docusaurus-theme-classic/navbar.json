@@ -14,5 +14,13 @@
   "item.label.About": {
     "message": "About",
     "description": "Navbar item with label About"
+  },
+  "item.label.Docs": {
+    "message": "Docs",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.kube": {
+    "message": "kube",
+    "description": "Navbar item with label kube"
   }
 }

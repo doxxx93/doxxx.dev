@@ -556,5 +556,71 @@
   "theme.tags.tagsPageTitle": {
     "message": "Tags",
     "description": "The title of the tag list page"
+  },
+  "about.pageTitle": {
+    "message": "About"
+  },
+  "about.pageDescription": {
+    "message": "Rust systems engineer working on real-time trading systems at OrderX, and on kube-rs"
+  },
+  "about.heading": {
+    "message": "About"
+  },
+  "about.name": {
+    "message": "Doyul (Ian) Kim"
+  },
+  "about.role": {
+    "message": "Software Engineer · Rust & Distributed Systems"
+  },
+  "about.company": {
+    "message": "OrderX · Remote · Seoul, South Korea"
+  },
+  "about.intro": {
+    "message": "Building the order & execution management system behind a real-time multi-asset trading terminal in Rust."
+  },
+  "about.current": {
+    "message": "At OrderX, I work on market-data ingestion across providers and venues, the derivatives-analytics surface, and order execution: 20+ Rust microservices over NATS with time-series market data in QuestDB. Much of the job is failures that raise no error, like a half-open socket that left a feed dead for ten days while the process reported healthy."
+  },
+  "about.previous": {
+    "message": "Before that, at STCLab, the Rust backend and EKS infrastructure of a Kubernetes workload cost-optimization platform: DuckDB storage stabilization, alerting design, autoscaling redesign, and Terraform IaC."
+  },
+  "about.openSource": {
+    "message": "Member of {kubeRs}, a production-grade open-source Kubernetes client for Rust, and author of {kubeCel}, which brings Kubernetes CEL validation to the client side."
+  },
+  "about.skills.heading": {
+    "message": "Skills"
+  },
+  "about.skills.languages": {
+    "message": "Languages:"
+  },
+  "about.skills.infrastructure": {
+    "message": "Infrastructure:"
+  },
+  "about.skills.messaging": {
+    "message": "Messaging:"
+  },
+  "about.skills.observability": {
+    "message": "Observability:"
+  },
+  "about.skills.data": {
+    "message": "Data:"
+  },
+  "about.certifications.heading": {
+    "message": "Certifications"
+  },
+  "about.certifications.gameday": {
+    "message": "AWS Public Sector GameDay — Third Place (2024)"
+  },
+  "about.education.heading": {
+    "message": "Education"
+  },
+  "about.education.school": {
+    "message": "Konkuk University"
+  },
+  "about.education.degree": {
+    "message": "Bachelor's Degree, Industrial Engineering (2021)"
+  },
+  "about.links.heading": {
+    "message": "Links"
   }
 }

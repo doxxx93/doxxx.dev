@@ -2,5 +2,21 @@
   "version.label": {
     "message": "Next",
     "description": "The label for version current"
+  },
+  "sidebar.kubeSidebar.category.Architecture": {
+    "message": "Architecture",
+    "description": "The label for category 'Architecture' in sidebar 'kubeSidebar'"
+  },
+  "sidebar.kubeSidebar.category.Runtime Internals": {
+    "message": "Runtime Internals",
+    "description": "The label for category 'Runtime Internals' in sidebar 'kubeSidebar'"
+  },
+  "sidebar.kubeSidebar.category.Patterns": {
+    "message": "Patterns",
+    "description": "The label for category 'Patterns' in sidebar 'kubeSidebar'"
+  },
+  "sidebar.kubeSidebar.category.Production": {
+    "message": "Production",
+    "description": "The label for category 'Production' in sidebar 'kubeSidebar'"
   }
 }
