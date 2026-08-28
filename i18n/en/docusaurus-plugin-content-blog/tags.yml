@@ -23,6 +23,9 @@ aws:
 bedrock:
   label: Bedrock
   permalink: /bedrock
+bitcoin:
+  label: Bitcoin
+  permalink: /bitcoin
 book-review:
   label: Book Review
   permalink: /book-review
@@ -47,6 +50,9 @@ control-plane:
 devops:
   label: DevOps
   permalink: /devops
+distributed-systems:
+  label: Distributed Systems
+  permalink: /distributed-systems
 docker:
   label: Docker
   permalink: /docker
