@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>무지개 벽돌깨기</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="무지개 벽돌깨기">
+<meta property="og:description" content="2014년 티스토리에 돌아다니던 그 벽돌깨기. 별빛이 내린다와 함께.">
+<meta property="og:url" content="https://doxxx.dev/starlight/">
+<meta name="twitter:card" content="summary">
+<!--
+  게임: coppieee, BlockBreaker (wonderfl.net/c/tNGi) — MIT License
+        Copyright coppieee ( http://wonderfl.net/user/coppieee )
+        http://www.opensource.org/licenses/mit-license.php
+  HTML5 이식: https://github.com/15x15G/PixelBreakOut
+  BGM: 안녕바다 <별빛이 내린다>
+
+  2014년 티스토리 원글(momet.tistory.com/88)은 465×465 SWF 옆에
+  150×150 유튜브를 autoplay=1로 심어 자동 재생시켰다. 그때는 데스크톱에
+  자동재생 정책이 없었다. Safari 11(2017) · Chrome 66(2018) ·
+  Firefox 66(2019)이 소리 있는 자동재생을 막은 뒤라 이제는 제스처가 한 번 필요하다.
+-->
+<style>
+  html, body { margin:0; height:100%; background:#000; overflow:hidden; }
+  #stage { height:100%; display:flex; flex-direction:column;
+           align-items:center; justify-content:center; gap:6px; }
+  .title { display:flex; width:min(90vmin, 930px);
+           font:13px/1 ui-monospace, Menlo, monospace; color:#4a4a4a; }
+  canvas { width:min(90vmin, 930px); height:min(90vmin, 930px);
+           background:#000; image-rendering:pixelated; }
+  #bgm { position:fixed; right:0; bottom:0; width:200px; height:150px;
+         border:0; opacity:0; pointer-events:none; }
+  #start { position:fixed; inset:0; z-index:9; background:#000; cursor:pointer;
+           display:flex; align-items:center; justify-content:center;
+           font:13px/1 -apple-system, "Apple SD Gothic Neo", sans-serif; color:#666; }
+</style>
+</head>
+<body>
+
+<div id="start">클릭하면 시작합니다</div>
+
+<div id="stage">
+  <div class="title">
+    <label id="balllabel">balls:1</label>
+    <label style="flex:1; text-align:center" id="blocklabel">blocks:46500</label>
+    <label id="fpslabel">00.00 fps</label>
+  </div>
+  <canvas id="myCanvas" width="465" height="465"></canvas>
+</div>
+
+<iframe id="bgm" allow="autoplay; encrypted-media"></iframe>
+
+<script>
+document.getElementById("start").onclick = function () {
+  // 사용자 제스처 직후에 src를 넣어야 소리 있는 autoplay가 통과된다
+  document.getElementById("bgm").src =
+    "https://www.youtube.com/embed/3U4mxBpX_m4?autoplay=1&loop=1&playlist=3U4mxBpX_m4";
+  var s = document.createElement("script");
+  s.src = "script.js";
+  document.body.appendChild(s);
+  this.remove();
+};
+</script>
+</body>
+</html>
