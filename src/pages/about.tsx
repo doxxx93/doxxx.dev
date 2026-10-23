@@ -10,7 +10,7 @@ export default function About(): React.JSX.Element {
       description={translate({
         id: "about.pageDescription",
         message:
-          "OrderX에서 실시간 트레이딩 시스템을, 오픈소스에서는 kube-rs를 만드는 Rust 시스템 엔지니어",
+          "OrderX에서 실시간 트레이딩 시스템을, 오픈소스에서는 kube-rs를 만들어 온 Rust 시스템 엔지니어",
       })}
     >
       <main style={{ padding: "2rem 0" }}>
@@ -35,7 +35,7 @@ export default function About(): React.JSX.Element {
                 </Translate>
               </p>
               <p className={styles.company}>
-                <Translate id="about.company">OrderX · 리모트 · 서울</Translate>
+                <Translate id="about.company">서울</Translate>
               </p>
             </div>
           </section>
@@ -44,15 +44,15 @@ export default function About(): React.JSX.Element {
             <p className={styles.text}>
               <Translate id="about.intro">
                 실시간 멀티에셋 트레이딩 터미널의 주문·체결 관리 시스템을 Rust로
-                만들고 있습니다.
+                만들었습니다.
               </Translate>
             </p>
             <p className={styles.text}>
               <Translate id="about.current">
                 OrderX에서는 여러 공급자와 거래소에 걸친 시세 수집, 파생상품 분석
-                화면, 주문 체결을 맡고 있습니다. NATS 위에 올린 20개 이상의 Rust
-                마이크로서비스와 QuestDB에 쌓는 시계열 시세 데이터로 돌아갑니다.
-                일의 상당 부분은 에러를 내지 않는 장애를 다루는 것입니다.
+                화면, 주문 체결을 맡았습니다. NATS 위에 올린 Rust 마이크로서비스와
+                QuestDB에 쌓는 시계열 시세 데이터로 돌아가는 시스템이었습니다.
+                일의 상당 부분은 에러를 내지 않는 장애를 다루는 것이었습니다.
                 프로세스는 정상이라고 보고하는데 half-open 소켓 때문에 피드가
                 열흘 동안 죽어 있던 일처럼요.
               </Translate>
@@ -75,7 +75,7 @@ export default function About(): React.JSX.Element {
                 }}
               >
                 {
-                  "Rust용 프로덕션 등급 오픈소스 쿠버네티스 클라이언트인 {kubeRs}의 멤버이고, 쿠버네티스 CEL 검증을 클라이언트 쪽으로 가져온 {kubeCel}을 만들었습니다."
+                  "Rust용 프로덕션 등급 오픈소스 쿠버네티스 클라이언트인 {kubeRs}의 메인테이너이고, 쿠버네티스 CEL 검증을 클라이언트 쪽으로 가져온 {kubeCel}을 만들었습니다."
                 }
               </Translate>
             </p>
