@@ -561,7 +561,7 @@
     "message": "About"
   },
   "about.pageDescription": {
-    "message": "Rust systems engineer who built real-time trading systems at OrderX and works on kube-rs"
+    "message": "Rust systems engineer who worked on the Rust backend of a real-time trading terminal at OrderX and maintains kube-rs"
   },
   "about.heading": {
     "message": "About"
@@ -576,10 +576,10 @@
     "message": "Seoul, South Korea"
   },
   "about.intro": {
-    "message": "Built the order & execution management system behind a real-time multi-asset trading terminal in Rust."
+    "message": "Built market-data ingestion and derivatives-analytics services and the external data API for a real-time multi-asset trading terminal in Rust."
   },
   "about.current": {
-    "message": "At OrderX, I worked on market-data ingestion across providers and venues, the derivatives-analytics surface, and order execution, on Rust microservices over NATS with time-series market data in QuestDB. Much of the job was failures that raise no error, like a half-open socket that left a feed dead for ten days while the process reported healthy."
+    "message": "At OrderX, I worked on market-data ingestion across providers and venues, derivatives-analytics services, and the external data API, on Rust microservices over NATS with time-series market data in QuestDB. Much of the job was failures that raise no error, like a half-open socket that left a feed dead for ten days while the process reported healthy."
   },
   "about.previous": {
     "message": "Before that, at STCLab, the Rust backend and EKS infrastructure of a Kubernetes workload cost-optimization platform: DuckDB storage stabilization, alerting design, autoscaling redesign, and Terraform IaC."
