@@ -54,14 +54,14 @@ export default function About(): React.JSX.Element {
                 QuestDB에 쌓는 시계열 시세 데이터로 돌아가는 시스템이었습니다.
                 일의 상당 부분은 에러를 내지 않는 장애를 다루는 것이었습니다.
                 프로세스는 정상이라고 보고하는데 half-open 소켓 때문에 피드가
-                열흘 동안 죽어 있던 일처럼요.
+                9일 동안 죽어 있던 일처럼요.
               </Translate>
             </p>
             <p className={styles.text}>
               <Translate id="about.previous">
                 그 전에는 STCLab에서 쿠버네티스 워크로드 비용 최적화 플랫폼의
                 Rust 백엔드와 EKS 인프라를 맡았습니다. DuckDB 스토리지 안정화,
-                알림 설계, 오토스케일링 재설계, Terraform IaC를 진행했습니다.
+                오토스케일링 재설계, Terraform IaC를 진행했습니다.
               </Translate>
             </p>
             <p className={styles.text}>

@@ -579,10 +579,10 @@
     "message": "Built market-data ingestion and derivatives-analytics services and the external data API for a real-time multi-asset trading terminal in Rust."
   },
   "about.current": {
-    "message": "At OrderX, I worked on market-data ingestion across providers and venues, derivatives-analytics services, and the external data API, on Rust microservices over NATS with time-series market data in QuestDB. Much of the job was failures that raise no error, like a half-open socket that left a feed dead for ten days while the process reported healthy."
+    "message": "At OrderX, I worked on market-data ingestion across providers and venues, derivatives-analytics services, and the external data API, on Rust microservices over NATS with time-series market data in QuestDB. Much of the job was failures that raise no error, like a half-open socket that left a feed dead for nine days while the process reported healthy."
   },
   "about.previous": {
-    "message": "Before that, at STCLab, the Rust backend and EKS infrastructure of a Kubernetes workload cost-optimization platform: DuckDB storage stabilization, alerting design, autoscaling redesign, and Terraform IaC."
+    "message": "Before that, at STCLab, the Rust backend and EKS infrastructure of a Kubernetes workload cost-optimization platform: DuckDB storage stabilization, autoscaling redesign, and Terraform IaC."
   },
   "about.openSource": {
     "message": "Maintainer of {kubeRs}, a production-grade open-source Kubernetes client for Rust, and author of {kubeCel}, which brings Kubernetes CEL validation to the client side."
