@@ -482,6 +482,9 @@ html.blog-tags-post-list-page {
   // proximity (not mandatory) leaves free scrolling alone between posts.
   scroll-snap-type: y proximity;
   scroll-padding-top: calc(var(--ifm-navbar-height) + 2rem);
+  @media (prefers-reduced-motion: reduce) {
+    scroll-snap-type: none;
+  }
   article {
     scroll-snap-align: start;
   }
