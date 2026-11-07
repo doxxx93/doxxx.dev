@@ -488,6 +488,10 @@ html.blog-tags-post-list-page {
   article {
     scroll-snap-align: start;
   }
+  // without this the last post's snap point holds the page ~20px above the bottom
+  footer.footer {
+    scroll-snap-align: end;
+  }
 
   // Infima's margin-bottom--xl (5rem, !important inside a cascade layer) can't be
   // overridden, so that gap alone separates the rows instead of a rule line.
