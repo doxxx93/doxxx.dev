@@ -119,6 +119,11 @@ const config: Config = {
             }
           }
 
+          // 홈 페이지네이션 제거 (postsPerPage: "ALL") → /page/2 는 홈으로
+          if (existingPath === "/" || existingPath === "/en/") {
+            redirects.push(`${prefix}/page/2`);
+          }
+
           // 삭제된 docs 리디렉트 (en locale)
           for (const [from, to] of Object.entries(deletedDocs)) {
             if (existingPath === `/en${to}`) {
@@ -164,6 +169,9 @@ const config: Config = {
             "Writing about Kubernetes, Cloud, and Rust",
           blogSidebarTitle: "전체 글",
           blogSidebarCount: "ALL",
+          // Rows are light enough to list every post on the home page; the old
+          // /page/N URLs redirect to the home page (see createRedirects).
+          postsPerPage: "ALL",
           showReadingTime: true,
           editLocalizedFiles: true,
           showLastUpdateTime: true,
