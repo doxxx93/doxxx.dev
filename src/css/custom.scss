@@ -478,6 +478,14 @@ html.blog-tags-post-list-page {
   article footer {
     display: none;
   }
+  // When scrolling stops near a post, ease it to the top of the viewport.
+  // proximity (not mandatory) leaves free scrolling alone between posts.
+  scroll-snap-type: y proximity;
+  scroll-padding-top: calc(var(--ifm-navbar-height) + 2rem);
+  article {
+    scroll-snap-align: start;
+  }
+
   // Infima's margin-bottom--xl (5rem, !important inside a cascade layer) can't be
   // overridden, so that gap alone separates the rows instead of a rule line.
   article.margin-bottom--xl {
