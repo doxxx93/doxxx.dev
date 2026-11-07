@@ -71,9 +71,10 @@ $frame-max-width: 96rem;
   // Custom tokens
   --sidebar-color: #5d5d5d;
   --sidebar-color-hover: #181818;
-  // Signature accent (Hermès orange). Darker on light so small text keeps 4.9:1;
-  // used only for "you are here" marks, the post category and keyboard focus.
-  --accent: #c24a0c;
+  // Signature accent (Hermès orange), the same in both themes; used only for
+  // "you are here" marks, the post category and keyboard focus. On white it is
+  // 2.9:1, below AA for small text — chosen for the look; keep it off body text.
+  --accent: #f37021;
 
   // DocSearch — neutral greys (remove default blue tint)
   --docsearch-muted-color: #8a8a8a;
