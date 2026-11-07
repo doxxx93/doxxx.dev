@@ -1,0 +1,6 @@
+{
+  "theme.blog.tagTitle": {
+    "message": "\"{tagName}\" 태그 · {nPosts}",
+    "description": "Tag page title. The stock Korean string repeats the count unit ({nPosts} already reads \"5개 게시물\"), producing \"5개 게시물개의 게시물이 있습니다\"."
+  }
+}
