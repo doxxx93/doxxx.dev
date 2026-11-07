@@ -484,9 +484,6 @@ html.blog-tags-post-list-page {
     padding-bottom: 0;
     border-bottom: none;
   }
-  article header {
-    margin-bottom: 0;
-  }
 }
 
 // Blog list — clickable article card with separator
@@ -637,13 +634,11 @@ article .markdown > p:first-child > img {
     margin-bottom: 1.5rem !important;
   }
 
+  // Same cover height on the list and the post, so it doesn't resize on the way in
   article .markdown > p:first-child > img {
     max-width: 100%;
-    border-radius: 8px;
-  }
-
-  article.margin-bottom--xl .markdown > p:first-child > img {
     height: 260px;
+    border-radius: 8px;
   }
 }
 
