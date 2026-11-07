@@ -13,10 +13,19 @@ type ClassNames = {
   archive: string;
 };
 
-// Book reviews are titled "<Book> subtitle"; the sidebar shows only the book.
+// Book reviews are titled "<Book> subtitle"; they are reached through the topic, not the recent list.
 const BOOK_TITLE = /^<(.+?)>/;
+const RECENT_COUNT = 5;
 
-// Posts grouped by year, then book reviews collapsed into one group, then a link to the full archive.
+// shortcut: topics are hand-listed tag pages because the blog sidebar data has no tags;
+// list a topic here once it has 3+ posts.
+const TOPICS = [
+  {to: '/tags/kubernetes', label: () => 'Kubernetes'},
+  {to: '/tags/book-review', label: () => translate({id: 'theme.blog.sidebar.bookReviews', message: '서평', description: 'Book review topic in the blog sidebar'})},
+];
+
+// Sidebar modeled on the OpenAI developer blog: recent posts, topics, then the full archive.
+// Its length stays the same however many posts accumulate.
 export default function BlogSidebarGroups({
   items,
   classNames: c,
@@ -24,40 +33,29 @@ export default function BlogSidebarGroups({
   items: BlogSidebarItem[];
   classNames: ClassNames;
 }): ReactNode {
-  const posts = items.filter((i) => !BOOK_TITLE.test(i.title));
-  const books = items.filter((i) => BOOK_TITLE.test(i.title));
-  // sidebar dates arrive as ISO strings after serialization
-  const year = (i: BlogSidebarItem) => String(i.date).slice(0, 4);
-  const years = [...new Set(posts.map(year))];
-
-  const list = (group: BlogSidebarItem[], label: (i: BlogSidebarItem) => string) => (
-    <ul className={c.list}>
-      {group.map((i) => (
-        <li key={i.permalink} className={c.item}>
-          <Link isNavLink to={i.permalink} className={c.link} activeClassName={c.linkActive}>
-            {label(i)}
-          </Link>
-        </li>
-      ))}
-    </ul>
+  const recent = items.filter((i) => !BOOK_TITLE.test(i.title)).slice(0, RECENT_COUNT);
+  const link = (key: string, to: string, label: string) => (
+    <li key={key} className={c.item}>
+      <Link isNavLink to={to} className={c.link} activeClassName={c.linkActive}>
+        {label}
+      </Link>
+    </li>
   );
 
   return (
     <>
-      {years.map((y) => (
-        <div key={y} className={c.group}>
-          <div className={c.heading}>{y}</div>
-          {list(posts.filter((i) => year(i) === y), (i) => i.title)}
+      <div className={c.group}>
+        <div className={c.heading}>
+          {translate({id: 'theme.blog.sidebar.recent', message: '최근 글', description: 'Heading of the recent posts group in the blog sidebar'})}
         </div>
-      ))}
-      {books.length > 0 && (
-        <div className={c.group}>
-          <div className={c.heading}>
-            {translate({id: 'theme.blog.sidebar.bookReviews', message: '서평', description: 'Heading of the book review group in the blog sidebar'})}
-          </div>
-          {list(books, (i) => i.title.match(BOOK_TITLE)![1])}
+        <ul className={c.list}>{recent.map((i) => link(i.permalink, i.permalink, i.title))}</ul>
+      </div>
+      <div className={c.group}>
+        <div className={c.heading}>
+          {translate({id: 'theme.blog.sidebar.topics', message: '주제', description: 'Heading of the topics group in the blog sidebar'})}
         </div>
-      )}
+        <ul className={c.list}>{TOPICS.map((t) => link(t.to, t.to, t.label()))}</ul>
+      </div>
       <Link to="/archive" className={c.archive}>
         {translate({id: 'theme.blog.sidebar.allPosts', message: '전체 글 보기 →', description: 'Link from the blog sidebar to the full archive'})}
       </Link>

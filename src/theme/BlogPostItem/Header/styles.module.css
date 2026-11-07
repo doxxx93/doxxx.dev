@@ -1,0 +1,39 @@
+.kicker {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 15px;
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  color: var(--sidebar-color);
+}
+
+.kicker > div {
+  margin: 0 !important;
+}
+
+.title {
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--sidebar-color);
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 auto 1rem;
+  max-width: 36rem;
+  text-wrap: balance;
+}
+
+/* Phones left-align the title (custom.scss responsive section); keep the category line with it */
+@media (max-width: 996px) {
+  .kicker {
+    justify-content: flex-start;
+  }
+  .subtitle {
+    margin-left: 0;
+  }
+}

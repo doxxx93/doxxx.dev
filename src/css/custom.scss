@@ -470,6 +470,25 @@ article footer .col.text--right {
   display: none;
 }
 
+// Blog lists (home and tag pages) — header only: category · date, title, subtitle.
+// The excerpt and tags stay on the post page.
+html.blog-list-page,
+html.blog-tags-post-list-page {
+  article .markdown,
+  article footer {
+    display: none;
+  }
+  // Infima's margin-bottom--xl (5rem, !important inside a cascade layer) can't be
+  // overridden, so that gap alone separates the rows instead of a rule line.
+  article.margin-bottom--xl {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  article header {
+    margin-bottom: 0;
+  }
+}
+
 // Blog list — clickable article card with separator
 article.margin-bottom--xl {
   position: relative;
