@@ -120,8 +120,10 @@ const config: Config = {
           }
 
           // 홈 페이지네이션 제거 (postsPerPage: "ALL") → /page/2 는 홈으로
+          // /page/2 no longer exists, so the /blog prefix rule above can't produce its
+          // legacy alias any more; add it here too.
           if (existingPath === "/" || existingPath === "/en/") {
-            redirects.push(`${prefix}/page/2`);
+            redirects.push(`${prefix}/page/2`, `${prefix}/blog/page/2`);
           }
 
           // 삭제된 docs 리디렉트 (en locale)

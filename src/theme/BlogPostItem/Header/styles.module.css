@@ -11,10 +11,6 @@
   color: var(--accent);
 }
 
-.kicker > div {
-  margin: 0 !important;
-}
-
 .title {
   margin-bottom: 0.5rem;
 }
