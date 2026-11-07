@@ -162,7 +162,7 @@ const config: Config = {
           blogTitle: "doxxx.dev",
           blogDescription:
             "Writing about Kubernetes, Cloud, and Rust",
-          blogSidebarTitle: "All Posts",
+          blogSidebarTitle: "전체 글",
           blogSidebarCount: "ALL",
           showReadingTime: true,
           editLocalizedFiles: true,

@@ -1,26 +1,20 @@
 import React, {memo, type ReactNode} from 'react';
 import Link from '@docusaurus/Link';
-import {
-  useVisibleBlogSidebarItems,
-  BlogSidebarItemList,
-} from '@docusaurus/plugin-content-blog/client';
+import {useVisibleBlogSidebarItems} from '@docusaurus/plugin-content-blog/client';
 import {NavbarSecondaryMenuFiller} from '@docusaurus/theme-common';
-import BlogSidebarContent from '@theme/BlogSidebar/Content';
 import type {Props} from '@theme/BlogSidebar/Mobile';
-import type {Props as BlogSidebarContentProps} from '@theme/BlogSidebar/Content';
+import BlogSidebarGroups from '@site/src/components/BlogSidebarGroups';
 
 import styles from './styles.module.css';
 
-const ListComponent: BlogSidebarContentProps['ListComponent'] = ({items}) => {
-  return (
-    <BlogSidebarItemList
-      items={items}
-      ulClassName={styles.list}
-      liClassName={styles.listItem}
-      linkClassName={styles.link}
-      linkActiveClassName={styles.linkActive}
-    />
-  );
+const groupClassNames = {
+  group: styles.group,
+  heading: styles.groupHeading,
+  list: styles.list,
+  item: styles.listItem,
+  link: styles.link,
+  linkActive: styles.linkActive,
+  archive: styles.archiveLink,
 };
 
 function BlogSidebarMobileSecondaryMenu({sidebar}: Props): ReactNode {
@@ -32,11 +26,7 @@ function BlogSidebarMobileSecondaryMenu({sidebar}: Props): ReactNode {
           {sidebar.title}
         </Link>
       </div>
-      <BlogSidebarContent
-        items={items}
-        ListComponent={ListComponent}
-        yearGroupHeadingClassName={styles.yearGroupHeading}
-      />
+      <BlogSidebarGroups items={items} classNames={groupClassNames} />
     </>
   );
 }

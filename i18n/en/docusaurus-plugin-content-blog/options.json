@@ -1,10 +1,10 @@
 {
   "title": {
-    "message": "Doxxx Dev",
+    "message": "doxxx.dev",
     "description": "The title for the blog used in SEO"
   },
   "description": {
-    "message": "I am a cloud engineer.",
+    "message": "Writing about Kubernetes, Cloud, and Rust",
     "description": "The description for the blog used in SEO"
   },
   "sidebar.title": {

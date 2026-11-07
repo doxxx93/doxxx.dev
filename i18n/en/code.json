@@ -622,5 +622,13 @@
   },
   "about.links.heading": {
     "message": "Links"
+  },
+  "theme.blog.sidebar.bookReviews": {
+    "message": "Book reviews",
+    "description": "Heading of the book review group in the blog sidebar"
+  },
+  "theme.blog.sidebar.allPosts": {
+    "message": "All posts →",
+    "description": "Link from the blog sidebar to the full archive"
   }
 }
