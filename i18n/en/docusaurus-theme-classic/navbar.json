@@ -19,8 +19,8 @@
     "message": "Docs",
     "description": "Navbar item with label Docs"
   },
-  "item.label.kube": {
-    "message": "kube",
-    "description": "Navbar item with label kube"
+  "item.label.kube-rs": {
+    "message": "kube-rs",
+    "description": "Navbar item with label kube-rs"
   }
 }

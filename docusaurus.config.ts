@@ -270,7 +270,7 @@ const config: Config = {
             {
               type: "docSidebar",
               sidebarId: "kubeSidebar",
-              label: "kube",
+              label: "kube-rs",
             },
           ],
         },
