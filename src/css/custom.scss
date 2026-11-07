@@ -122,6 +122,12 @@ $frame-max-width: 96rem;
   border-radius: 3px;
 }
 
+// Keyboard focus ring in the theme's own ink instead of the browser's default blue
+:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
 // Korean breaks between words (어절), not mid-word; long URLs/identifiers still wrap
 body {
   word-break: keep-all;
