@@ -4,7 +4,10 @@ description: "macOS Sequoia rejects RegisterEventHotKey registrations that use o
 authors: doxxx
 tags: [mac-os, sequoia, keyboard-shortcuts]
 date: 2024-10-29 09:47:57 +0900
+image: ./macos-sequoia.webp
 ---
+
+![macOS Sequoia](./macos-sequoia.webp)
 
 macOS Sequoia has blocked a keyboard shortcut combination frequently used by developers, for security reasons. Shortcuts that use only the Option (⌥) and Shift (⇧) keys can no longer be
 registered through the `RegisterEventHotkey` API.
