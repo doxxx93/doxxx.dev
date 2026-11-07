@@ -71,10 +71,12 @@ $frame-max-width: 96rem;
   // Custom tokens
   --sidebar-color: #5d5d5d;
   --sidebar-color-hover: #181818;
-  // Signature accent (Hermès orange), the same in both themes; used only for
-  // "you are here" marks, the post category and keyboard focus. On white it is
-  // 2.9:1, below AA for small text — chosen for the look; keep it off body text.
-  --accent: #f37021;
+  // Signature accent (Hermès orange #f37021, nudged to #f06c1e so markers and the
+  // focus ring reach the 3:1 non-text minimum on white). Same in both themes; used
+  // only for "you are here" marks, the post category and keyboard focus. As text
+  // on white it is 3.1:1, below AA for small text — chosen for the look; keep it
+  // off body text.
+  --accent: #f06c1e;
 
   // DocSearch — neutral greys (remove default blue tint)
   --docsearch-muted-color: #8a8a8a;
@@ -103,7 +105,7 @@ $frame-max-width: 96rem;
 
   --sidebar-color: #8a8a8a;
   --sidebar-color-hover: #e0e0e0;
-  --accent: #f37021;
+  --accent: #f06c1e;
 
   --docsearch-muted-color: #8a8a8a;
   --docsearch-key-gradient: linear-gradient(-225deg, #3a3a3a, #2e2e2e);
@@ -162,7 +164,7 @@ h1, h2, h3 {
 
 // Selected text gets a light accent wash instead of the browser's blue
 ::selection {
-  background: rgba(243, 112, 33, 0.28); // --accent at 28%
+  background: rgba(240, 108, 30, 0.28); // --accent at 28%
 }
 
 // Center images and diagrams
