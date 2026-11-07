@@ -3,12 +3,13 @@ title: A Review of the Usu Korean History App
 authors: doxxx
 tags: [project, retrospect]
 date: 2024-10-13 00:27:57 +0900
-description: Usu Korean History app — 8 months of development in review.
+description: A look back at 8 months of developing the Usu Korean History app.
+image: ./woossu-app-icon.jpg
 ---
 
-# A Look Back at the Usu Korean History App
+![Usu Korean History](./woossu-app-icon.jpg)
 
-This article reflects on the experiences and lessons learned while developing the Wusu Korean History app from February to October 2024, as well as future plans.
+This article reflects on the experiences and lessons learned while developing the Usu Korean History app from February to October 2024, as well as future plans.
 
 {/* truncate */}
 
@@ -67,8 +68,7 @@ As I began operating, I was able to experience the importance of user feedback a
 
 **Lacked**
 
-Due to the absence of a planner and project manager, requirements were not clearly defined. There were communication issues and scheduling problems. 같은 단어를 사용하더라도 서로가 이해하는 바가 달라 생겼던 혼란들을 계속
-반복했습니다.
+Due to the absence of a planner and project manager, requirements were not clearly defined. There were communication issues and scheduling problems. Even when we used the same words, we kept running into confusion because each of us understood them differently.
 
 **Longed-for**
 

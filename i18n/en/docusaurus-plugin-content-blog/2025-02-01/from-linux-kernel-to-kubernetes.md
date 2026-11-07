@@ -64,8 +64,7 @@ graph TB
 
 Container runtimes can be broadly divided into two levels:
 
-- 고수준(High Level) 런타임인 `Docker`나 `containerd`는 이미지 관리, 네트워크 설정 등 사용자 친화적인
-  추가 기능을 제공합니다.
+- High-level runtimes such as `Docker` and `containerd` provide user-friendly additional features such as image management and network configuration.
 
 - Low-level runtimes are components that interact directly with the machine, such as `runC`. It follows the OCI (Open Container
   Initiative) standard and is responsible for creating and running the actual container.
@@ -85,8 +84,7 @@ To address this, Kubernetes removed `dockershim` starting with version 1.24 and 
 
 ### 2.3 Modern Container Runtime Architecture
 
-Modern container runtime architectures are designed for efficiency and standardization in Kubernetes environments. Kubernetes는 CRI(Container Runtime Interface)를 통해 다양한 런타임과
-호환성을 유지하며, `containerd`와 같은 경량화된 런타임을 선호합니다. This structure offers the following advantages:
+Modern container runtime architectures are designed for efficiency and standardization in Kubernetes environments. Kubernetes maintains compatibility with various runtimes through the CRI (Container Runtime Interface) and prefers lightweight runtimes such as `containerd`. This structure offers the following advantages:
 
 - Optimize performance by removing unnecessary layers
 - Ensure compatibility through compliance with OCI standards

@@ -17,8 +17,7 @@ In this article, we'll share practical examples of technical decisions and areas
 
 ## Entering
 
-Researchers must keep up with important research trends amidst the overwhelming volume of papers published daily. 특히 임상과 연구를 병행하는 의료 전문가들의 경우, 시간적 제약으로 인해 최신 연구 동향을 따라가기가 더욱
-어렵습니다.
+Researchers must keep up with important research trends amidst the overwhelming volume of papers published daily. For medical professionals who balance clinical work and research, time constraints make it even harder to keep up with the latest research trends.
 
 To address these challenges, we developed a paper summary service leveraging AWS Serverless architecture. In this article, I'd like to share why we chose a serverless architecture and the technical decisions we made during implementation.
 
@@ -51,8 +50,7 @@ The paper collection pipeline was implemented by packaging the Chrome headless b
 
 ### 2. Text Extraction and Summarization Pipeline
 
-Text extraction and summarization are core functions of the entire service. We initially explored several approaches, but found that the combination of Amazon Textract and Bedrock was the most effective. 특히 다음과 같은 장단점을
-고려했습니다:
+Text extraction and summarization are core functions of the entire service. We initially explored several approaches, but found that the combination of Amazon Textract and Bedrock was the most effective. In particular, we weighed the following pros and cons:
 
 1. Why Choose Textract
 

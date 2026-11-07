@@ -4,10 +4,10 @@ authors: doxxx
 tags: [books, computer-architecture, operating-system]
 date: 2023-02-01 14:26:57 +0900
 description: Computer Architecture + Operating System Summary for Self-Study
-image: https://image.yes24.com/goods/111378840/XL
+image: ./self-learning-cs-cover.jpg
 ---
 
-# Computer Architecture + Operating System for Self-Study
+![Computer Architecture + Operating System for Self-Study](./self-learning-cs-cover.jpg)
 
 This is an article I wrote after reading a book on computer architecture and operating systems that I studied on my own.
 
@@ -37,8 +37,7 @@ Instructions are the information that actually moves the computer, and data is a
 
 ### The four core components of a computer
 
-중앙처리장치(CPU, Central Processing Unit), 주기억장치(메모리, main memory), 보조기억장치(secondary storage), 입출력장치(input/output(I/O)
-device)이다.
+They are the central processing unit (CPU), main memory, secondary storage, and input/output (I/O) devices.
 
 Memory stores the instructions and data of the currently running program.
 
