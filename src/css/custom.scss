@@ -156,7 +156,13 @@ h1, h2, h3 {
   text-underline-offset: 2px;
   &:hover {
     text-decoration-thickness: 2px;
+    text-decoration-color: var(--accent);
   }
+}
+
+// Selected text gets a light accent wash instead of the browser's blue
+::selection {
+  background: rgba(243, 112, 33, 0.28); // --accent at 28%
 }
 
 // Center images and diagrams
