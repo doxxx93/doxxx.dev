@@ -8,7 +8,7 @@
 }
 
 .label {
-  color: var(--sidebar-color);
+  color: var(--accent);
 }
 
 .kicker > div {

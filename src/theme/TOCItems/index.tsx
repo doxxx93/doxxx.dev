@@ -79,7 +79,7 @@ export default function TOCItemsWrapper(props: Props): React.JSX.Element {
           left: 0,
           top: 0,
           width: 2,
-          background: 'var(--ifm-font-color-base)',
+          background: 'var(--accent)',
           transition: 'transform 0.2s ease, height 0.2s ease, opacity 0.2s ease',
           opacity: 0,
           zIndex: 1,

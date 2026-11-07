@@ -39,7 +39,7 @@
 }
 
 .sidebarItemLinkActive {
-  color: var(--ifm-color-primary) !important;
+  color: var(--accent) !important;
 }
 
 @media (max-width: 996px) {
