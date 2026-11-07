@@ -35,6 +35,16 @@ $title-line-height: 42px;
 
 $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
 
+// Text column width shared by the blog list, posts and docs. The column keeps
+// its x position across all three; this stops it growing on wide screens.
+$content-max-width: 45rem;
+// Side padding of the text column: 7rem on wide screens, shrinking linearly
+// from 1349px down to 1.5rem at the 997px breakpoint so the text keeps its width.
+$content-padding-x: var(--content-padding-x);
+// Whole frame (sidebar + text + TOC). Wider screens center it instead of
+// leaving the right side empty; 96rem is where the text column hits its cap.
+$frame-max-width: 96rem;
+
 // =============================================================================
 // 3. THEME TOKENS — CSS custom properties for light / dark mode
 // =============================================================================
@@ -110,6 +120,17 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
 
 .button {
   border-radius: 3px;
+}
+
+// Korean breaks between words (어절), not mid-word; long URLs/identifiers still wrap
+body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+// Even out multi-line headings instead of leaving one syllable on the last line
+h1, h2, h3 {
+  text-wrap: balance;
 }
 
 // Hide archive hero banner
@@ -265,12 +286,16 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
 // =============================================================================
 
 @media (min-width: 997px) {
+  :root {
+    --content-padding-x: clamp(1.5rem, calc((100vw - 997px) / 4 + 1.5rem), 7rem);
+  }
+
   // --- Blog ---
 
   // Full-width container so sidebar aligns with docs sidebar
   .container.margin-vert--lg:has(> .row > aside.col--3) {
-    max-width: 100% !important;
-    margin: 0 !important;
+    max-width: $frame-max-width !important;
+    margin: 0 auto !important;
     padding: 0 1rem !important;
   }
 
@@ -295,15 +320,15 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
     flex-wrap: nowrap !important;
   }
 
-  // Blog main content — fill remaining space with generous padding.
-  // max-width: none overrides Infima col--7 cap (58.33%) so content
+  // Blog main content — fill remaining space with generous padding, up to the
+  // shared text width. The cap overrides Infima's col--7 (58.33%) so content
   // matches docs width. Safe because row is nowrap.
   main.col--7 {
     flex: 1 1 0% !important;
-    max-width: none !important;
+    max-width: calc(#{$content-max-width} + 2 * #{$content-padding-x}) !important;
     min-width: 0 !important;
-    padding-left: 7rem !important;
-    padding-right: 7rem !important;
+    padding-left: $content-padding-x !important;
+    padding-right: $content-padding-x !important;
   }
 
   // Blog list page (no TOC sibling) — reserve right margin matching col--2
@@ -312,6 +337,18 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
   }
 
   // --- Docs ---
+
+  // Docs frame — same width and centering as the blog frame so columns line up
+  [class*='docRoot'] {
+    max-width: $frame-max-width;
+    margin: 0 auto;
+  }
+
+  // Navbar content follows the same frame so the logo lines up with the sidebar
+  .navbar__inner {
+    max-width: $frame-max-width;
+    margin: 0 auto;
+  }
 
   // Full-width container (same as blog)
   [class*='docMainContainer'] > .container {
@@ -329,6 +366,7 @@ $heading-sizes: (h2: 20px, h3: 18px, h4: 16px);
   [class*='docMainContainer'] .row > .col:first-child {
     flex: 1 1 0% !important;
     min-width: 0 !important;
+    max-width: calc(#{$content-max-width} + 2 * #{$content-padding-x}) !important;
   }
 
   // TOC column — match blog col--2 absolute width.
