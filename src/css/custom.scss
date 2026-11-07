@@ -470,11 +470,11 @@ article footer .col.text--right {
   display: none;
 }
 
-// Blog lists (home and tag pages) — header only: category · date, title, subtitle.
-// The excerpt and tags stay on the post page.
+// Blog lists (home and tag pages) — header (category · date, title, subtitle)
+// plus the cover image. The rest of the excerpt and the tags stay on the post page.
 html.blog-list-page,
 html.blog-tags-post-list-page {
-  article .markdown,
+  article .markdown > *:not(p:first-child:has(> img)),
   article footer {
     display: none;
   }

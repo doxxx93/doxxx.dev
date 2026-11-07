@@ -13,19 +13,13 @@ type ClassNames = {
   archive: string;
 };
 
-// Book reviews are titled "<Book> subtitle"; they are reached through the topic, not the recent list.
+// Book reviews are titled "<Book> subtitle"; the sidebar shows only the book, in its own group.
 const BOOK_TITLE = /^<(.+?)>/;
 const RECENT_COUNT = 5;
 
-// shortcut: topics are hand-listed tag pages because the blog sidebar data has no tags;
-// list a topic here once it has 3+ posts.
-const TOPICS = [
-  {to: '/tags/kubernetes', label: () => 'Kubernetes'},
-  {to: '/tags/book-review', label: () => translate({id: 'theme.blog.sidebar.bookReviews', message: '서평', description: 'Book review topic in the blog sidebar'})},
-];
-
-// Sidebar modeled on the OpenAI developer blog: recent posts, topics, then the full archive.
-// Its length stays the same however many posts accumulate.
+// Sidebar modeled on the OpenAI developer blog: recent posts, book reviews, then the full archive.
+// Topics (Kubernetes, Rust, …) join once several have enough posts; mixing one subject with
+// one format ("Kubernetes" next to "book reviews") reads oddly.
 export default function BlogSidebarGroups({
   items,
   classNames: c,
@@ -34,6 +28,7 @@ export default function BlogSidebarGroups({
   classNames: ClassNames;
 }): ReactNode {
   const recent = items.filter((i) => !BOOK_TITLE.test(i.title)).slice(0, RECENT_COUNT);
+  const books = items.filter((i) => BOOK_TITLE.test(i.title));
   const link = (key: string, to: string, label: string) => (
     <li key={key} className={c.item}>
       <Link isNavLink to={to} className={c.link} activeClassName={c.linkActive}>
@@ -50,12 +45,16 @@ export default function BlogSidebarGroups({
         </div>
         <ul className={c.list}>{recent.map((i) => link(i.permalink, i.permalink, i.title))}</ul>
       </div>
-      <div className={c.group}>
-        <div className={c.heading}>
-          {translate({id: 'theme.blog.sidebar.topics', message: '주제', description: 'Heading of the topics group in the blog sidebar'})}
+      {books.length > 0 && (
+        <div className={c.group}>
+          <div className={c.heading}>
+            {translate({id: 'theme.blog.sidebar.bookReviews', message: '서평', description: 'Heading of the book review group in the blog sidebar'})}
+          </div>
+          <ul className={c.list}>
+            {books.map((i) => link(i.permalink, i.permalink, i.title.match(BOOK_TITLE)![1]))}
+          </ul>
         </div>
-        <ul className={c.list}>{TOPICS.map((t) => link(t.to, t.to, t.label()))}</ul>
-      </div>
+      )}
       <Link to="/archive" className={c.archive}>
         {translate({id: 'theme.blog.sidebar.allPosts', message: '전체 글 보기 →', description: 'Link from the blog sidebar to the full archive'})}
       </Link>

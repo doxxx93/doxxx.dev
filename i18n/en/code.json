@@ -625,7 +625,7 @@
   },
   "theme.blog.sidebar.bookReviews": {
     "message": "Book reviews",
-    "description": "Book review topic in the blog sidebar"
+    "description": "Heading of the book review group in the blog sidebar"
   },
   "theme.blog.sidebar.allPosts": {
     "message": "All posts →",
@@ -634,10 +634,6 @@
   "theme.blog.sidebar.recent": {
     "message": "Recent",
     "description": "Heading of the recent posts group in the blog sidebar"
-  },
-  "theme.blog.sidebar.topics": {
-    "message": "Topics",
-    "description": "Heading of the topics group in the blog sidebar"
   },
   "theme.blog.post.category.bookReview": {
     "message": "Book review",
