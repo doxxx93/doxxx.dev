@@ -56,7 +56,7 @@ export default function BlogSidebarGroups({
         </div>
       )}
       <Link to="/archive" className={c.archive}>
-        {translate({id: 'theme.blog.sidebar.allPosts', message: '전체 글 보기 →', description: 'Link from the blog sidebar to the full archive'})}
+        {translate({id: 'theme.blog.sidebar.archive', message: '아카이브 →', description: 'Link from the blog sidebar to the archive, named like the navbar item'})}
       </Link>
     </>
   );
