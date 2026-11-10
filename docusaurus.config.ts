@@ -199,6 +199,23 @@ const config: Config = {
           // tags.yml에 없는 태그는 빌드를 깬다. ko/en 태그 슬러그가 다시 갈라지면
           // hreflang이 404를 가리키게 되므로 CI에서 잡는다.
           onInlineTags: "throw",
+          // Every post: `title` is the heading (also the tab, og:title, archive), `description`
+          // the subtitle under it (also the meta description). Broken posts fail the build.
+          processBlogPosts: async ({ blogPosts }) => {
+            const errors: string[] = [];
+            for (const { metadata } of blogPosts) {
+              const { frontMatter: fm, source, tags, title } = metadata;
+              if (!fm.title?.trim()) errors.push(`${source}: needs a front matter title`);
+              if (!fm.description?.trim()) errors.push(`${source}: needs a description (shown as the subtitle)`);
+              if (title.startsWith("<")) errors.push(`${source}: title "<Book> subtitle" is gone; put the subtitle in description`);
+              for (const key of ["subtitle", "title_meta", "sidebar_label"]) {
+                if (key in fm) errors.push(`${source}: drop ${key}; title and description drive every title`);
+              }
+              // The sidebar only receives titles, so mark reviews "<Book>" for BlogSidebarGroups to group.
+              if (tags.some((t) => t.permalink.endsWith("/book-review"))) fm.sidebar_label = `<${title}>`;
+            }
+            if (errors.length) throw new Error(`Blog post title rules:\n${errors.join("\n")}`);
+          },
           // Useful options to enforce blogging best practices
           // onInlineAuthors: 'warn',
           // onUntruncatedBlogPosts: 'warn',

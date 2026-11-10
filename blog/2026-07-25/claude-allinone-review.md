@@ -1,10 +1,10 @@
 ---
-title: "<클로드 올인원 with 코워크, 코드, 디자인> 프롬프트 잘 쓰는 법이 아니라, 일을 어디에 맡길지 정하는 법"
+title: "클로드 올인원 with 코워크, 코드, 디자인"
 authors: doxxx
 tags: [book-review, ai, claude, productivity, 한빛미디어, 나는리뷰어다]
 date: 2026-07-25 12:00:00 +0900
 image: /img/blog/2026-07-25/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - 클로드 올인원 with 코워크, 코드, 디자인 리뷰"
+description: "프롬프트 잘 쓰는 법이 아니라, 일을 어디에 맡길지 정하는 법"
 ---
 
 ![책 표지](/img/blog/2026-07-25/cover.webp)

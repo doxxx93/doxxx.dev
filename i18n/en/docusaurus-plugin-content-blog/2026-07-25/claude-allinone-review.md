@@ -1,10 +1,10 @@
 ---
-title: "<Claude All-in-One> Not How to Prompt Better, but Where to Send the Work"
+title: "Claude All-in-One"
 authors: doxxx
 tags: [book-review, ai, claude, productivity, 한빛미디어, 나는리뷰어다]
 date: 2026-07-25 12:00:00 +0900
 image: /img/blog/2026-07-25/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - Claude All-in-One with Cowork, Code, Design (클로드 올인원) book review"
+description: "Not How to Prompt Better, but Where to Send the Work"
 ---
 
 ![Book cover](/img/blog/2026-07-25/cover.webp)

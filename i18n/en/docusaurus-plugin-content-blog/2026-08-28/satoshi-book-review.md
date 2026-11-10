@@ -1,10 +1,10 @@
 ---
-title: "<The Book of Satoshi (Revised and Expanded Edition)> If You Remove Whoever Decides the Order, What Goes in Its Place"
+title: "The Book of Satoshi (Revised and Expanded Edition)"
 authors: doxxx
 tags: [book-review, bitcoin, distributed-systems, 한빛미디어, 나는리뷰어다]
 date: 2026-08-28 12:00:00 +0900
 image: /img/blog/2026-08-28/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - The Book of Satoshi, Revised and Expanded Edition (사토시의 서(개정증보판)) book review"
+description: "If You Remove Whoever Decides the Order, What Goes in Its Place"
 ---
 
 ![Book cover](/img/blog/2026-08-28/cover.webp)

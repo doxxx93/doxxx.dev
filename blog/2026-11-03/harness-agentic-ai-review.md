@@ -1,10 +1,10 @@
 ---
-title: "<하네스 엔지니어링으로 완성하는 에이전틱 AI> 모델에게 부탁할 것과 코드로 강제할 것을 가르는 법"
+title: "하네스 엔지니어링으로 완성하는 에이전틱 AI"
 authors: doxxx
 tags: [book-review, ai, agent, claude, 한빛미디어, 나는리뷰어다]
 date: 2026-11-03 12:00:00 +0900
 image: /img/blog/2026-11-03/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - 하네스 엔지니어링으로 완성하는 에이전틱 AI 리뷰"
+description: "모델에게 부탁할 것과 코드로 강제할 것을 가르는 법"
 ---
 
 ![책 표지](/img/blog/2026-11-03/cover.webp)

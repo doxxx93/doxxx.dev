@@ -1,10 +1,10 @@
 ---
-title: "<OpenClaw with GPT, Gemini, Claude> Write What to Block Before What to Ask Your Agent"
+title: "OpenClaw with GPT, Gemini, Claude"
 authors: doxxx
 tags: [book-review, ai, agent, automation, 한빛미디어, 나는리뷰어다]
 date: 2026-04-23 12:00:00 +0900
 image: /img/blog/2026-04-23/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - OpenClaw with GPT, Gemini, Claude (오픈클로 with GPT, 제미나이, 클로드) book review"
+description: "Write What to Block Before What to Ask Your Agent"
 ---
 
 ![Book cover](/img/blog/2026-04-23/cover.webp)

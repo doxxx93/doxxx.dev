@@ -13,7 +13,8 @@ type ClassNames = {
   archive: string;
 };
 
-// Book reviews are titled "<Book> subtitle"; the sidebar shows only the book, in its own group.
+// Book reviews arrive labelled "<Book>" (set from the book-review tag in docusaurus.config.ts
+// processBlogPosts, since sidebar items carry no tags); they get their own group, shown without the marks.
 const BOOK_TITLE = /^<(.+?)>/;
 const RECENT_COUNT = 5;
 

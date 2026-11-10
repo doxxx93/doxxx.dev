@@ -1,10 +1,10 @@
 ---
-title: "<The Math Behind AI> A Book for Developers Who Scroll Past Equations"
+title: "The Math Behind AI"
 authors: doxxx
 tags: [book-review, ai, math, 한빛미디어, 나는리뷰어다]
 date: 2026-03-02 12:00:00 +0900
 image: /img/blog/2026-03-02/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - The Math Behind AI (AI를 움직이는 수학 이야기) book review"
+description: "A Book for Developers Who Scroll Past Equations"
 ---
 
 ![Book cover](/img/blog/2026-03-02/cover.webp)

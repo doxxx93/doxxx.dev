@@ -1,10 +1,10 @@
 ---
-title: "<실전 AX 리포트> 강제력 없는 도구로 일하는 방식을 바꾸는 법"
+title: "실전 AX 리포트"
 authors: doxxx
 tags: [book-review, ai, agent, 한빛미디어, 나는리뷰어다]
 date: 2026-09-28 12:00:00 +0900
 image: /img/blog/2026-09-28/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - 실전 AX 리포트 리뷰"
+description: "강제력 없는 도구로 일하는 방식을 바꾸는 법"
 ---
 
 ![책 표지](/img/blog/2026-09-28/cover.webp)

@@ -1,10 +1,10 @@
 ---
-title: "<Practical AX Report> How to Change the Way People Work with a Tool That Enforces Nothing"
+title: "Practical AX Report"
 authors: doxxx
 tags: [book-review, ai, agent, 한빛미디어, 나는리뷰어다]
 date: 2026-09-28 12:00:00 +0900
 image: /img/blog/2026-09-28/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - Practical AX Report (실전 AX 리포트) book review"
+description: "How to Change the Way People Work with a Tool That Enforces Nothing"
 ---
 
 ![Book cover](/img/blog/2026-09-28/cover.webp)

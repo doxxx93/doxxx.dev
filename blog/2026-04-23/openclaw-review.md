@@ -1,10 +1,10 @@
 ---
-title: "<오픈클로 with GPT, 제미나이, 클로드> 에이전트한테 뭘 시킬지보다 뭘 막을지 먼저 쓰라는 책"
+title: "오픈클로 with GPT, 제미나이, 클로드"
 authors: doxxx
 tags: [book-review, ai, agent, automation, 한빛미디어, 나는리뷰어다]
 date: 2026-04-23 12:00:00 +0900
 image: /img/blog/2026-04-23/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - 오픈클로 with GPT, 제미나이, 클로드 리뷰"
+description: "에이전트한테 뭘 시킬지보다 뭘 막을지 먼저 쓰라는 책"
 ---
 
 ![책 표지](/img/blog/2026-04-23/cover.webp)

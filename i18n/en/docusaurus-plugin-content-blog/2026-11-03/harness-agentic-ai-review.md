@@ -1,10 +1,10 @@
 ---
-title: "<Completing Agentic AI with Harness Engineering> How to Separate What You Ask the Model from What You Enforce in Code"
+title: "Completing Agentic AI with Harness Engineering"
 authors: doxxx
 tags: [book-review, ai, agent, claude, 한빛미디어, 나는리뷰어다]
 date: 2026-11-03 12:00:00 +0900
 image: /img/blog/2026-11-03/cover.webp
-description: "Hanbit Media I Am a Reviewer 2026 - Completing Agentic AI with Harness Engineering (하네스 엔지니어링으로 완성하는 에이전틱 AI) book review"
+description: "How to Separate What You Ask the Model from What You Enforce in Code"
 ---
 
 ![Book cover](/img/blog/2026-11-03/cover.webp)

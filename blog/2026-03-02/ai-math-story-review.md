@@ -1,10 +1,10 @@
 ---
-title: "<AI를 움직이는 수학 이야기> 수식 앞에서 스크롤이 빨라지는 개발자를 위한 책"
+title: "AI를 움직이는 수학 이야기"
 authors: doxxx
 tags: [book-review, ai, math, 한빛미디어, 나는리뷰어다]
 date: 2026-03-02 12:00:00 +0900
 image: /img/blog/2026-03-02/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - AI를 움직이는 수학 이야기 리뷰"
+description: "수식 앞에서 스크롤이 빨라지는 개발자를 위한 책"
 ---
 
 ![책 표지](/img/blog/2026-03-02/cover.webp)

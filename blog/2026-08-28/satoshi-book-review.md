@@ -1,10 +1,10 @@
 ---
-title: "<사토시의 서(개정증보판)> 순서를 정해주는 주체를 지우면, 그 자리에 무엇을 둘 것인가"
+title: "사토시의 서(개정증보판)"
 authors: doxxx
 tags: [book-review, bitcoin, distributed-systems, 한빛미디어, 나는리뷰어다]
 date: 2026-08-28 12:00:00 +0900
 image: /img/blog/2026-08-28/cover.webp
-description: "한빛미디어 나는리뷰어다 2026 - 사토시의 서(개정증보판) 리뷰"
+description: "순서를 정해주는 주체를 지우면, 그 자리에 무엇을 둘 것인가"
 ---
 
 ![책 표지](/img/blog/2026-08-28/cover.webp)
