@@ -1,4 +1,5 @@
 ---
+slug: /kube/runtime-internals
 sidebar_position: 3
 title: "Runtime Internals"
 description: "kube-runtime의 내부 동작 — watcher state machine, reflector 캐싱, Controller 파이프라인"

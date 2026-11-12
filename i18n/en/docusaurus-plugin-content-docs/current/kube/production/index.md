@@ -1,4 +1,5 @@
 ---
+slug: /kube/production
 sidebar_position: 5
 title: "Production"
 description: "Monitoring, testing, and optimization for production environments"

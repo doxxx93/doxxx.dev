@@ -1,4 +1,5 @@
 ---
+slug: /kube/patterns
 sidebar_position: 4
 title: "Patterns"
 description: "How to use kube properly — correct patterns and common mistakes"

@@ -1,4 +1,5 @@
 ---
+slug: /kube/runtime-internals
 sidebar_position: 3
 title: "Runtime Internals"
 description: "Internal workings of kube-runtime — watcher state machine, reflector caching, Controller pipeline"

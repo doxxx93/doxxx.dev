@@ -1,4 +1,5 @@
 ---
+slug: /kube/patterns
 sidebar_position: 4
 title: "Patterns"
 description: "kube를 제대로 쓰는 법 — 올바른 패턴과 흔한 실수"

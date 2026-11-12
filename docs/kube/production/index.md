@@ -1,4 +1,5 @@
 ---
+slug: /kube/production
 sidebar_position: 5
 title: "Production"
 description: "프로덕션 환경에서의 모니터링, 테스트, 최적화"

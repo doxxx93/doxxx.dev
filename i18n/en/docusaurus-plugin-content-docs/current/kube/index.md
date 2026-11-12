@@ -1,4 +1,5 @@
 ---
+slug: /kube
 sidebar_position: 1
 title: "kube-rs: A Deep Dive into the Rust Kubernetes Client"
 sidebar_label: "kube"

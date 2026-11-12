@@ -1,4 +1,5 @@
 ---
+slug: /kube
 sidebar_position: 1
 title: "kube-rs 심층 가이드"
 sidebar_label: "kube"

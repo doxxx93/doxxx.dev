@@ -1,4 +1,5 @@
 ---
+slug: /kube/architecture
 sidebar_position: 2
 title: "Architecture"
 description: "The internal design of kube — crate hierarchy, type system, client architecture"
